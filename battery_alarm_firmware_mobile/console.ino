@@ -1,0 +1,187 @@
+#include "config.h"
+
+String _console_buffer = "";
+
+void console_hello() {
+  Serial.printf("Battery Alarm Version %s\n\n", VERSION);
+  _console_printConfig();
+  _console_prompt();
+}
+
+void setup_console() {
+  Serial.begin(115200);
+}
+
+void loop_console(const uint32_t now) {
+  while (Serial.available()) {
+    char c = Serial.read();
+    switch (c) {
+      case '\r':
+      case '\n':
+        _console_processBuffer();
+        _console_prompt();
+        break;
+    }
+    if ((c >= 0x20) && c <= 0x7e) {
+      _console_buffer += c;
+    }
+  }
+}
+
+void _console_processBuffer() {
+  bool echo = true;
+  String buffer = _console_buffer;
+  _console_buffer = "";
+
+  if (buffer.startsWith("bt set beacon ")) {
+    String addr = buffer.substring(14);
+    bt_setBeacon(addr);
+  } else if (buffer.equals("bt scan")) {
+    bt_scan();
+  } else if (buffer.equals("bt debug")) {
+    bt_debug();
+    echo = false;
+  } else if (buffer.equals("vbat debug on")) {
+    vbat_debug();
+  } else if (buffer.equals("vbat debug off")) {
+    vbat_debugOff();
+  } else if (buffer.equals("config")) {
+    Serial.println();
+    _console_printConfig();
+    echo = false;
+  } else if (buffer.equals("status")) {
+    Serial.println();
+    app_status();
+    echo = false;
+  } else if (buffer.startsWith("config set ")) {
+    echo = _console_processConfig(buffer.substring(11));
+  } else if (buffer.equals("fake in garage true")) {
+    bt_fake_isInGarage(true);
+  } else if (buffer.equals("fake in garage false")) {
+    bt_fake_isInGarage(false);
+  } else if (buffer.equals("fake in garage off")) {
+    bt_fake_isInGarageOff();
+  } else if (buffer.equals("fake charging true")) {
+    vbat_fake_charging(true);
+  } else if (buffer.equals("fake charging false")) {
+    vbat_fake_charging(false);
+  } else if (buffer.equals("fake charging off")) {
+    vbat_fake_chargingOff();
+  } else if (buffer.equals("off")) {
+    buzzer_setOff();
+    led_off();
+  } else if (buffer.equals("hello")) {
+    buzzer_setHello();
+    led_hello();
+  } else if (buffer.equals("charging")) {
+    buzzer_setCharging();
+    led_charging();
+  } else if (buffer.equals("garage")) {
+    buzzer_setGarage();
+  } else if (buffer.equals("button")) {
+    buzzer_setButton();
+  } else if (buffer.equals("warn")) {
+    buzzer_setWarn();
+    led_warn();
+  } else if (buffer.equals("alarm")) {
+    buzzer_setAlarm();
+    led_alarm();
+  } else if (buffer.equals("vbat")) {
+    Serial.printf("vbat: %.2fV\n", vbat_volt());
+    echo = false;
+  } else {
+    Serial.printf("unknown command: %s\n", buffer.c_str());
+    return;
+  }
+
+  if (echo) Serial.println(buffer.c_str());
+}
+
+void _console_prompt() {
+  Serial.print("READY> ");
+}
+
+void _console_printConfig() {
+  Serial.printf(
+    "Config:\n"
+    "  Delay:\n"
+    "    Warn: %lu\n"
+    "    Alarm: %lu\n"
+    "    Snooze: %lu\n"
+    "  BT Beacon:\n"
+    "    Address: %s\n"
+    "    RSSI in: %.1f\n"
+    "    RSSI near: %.1f\n"
+    "  Battery:\n"
+    "    Charge voltage: %.1f\n"
+    "    Tune factor: %.1f\n"
+    "    LP factor: %.1f\n"
+    "\n",
+    configDelayWarn, configDelayAlarm, configSnoozeTime,
+    configBtBeaconAddr.c_str(), configBtBeaconRssiInGarage, configBtBeaconRssiNearGarage,
+    configVbatChargeVoltage, configVbatTuneF, configVbatLpF);
+}
+
+bool _console_processConfig(String pair) {
+  int index = pair.indexOf("=");
+  if (index == -1) {
+    Serial.println("SYNTAX ERROR");
+    return false;
+  }
+  String key = pair.substring(0, index);
+  String value = pair.substring(index + 1);
+
+  if (key.equals("beacon")) {
+    bt_setBeacon(value);
+  } else if (key.equals("vbat_charge_v")) {
+    float val = value.toFloat();
+    if (!_console_ensureValue(val, 12, 30)) return false;
+    configVbatChargeVoltage = val;
+  } else if (key.equals("vbat_charge_delta")) {
+    float val = value.toFloat();
+    if (!_console_ensureValue(val, 0.001, 1)) return false;
+    configVbatChargeDeltaThreshold = val;
+  } else if (key.equals("vbat_tune_f")) {
+    float val = value.toFloat();
+    if (!_console_ensureValue(val, 0.1, 1.9)) return false;
+    configVbatTuneF = val;
+  } else if (key.equals("vbat_lp_f")) {
+    float val = value.toFloat();
+    if (!_console_ensureValue(val, 0.5, 0.9999)) return false;
+    configVbatLpF = val;
+  } else if (key.equals("rssi_garage")) {
+    int val = value.toInt();
+    if (!_console_ensureValue(val, -80, 0)) return false;
+    configBtBeaconRssiInGarage = val;
+  } else if (key.equals("delay_warn")) {
+    uint32_t val = value.toInt();
+    if (!_console_ensureValue(val, 1000, 3600000)) return false;
+    configDelayWarn = val;
+  } else if (key.equals("delay_alarm")) {
+    uint32_t val = value.toInt();
+    if (!_console_ensureValue(val, 1000, 3600000)) return false;
+    configDelayAlarm = val;
+  } else if (key.equals("delay_snooze")) {
+    uint32_t val = value.toInt();
+    if (!_console_ensureValue(val, 1000, 300000)) return false;
+    configSnoozeTime = val;
+  } else {
+    Serial.println("UNKNOWN CONFIG");
+    return false;
+  }
+
+  pref_save();
+  return true;
+}
+
+bool _console_ensureValue(float val, float min, float max) {
+  if (val < min) {
+    Serial.println("VALUE TOO SMALL");
+    return false;
+  } else if (val > max) {
+    Serial.println("VALUE TOO LARGE");
+    return false;
+  }
+
+  return true;
+}
