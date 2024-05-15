@@ -25,3 +25,7 @@ float configVbatChargeDeltaThreshold = 0.1;
 
 #define BT_SCAN_INTERVAL  10000
 #define BT_SCAN_DURATION  5000
+
+#define BUTTON_DEBOUNCE 20
+#define BUTTON_LONG 2000
+#define BUTTON_ULTRA_LONG 5000

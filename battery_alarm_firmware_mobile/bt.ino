@@ -9,6 +9,11 @@ BLEScan *pBLEScan;
 BLEServer *pServer;
 BLECharacteristic *pCharacteristicConfig;
 
+bool _bt_advertisingEnabled = false;
+uint32_t _bt_advertisingEnabledSince = 0;
+bool _bt_allowPairing = false;
+uint32_t _bt_allowPairingSince = 0;
+
 bool _bt_scanPrint = false;
 bool _bt_scanActive = false;
 uint32_t _bt_beaconLastSeen = 0;
@@ -31,6 +36,29 @@ void bt_status() {
     _bt_beaconRssi, _bt_beaconRssiLp, (millis() - _bt_beaconLastSeen)
   );
 }
+
+bool bt_toggleAuthentication() {
+  _bt_allowPairing = !_bt_allowPairing;
+  Serial.printf("bt: allow auth: %s\n", _bt_allowPairing ? "true" : "false");
+  if (_bt_allowPairing) _bt_advertisingEnabledSince = millis();
+  return _bt_allowPairing;
+}
+
+bool bt_toggleVisibility() {
+  _bt_advertisingEnabled = !_bt_advertisingEnabled;
+  Serial.printf("bt: visible: %s\n", _bt_advertisingEnabled ? "true" : "false");
+  if (_bt_advertisingEnabled) _bt_advertisingEnabledSince = millis();
+  return _bt_advertisingEnabled;
+}
+
+bool bt_isAuthentication() {
+  return _bt_allowPairing;
+}
+
+bool bt_isVisible() {
+  return _bt_advertisingEnabled;
+}
+
 void bt_setBeacon(String addr) {
   configBtBeaconAddr = addr;
   pref_save();
@@ -119,6 +147,7 @@ void bt_debugOff() {
 }
 
 bool _bt_deviceConnected = false;
+bool _bt_advertisingActive = false;
 
 class BtServerCallbacks : public BLEServerCallbacks {
   void onConnect(BLEServer* pServer) {
@@ -127,9 +156,7 @@ class BtServerCallbacks : public BLEServerCallbacks {
 
   void onDisconnect(BLEServer* pServer) {
     _bt_deviceConnected = false;
-    BLEAdvertising* pAdvertising;
-    pAdvertising = pServer->getAdvertising();
-    pAdvertising->start();
+    _bt_setAdvertising(true);
   }
 };
 
@@ -160,7 +187,6 @@ class BtScanCallbacks : public BLEAdvertisedDeviceCallbacks {
   }
 };
 
-
 void setup_bt() {
   BLEDevice::init("Battalarm");
 
@@ -184,7 +210,7 @@ void _bt_setup_service() {
   _bt_setup_chr_status(pServer);
   _bt_setup_chr_config(pServer);
 
-  pAdvertising->start();
+  _bt_setAdvertising(true);
 }
 
 void _bt_setup_scan() {
@@ -201,6 +227,7 @@ void loop_bt(const uint32_t now) {
   _bt_loop_scan(now);
   _bt_loop_compute(now);
   _bt_loop_chr(now);
+  _bt_loop_toggle(now);
   _bt_loop_debug(now);
 }
 
@@ -216,7 +243,7 @@ void _bt_loop_scan(const uint32_t now) {
   }
 
   _bt_scanActive = true;
-  pServer->getAdvertising()->stop();
+  _bt_setAdvertising(false);
   pBLEScan->start(BT_SCAN_DURATION / 1000, &_bt_onScanResults, false);
 }
 
@@ -259,6 +286,20 @@ void _bt_loop_chr(const uint32_t now) {
   _bt_loop_chr_config(now, _bt_deviceConnected);
 }
 
+void _bt_loop_toggle(const uint32_t now) {
+  if (_bt_advertisingEnabled) {
+    if ((now - _bt_advertisingEnabledSince) > 30000) {
+      bt_toggleVisibility();
+    }
+  }
+
+  if (_bt_allowPairing) {
+    if ((now - _bt_allowPairingSince) > 30000) {
+      bt_toggleAuthentication();
+    }
+  }
+}
+
 void _bt_loop_debug(const uint32_t now) {
   if (!_bt_debug) return;
 
@@ -294,5 +335,15 @@ void _bt_onScanResults(BLEScanResults results) {
   _bt_scanPrint = false;
   pBLEScan->clearResults();
 
-  pServer->getAdvertising()->start();
+  _bt_setAdvertising(true);
+}
+
+void _bt_setAdvertising(bool on) {
+  if (on && _bt_advertisingEnabled) {
+    pServer->getAdvertising()->start();
+    _bt_advertisingActive = true;
+  } else if (!on && _bt_advertisingActive) {
+    pServer->getAdvertising()->stop();
+    _bt_advertisingActive = false;
+  }
 }

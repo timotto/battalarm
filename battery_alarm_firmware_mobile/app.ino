@@ -8,7 +8,9 @@ uint32_t _app_chargingChangeTime = 0;
 bool _app_snoozed = false;
 uint32_t _app_snoozedChangeTime = 0;
 bool _app_buttonPressed = false;
+bool _app_buttonReleased = false;
 bool _app_buttonPressedLong = false;
+bool _app_buttonPressedUltraLong = false;
 
 bool _app_wasInGarage = false;
 bool _app_wasCharging = false;
@@ -50,12 +52,18 @@ void loop_app(const uint32_t now) {
     buzzer_setButtonLong();
     led_buttonLong();
   }
+  if (_app_buttonPressedUltraLong) {
+    buzzer_setButtonUltraLong();
+    led_buttonUltraLong();
+  }
 
   if (_app_inGarage) {
     _app_loop_inGarage(now);
   } else {
     _app_loop_notInGarage(now);
   }
+
+  _app_loop_bt(now);
 }
 
 void _app_loop_inGarage(const uint32_t now) {
@@ -116,6 +124,9 @@ void _app_loop_inGarage(const uint32_t now) {
         _app_setSnooze(now);
         buzzer_setSnooze();
         led_snooze();
+
+        // "consume" button press, to hide from other logic
+        _app_buttonPressedLong = false;
       }
     }
   }
@@ -133,8 +144,44 @@ void _app_loop_notInGarage(const uint32_t now) {
   _app_wasCharging = false;
 
   if (_app_charging) {
-    // TODO maybe RSSI requirement is too high? Or the alternator looks like a charger? Or the vehicle is charging out of the garage?
     _app_chargingButNotInGarage(now);
+  }
+}
+
+void _app_loop_bt(const uint32_t now) {
+  static bool longPress = false;
+  static bool ultraLongPress = false;
+  static bool btVisible = false;
+  static bool btAuth = false;
+
+  if (_app_buttonPressedLong) longPress = true;
+  if (_app_buttonPressedUltraLong) ultraLongPress = true;
+
+  if (_app_buttonReleased) {
+    if (ultraLongPress && btVisible) {
+      btAuth = bt_toggleAuthentication();
+      buzzer_setBtPairing(btAuth);
+      led_setBtPairing(btAuth);
+    } else if (longPress) {
+      btVisible = bt_toggleVisibility();
+      buzzer_setBtVisible(btVisible);
+      led_setBtVisible(btVisible);
+    }
+
+    longPress = false;
+    ultraLongPress = false;
+  }
+
+  if (btVisible && !bt_isVisible()) {
+    btVisible = false;
+    buzzer_setBtVisible(btAuth);
+    led_setBtVisible(btAuth);
+  }
+
+  if (btAuth && !bt_isAuthentication()) {
+    btAuth = false;
+    buzzer_setBtPairing(btVisible);
+    led_setBtPairing(btVisible);
   }
 }
 
@@ -153,10 +200,12 @@ void _app_readValues(const uint32_t now) {
     _app_chargingChangeTime = now;
   }
 
-  int pressed, pressedLong;
-  button_read(&pressed, &pressedLong);
+  int pressed, released, pressedLong, pressedUltraLong;
+  button_read(&pressed, &released, &pressedLong, &pressedUltraLong);
   _app_buttonPressed = pressed > 0;
+  _app_buttonReleased = released > 0;
   _app_buttonPressedLong = pressedLong > 0;
+  _app_buttonPressedUltraLong = pressedUltraLong > 0;
 }
 
 void _app_setSnooze(const uint32_t now) {

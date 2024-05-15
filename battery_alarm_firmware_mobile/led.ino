@@ -15,6 +15,7 @@ const uint32_t _led_sequence_alarm[] = {0xff0000, 200, 0x0f0000, 1800, LED_SEQUE
 const uint32_t _led_sequence_snooze[] = {0x7f7f00, 2000, 0x000000, 3000, LED_SEQUENCE_END, 1};
 const uint32_t _led_sequence_button[] = {0x3f3f3f, 25, 0x3f3f3f, 25, 0, 5, LED_SEQUENCE_END, 0};
 const uint32_t _led_sequence_button_long[] = {0x3f3f3f, 100, 0x3f3f3f, 100, 0, 5, LED_SEQUENCE_END, 0};
+const uint32_t _led_sequence_button_ultra_long[] = {0x3f3f7f, 100, 0x3f3f7f, 100, 0, 5, LED_SEQUENCE_END, 0};
 const uint32_t *_led_sequence = NULL;
 
 #define __led_setMode(x) _led_setMode((const uint32_t*)x)
@@ -54,6 +55,15 @@ void led_buttonLong() {
   __led_setMode(_led_sequence_button_long);
   }
 }
+
+void led_buttonUltraLong() {
+  if (_led_sequence == NULL || _led_sequence == _led_sequence_off) {
+  __led_setMode(_led_sequence_button_ultra_long);
+  }
+}
+
+void led_setBtVisible(bool state) {}
+void led_setBtPairing(bool state) {}
 
 CRGB leds[LED_COUNT];
 
