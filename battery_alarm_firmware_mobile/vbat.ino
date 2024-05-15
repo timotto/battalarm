@@ -10,6 +10,17 @@ bool _vbat_debug = false;
 bool _vbat_fakeChargingValue = false;
 bool _vbat_fakeChargingEnabled = false;
 
+void vbat_status() {
+  Serial.printf(
+    "VBat status:\n"
+    "  Volt (last): %.1f\n"
+    "  Volt (lp): %.1f\n"
+    "  Delta: %.2f\n"
+    ,
+    _vbat_volt, _vbat_voltLp, _vbat_voltDelta
+  );
+}
+
 bool vbat_isCharging() {
   if (_vbat_fakeChargingEnabled) {
     return _vbat_fakeChargingValue;
@@ -95,7 +106,7 @@ void _vbat_loop_compute(const uint32_t now) {
   }
 
   if (_vbat_charging == state) return;
-  
+
   const uint32_t dt = now - last_state_change;
   if (dt > 1000) {
     _vbat_charging = state;

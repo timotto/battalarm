@@ -17,6 +17,16 @@ bool _bt_debug = false;
 bool _bt_fakeInGarageValue = false;
 bool _bt_fakeInGarageEnabled = false;
 
+void bt_status() {
+  Serial.printf(
+    "Bluetooth status:\n"
+    "  RSSI (last): %d\n"
+    "  RSSI (lp): %.0f\n"
+    "  Last seen: %lu\n"
+    ,
+    _bt_beaconRssi, _bt_beaconRssiLp, (millis() - _bt_beaconLastSeen)
+  );
+}
 void bt_setBeacon(String addr) {
   configBtBeaconAddr = addr;
   pref_save();

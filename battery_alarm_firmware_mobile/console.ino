@@ -42,6 +42,8 @@ void _console_processBuffer() {
   } else if (buffer.equals("status")) {
     Serial.println();
     app_status();
+    bt_status();
+    vbat_status();
     echo = false;
   } else if (buffer.startsWith("config set ")) {
     echo = _console_processConfig(buffer.substring(11));
