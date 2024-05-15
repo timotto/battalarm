@@ -33,18 +33,8 @@ void _console_processBuffer() {
   String buffer = _console_buffer;
   _console_buffer = "";
 
-  if (buffer.startsWith("bt set beacon ")) {
-    String addr = buffer.substring(14);
-    bt_setBeacon(addr);
-  } else if (buffer.equals("bt scan")) {
+  if (buffer.equals("bt scan")) {
     bt_scan();
-  } else if (buffer.equals("bt debug")) {
-    bt_debug();
-    echo = false;
-  } else if (buffer.equals("vbat debug on")) {
-    vbat_debug();
-  } else if (buffer.equals("vbat debug off")) {
-    vbat_debugOff();
   } else if (buffer.equals("config")) {
     Serial.println();
     _console_printConfig();
@@ -55,18 +45,10 @@ void _console_processBuffer() {
     echo = false;
   } else if (buffer.startsWith("config set ")) {
     echo = _console_processConfig(buffer.substring(11));
-  } else if (buffer.equals("fake in garage true")) {
-    bt_fake_isInGarage(true);
-  } else if (buffer.equals("fake in garage false")) {
-    bt_fake_isInGarage(false);
-  } else if (buffer.equals("fake in garage off")) {
-    bt_fake_isInGarageOff();
-  } else if (buffer.equals("fake charging true")) {
-    vbat_fake_charging(true);
-  } else if (buffer.equals("fake charging false")) {
-    vbat_fake_charging(false);
-  } else if (buffer.equals("fake charging off")) {
-    vbat_fake_chargingOff();
+  } else if (buffer.startsWith("debug ")) {
+    echo = _console_processDebug(buffer.substring(6));
+  } else if (buffer.startsWith("fake ")) {
+    echo = _console_processFake(buffer);
   } else if (buffer.equals("off")) {
     buzzer_setOff();
     led_off();
@@ -171,6 +153,64 @@ bool _console_processConfig(String pair) {
   }
 
   pref_save();
+  return true;
+}
+
+bool _console_processDebug(String value) {
+  String key = "";
+  String opt = "";
+  int index = value.indexOf(" ");
+  if (index != -1) {
+    key = value.substring(0, index);
+    opt = value.substring(index+1);
+  } else {
+    key = value;
+  }
+
+  if (key.equals("bt")) {
+    if (opt.equals("on")) {
+      bt_debugOn();
+    } else if (opt.equals("off")) {
+      bt_debugOff();
+    } else {
+      Serial.println("SYNTAX ERROR");
+      return false;
+    }
+  } else if (key.equals("vbat")) {
+    if (opt.equals("on")) {
+      vbat_debug();
+    } else if (opt.equals("off")) {
+      vbat_debugOff();
+    } else {
+      Serial.println("SYNTAX ERROR");
+      return false;
+    }
+  } else {
+    Serial.printf("UNKNOWN KEY: %s\n", key.c_str());
+    return false;
+  }
+
+  return true;
+}
+
+bool _console_processFake(String buffer) {
+  if (buffer.equals("fake in garage true")) {
+    bt_fake_isInGarage(true);
+  } else if (buffer.equals("fake in garage false")) {
+    bt_fake_isInGarage(false);
+  } else if (buffer.equals("fake in garage off")) {
+    bt_fake_isInGarageOff();
+  } else if (buffer.equals("fake charging true")) {
+    vbat_fake_charging(true);
+  } else if (buffer.equals("fake charging false")) {
+    vbat_fake_charging(false);
+  } else if (buffer.equals("fake charging off")) {
+    vbat_fake_chargingOff();
+  } else {
+    Serial.println("UNKNOWN COMMAND");
+    return false;
+  }
+
   return true;
 }
 
