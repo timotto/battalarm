@@ -128,7 +128,7 @@ class BatteryAlarmDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
 void setup_bt() {
   BLEDevice::init("Battalarm");
   pBLEScan = BLEDevice::getScan();
-  pBLEScan->setAdvertisedDeviceCallbacks(new BatteryAlarmDeviceCallbacks());
+  pBLEScan->setAdvertisedDeviceCallbacks(new BatteryAlarmDeviceCallbacks(), true);
   pBLEScan->setActiveScan(false);
   pBLEScan->setInterval(100);
   pBLEScan->setWindow(99);  // less or equal setInterval value
