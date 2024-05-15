@@ -119,23 +119,23 @@ bool _console_processConfig(String pair) {
     bt_setBeacon(value);
   } else if (key.equals("vbat_charge_v")) {
     float val = value.toFloat();
-    if (!_console_ensureValue(val, 12, 30)) return false;
+    if (!_console_ensureValue(val, CONFIG_VBAT_CHARGE_T_MIN, CONFIG_VBAT_CHARGE_T_MAX)) return false;
     configVbatChargeVoltage = val;
   } else if (key.equals("vbat_charge_delta")) {
     float val = value.toFloat();
-    if (!_console_ensureValue(val, 0.001, 1)) return false;
+    if (!_console_ensureValue(val, CONFIG_VBAT_DELTA_T_MIN, CONFIG_VBAT_DELTA_T_MAX)) return false;
     configVbatChargeDeltaThreshold = val;
   } else if (key.equals("vbat_tune_f")) {
     float val = value.toFloat();
-    if (!_console_ensureValue(val, 0.1, 1.9)) return false;
+    if (!_console_ensureValue(val, CONFIG_VBAT_TUNE_F_MIN, CONFIG_VBAT_TUNE_F_MAX)) return false;
     configVbatTuneF = val;
   } else if (key.equals("vbat_lp_f")) {
     float val = value.toFloat();
-    if (!_console_ensureValue(val, 0.5, 0.9999)) return false;
+    if (!_console_ensureValue(val, CONFIG_VBAT_LPF_MIN, CONFIG_VBAT_LPF_MAX)) return false;
     configVbatLpF = val;
   } else if (key.equals("rssi_garage")) {
     int val = value.toInt();
-    if (!_console_ensureValue(val, -80, 0)) return false;
+    if (!_console_ensureValue(val, CONFIG_RSSI_T_MIN, CONFIG_RSSI_T_MAX)) return false;
     configBtBeaconRssiInGarage = val;
   } else if (key.equals("rssi_autotune")) {
     int val = -1;
@@ -150,16 +150,20 @@ bool _console_processConfig(String pair) {
     configBtBeaconRssiAutoTune = val == 1;
   } else if (key.equals("delay_warn")) {
     uint32_t val = value.toInt();
-    if (!_console_ensureValue(val, 1000, 3600000)) return false;
+    if (!_console_ensureValue(val, CONFIG_DELAY_WARN_MIN, CONFIG_DELAY_WARN_MAX)) return false;
     configDelayWarn = val;
   } else if (key.equals("delay_alarm")) {
     uint32_t val = value.toInt();
-    if (!_console_ensureValue(val, 1000, 3600000)) return false;
+    if (!_console_ensureValue(val, CONFIG_DELAY_ALERT_MIN, CONFIG_DELAY_ALERT_MAX)) return false;
     configDelayAlarm = val;
   } else if (key.equals("delay_snooze")) {
     uint32_t val = value.toInt();
-    if (!_console_ensureValue(val, 1000, 300000)) return false;
+    if (!_console_ensureValue(val, CONFIG_DELAY_SNOOZE_MIN, CONFIG_DELAY_SNOOZE_MAX)) return false;
     configSnoozeTime = val;
+  } else if (key.equals("buzzer")) {
+    uint32_t val = value.toInt();
+    if (!_console_ensureValue(val, 0, BUZZER_ALERTS_MAX)) return false;
+    configBuzzerAlerts = val;
   } else {
     Serial.println("UNKNOWN CONFIG");
     return false;

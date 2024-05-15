@@ -23,6 +23,7 @@ const uint32_t _buzzer_sequence_bt_pairing_off[] = {200,200,200,200,10,90,10,90,
 const uint32_t *_buzzer_sequence = NULL;
 
 #define __buzzer_setMode(x) _buzzer_setMode((const uint32_t*)x)
+#define __buzzer_can(x) ((configBuzzerAlerts & x) != 0)
 
 void buzzer_setOff() {
   __buzzer_setMode(NULL);
@@ -37,18 +38,22 @@ void buzzer_setWarn() {
 }
 
 void buzzer_setHello() {
+  if (!__buzzer_can(BUZZER_ALERT_HELLO)) return;
   __buzzer_setMode(_buzzer_sequence_hello);
 }
 
 void buzzer_setGarage() {
+  if (!__buzzer_can(BUZZER_ALERT_GARAGE)) return;
   __buzzer_setMode(_buzzer_sequence_garage);
 }
 
 void buzzer_setGarageLeft() {
+  if (!__buzzer_can(BUZZER_ALERT_GARAGE)) return;
   __buzzer_setMode(_buzzer_sequence_garage_left);
 }
 
 void buzzer_setCharging() {
+  if (!__buzzer_can(BUZZER_ALERT_CHARGING)) return;
   __buzzer_setMode(_buzzer_sequence_charging);
 }
 
@@ -57,26 +62,31 @@ void buzzer_setSnooze() {
 }
 
 void buzzer_setButton() {
+  if (!__buzzer_can(BUZZER_ALERT_BUTTON)) return;
   if (!_buzzer_canLowPrio()) return;
   __buzzer_setMode(_buzzer_sequence_button);
 }
 
 void buzzer_setButtonLong() {
+  if (!__buzzer_can(BUZZER_ALERT_BUTTON)) return;
   if (!_buzzer_canLowPrio()) return;
   __buzzer_setMode(_buzzer_sequence_button_long);
 }
 
 void buzzer_setButtonUltraLong() {
+  if (!__buzzer_can(BUZZER_ALERT_BUTTON)) return;
   if (!_buzzer_canLowPrio()) return;
   __buzzer_setMode(_buzzer_sequence_button_ultra_long);
 }
 
 void buzzer_setBtVisible(bool visible) {
+  if (!__buzzer_can(BUZZER_ALERT_BT)) return;
   if (!_buzzer_canLowPrio()) return;
   __buzzer_setMode(visible ? _buzzer_sequence_bt_visible_on : _buzzer_sequence_bt_visible_off);
 }
 
 void buzzer_setBtPairing(bool allowd) {
+  if (!__buzzer_can(BUZZER_ALERT_BT)) return;
   if (!_buzzer_canLowPrio()) return;
   __buzzer_setMode(allowd ? _buzzer_sequence_bt_pairing_on : _buzzer_sequence_bt_pairing_off);
 }
