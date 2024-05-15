@@ -40,7 +40,7 @@ void bt_status() {
 bool bt_toggleAuthentication() {
   _bt_allowPairing = !_bt_allowPairing;
   Serial.printf("bt: allow auth: %s\n", _bt_allowPairing ? "true" : "false");
-  if (_bt_allowPairing) _bt_advertisingEnabledSince = millis();
+  if (_bt_allowPairing) _bt_allowPairingSince = millis();
   return _bt_allowPairing;
 }
 
@@ -149,6 +149,33 @@ void bt_debugOff() {
 bool _bt_deviceConnected = false;
 bool _bt_advertisingActive = false;
 
+class BtSecurityCallbacks : public BLESecurityCallbacks {
+  bool onSecurityRequest() {
+    return _bt_allowPairing;
+  }
+
+  bool onConfirmPIN(uint32_t pin) {
+    return _bt_allowPairing;
+  }
+
+	uint32_t onPassKeyRequest(){
+		return 123456;
+	}
+
+	void onPassKeyNotify(uint32_t pass_key){
+        // ESP_LOGI(LOG_TAG, "On passkey Notify number:%d", pass_key);
+	}
+
+	void onAuthenticationComplete(esp_ble_auth_cmpl_t cmpl){
+		// ESP_LOGI(LOG_TAG, "Starting BLE work!");
+		if(cmpl.success){
+			uint16_t length;
+			esp_ble_gap_get_whitelist_size(&length);
+			// ESP_LOGD(LOG_TAG, "size: %d", length);
+		}
+	}
+};
+
 class BtServerCallbacks : public BLEServerCallbacks {
   void onConnect(BLEServer* pServer) {
     _bt_deviceConnected = true;
@@ -189,6 +216,12 @@ class BtScanCallbacks : public BLEAdvertisedDeviceCallbacks {
 
 void setup_bt() {
   BLEDevice::init("Battalarm");
+
+  BLEDevice::setSecurityCallbacks(new BtSecurityCallbacks());
+  BLEDevice::setEncryptionLevel(ESP_BLE_SEC_ENCRYPT);
+
+  BLESecurity *btSec = new BLESecurity();
+  btSec->setCapability(ESP_IO_CAP_IO);
 
   pServer = BLEDevice::createServer();
   pServer->setCallbacks(new BtServerCallbacks());
@@ -288,13 +321,13 @@ void _bt_loop_chr(const uint32_t now) {
 
 void _bt_loop_toggle(const uint32_t now) {
   if (_bt_advertisingEnabled) {
-    if ((now - _bt_advertisingEnabledSince) > 30000) {
+    if ((now - _bt_advertisingEnabledSince) > 60000) {
       bt_toggleVisibility();
     }
   }
 
   if (_bt_allowPairing) {
-    if ((now - _bt_allowPairingSince) > 30000) {
+    if ((now - _bt_allowPairingSince) > 60000) {
       bt_toggleAuthentication();
     }
   }
