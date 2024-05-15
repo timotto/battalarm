@@ -2,9 +2,13 @@
 #include <BLEUtils.h>
 #include <BLEScan.h>
 #include <BLEAdvertisedDevice.h>
+#include <BLE2902.h>
 #include "config.h"
 
 BLEScan *pBLEScan;
+BLEServer *pServer;
+BLECharacteristic *pCharacteristicConfig;
+
 bool _bt_scanPrint = false;
 bool _bt_scanActive = false;
 uint32_t _bt_beaconLastSeen = 0;
@@ -40,10 +44,15 @@ bool bt_isInGarage() {
   return _bt_isInGarage;
 }
 
+float bt_rssiLp() {
+  return _bt_beaconRssiLp;
+}
+
 // called when the vehicle is charging but not reported as "in the garage"
 // it checks if the configured rssi value is quite close to the actual
 // and then reduces the configured rssi value to better match the actual.
 void bt_maybeReduceRssi(const uint32_t now) {
+  if (!configBtBeaconRssiAutoTune) return;
   static uint32_t last_time = 0;
   const uint32_t dt = now - last_time;
   if (dt < 15000) return;
@@ -66,6 +75,7 @@ void bt_maybeReduceRssi(const uint32_t now) {
 }
 
 void _bt_maybeIncreaseRssi(const uint32_t now) {
+  if (!configBtBeaconRssiAutoTune) return;
   static uint32_t last_time = 0;
   const uint32_t dt = now - last_time;
   if (dt < 15000) return;
@@ -108,7 +118,22 @@ void bt_debugOff() {
   _bt_debug = false;
 }
 
-class BatteryAlarmDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
+bool _bt_deviceConnected = false;
+
+class BtServerCallbacks : public BLEServerCallbacks {
+  void onConnect(BLEServer* pServer) {
+    _bt_deviceConnected = true;
+  }
+
+  void onDisconnect(BLEServer* pServer) {
+    _bt_deviceConnected = false;
+    BLEAdvertising* pAdvertising;
+    pAdvertising = pServer->getAdvertising();
+    pAdvertising->start();
+  }
+};
+
+class BtScanCallbacks : public BLEAdvertisedDeviceCallbacks {
   void onResult(BLEAdvertisedDevice d) {
     String addr = d.getAddress().toString().c_str();
     if (addr.equals(configBtBeaconAddr)) {
@@ -135,10 +160,36 @@ class BatteryAlarmDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
   }
 };
 
+
 void setup_bt() {
   BLEDevice::init("Battalarm");
+
+  pServer = BLEDevice::createServer();
+  pServer->setCallbacks(new BtServerCallbacks());
+
+  _bt_setup_service();
+  _bt_setup_scan();
+}
+
+void _bt_setup_chr_status(BLEServer *pServer);
+void _bt_setup_chr_config(BLEServer *pServer);
+
+void _bt_setup_service() {
+  BLEAdvertising* pAdvertising;
+  pAdvertising = pServer->getAdvertising();
+  pAdvertising->stop();
+  pAdvertising->setMinInterval(500);
+  pAdvertising->setMaxInterval(1000);
+
+  _bt_setup_chr_status(pServer);
+  _bt_setup_chr_config(pServer);
+
+  pAdvertising->start();
+}
+
+void _bt_setup_scan() {
   pBLEScan = BLEDevice::getScan();
-  pBLEScan->setAdvertisedDeviceCallbacks(new BatteryAlarmDeviceCallbacks(), true);
+  pBLEScan->setAdvertisedDeviceCallbacks(new BtScanCallbacks(), true);
   pBLEScan->setActiveScan(false);
   pBLEScan->setInterval(100);
   pBLEScan->setWindow(99);  // less or equal setInterval value
@@ -149,6 +200,7 @@ void _bt_onScanResults(BLEScanResults results);
 void loop_bt(const uint32_t now) {
   _bt_loop_scan(now);
   _bt_loop_compute(now);
+  _bt_loop_chr(now);
   _bt_loop_debug(now);
 }
 
@@ -164,6 +216,7 @@ void _bt_loop_scan(const uint32_t now) {
   }
 
   _bt_scanActive = true;
+  pServer->getAdvertising()->stop();
   pBLEScan->start(BT_SCAN_DURATION / 1000, &_bt_onScanResults, false);
 }
 
@@ -187,10 +240,23 @@ void _bt_loop_compute(const uint32_t now) {
 
   if (_bt_isInGarage != state) {
     const uint32_t dt = now - last_state_change;
-    if (dt > 1000) {
+    if (dt > 10000) {
       _bt_isInGarage = state;
     }
   }
+}
+
+void _bt_loop_chr_status(const uint32_t now, bool deviceConnected);
+void _bt_loop_chr_config(const uint32_t now, bool deviceConnected);
+
+void _bt_loop_chr(const uint32_t now) {
+  static uint32_t last_time = 0;
+  const uint32_t dt = now - last_time;
+  if (dt < 1000) return;
+  last_time = now;
+
+  _bt_loop_chr_status(now, _bt_deviceConnected);
+  _bt_loop_chr_config(now, _bt_deviceConnected);
 }
 
 void _bt_loop_debug(const uint32_t now) {
@@ -207,10 +273,17 @@ void _bt_loop_debug(const uint32_t now) {
 }
 
 void _bt_onBeaconRssi(int value) {
+  static bool first = true;
   _bt_beaconLastSeen = millis();
   _bt_beaconRssi = value;
 
-  _bt_beaconRssiLp = (_bt_beaconRssiLp + _bt_beaconRssi) / 2;
+  float f = value;
+  if (first) {
+    first = false;
+    _bt_beaconRssiLp = f;
+  }
+
+  _bt_beaconRssiLp = 0.9 * _bt_beaconRssiLp + 0.1 * f;
 }
 
 void _bt_onScanResults(BLEScanResults results) {
@@ -220,4 +293,6 @@ void _bt_onScanResults(BLEScanResults results) {
   _bt_scanActive = false;
   _bt_scanPrint = false;
   pBLEScan->clearResults();
+
+  pServer->getAdvertising()->start();
 }

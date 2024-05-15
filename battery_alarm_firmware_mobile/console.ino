@@ -95,14 +95,14 @@ void _console_printConfig() {
     "  BT Beacon:\n"
     "    Address: %s\n"
     "    RSSI in: %.1f\n"
-    "    RSSI near: %.1f\n"
+    "    RSSI Auto-tune: %s\n"
     "  Battery:\n"
     "    Charge voltage: %.1f\n"
     "    Tune factor: %.1f\n"
     "    LP factor: %.1f\n"
     "\n",
     configDelayWarn, configDelayAlarm, configSnoozeTime,
-    configBtBeaconAddr.c_str(), configBtBeaconRssiInGarage, configBtBeaconRssiNearGarage,
+    configBtBeaconAddr.c_str(), configBtBeaconRssiInGarage, configBtBeaconRssiAutoTune ? "true" : "false",
     configVbatChargeVoltage, configVbatTuneF, configVbatLpF);
 }
 
@@ -137,6 +137,17 @@ bool _console_processConfig(String pair) {
     int val = value.toInt();
     if (!_console_ensureValue(val, -80, 0)) return false;
     configBtBeaconRssiInGarage = val;
+  } else if (key.equals("rssi_autotune")) {
+    int val = -1;
+    if (value.equals("on") || value.equals("true")) {
+      val = 1;
+    } else if (value.equals("off") || value.equals("false")) {
+      val = 0;
+    } else {
+      val = value.toInt();
+    }
+    if (!_console_ensureValue(val, 0, 1)) return false;
+    configBtBeaconRssiAutoTune = val == 1;
   } else if (key.equals("delay_warn")) {
     uint32_t val = value.toInt();
     if (!_console_ensureValue(val, 1000, 3600000)) return false;

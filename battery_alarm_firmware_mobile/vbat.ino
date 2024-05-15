@@ -42,6 +42,14 @@ float vbat_volt() {
   return _vbat_volt;
 }
 
+float vbat_voltLp() {
+  return _vbat_voltLp;
+}
+
+float vbat_voltDelta() {
+  return _vbat_voltDelta;
+}
+
 void vbat_debug() {
   _vbat_debug = true;
 }

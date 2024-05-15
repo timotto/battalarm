@@ -19,7 +19,7 @@ float configVbatTuneF = 1.0;
 float configVbatLpF = 0.90;
 String configBtBeaconAddr = "";
 float configBtBeaconRssiInGarage = 0;
-float configBtBeaconRssiNearGarage = 0;
+bool configBtBeaconRssiAutoTune = true;
 float configVbatChargeVoltage = 26;
 float configVbatChargeDeltaThreshold = 0.1;
 
