@@ -64,4 +64,6 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+    implementation "com.polidea.rxandroidble2:rxandroidble:1.16.0"
+}
