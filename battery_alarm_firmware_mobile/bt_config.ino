@@ -62,7 +62,7 @@ class BtConfigCharacteristic : public BLECharacteristicCallbacks {
     } else if (pChr == _bt_chr_config_vbatLpF && _bt_parse_chr_float(pChr, &floatVal, CONFIG_VBAT_LPF_MIN, CONFIG_VBAT_LPF_MAX)) {
       configVbatLpF = floatVal;
     } else if (pChr == _bt_chr_config_vbatChargeT && _bt_parse_chr_float(pChr, &floatVal, CONFIG_VBAT_CHARGE_T_MIN, CONFIG_VBAT_CHARGE_T_MAX)) {
-      configVbatLpF = floatVal;
+      configVbatChargeVoltage = floatVal;
     } else if (pChr == _bt_chr_config_vbatDeltaT && _bt_parse_chr_float(pChr, &floatVal, CONFIG_VBAT_DELTA_T_MIN, CONFIG_VBAT_DELTA_T_MAX)) {
       configVbatChargeDeltaThreshold = floatVal;
     } else if (pChr == _bt_chr_config_btBeacon && _bt_parse_chr_string(pChr, &strVal)) {
