@@ -4,18 +4,25 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:provider/provider.dart';
 
 class BluetoothGuardWidget extends StatelessWidget {
-  const BluetoothGuardWidget({super.key, required this.builder});
+  BluetoothGuardWidget({super.key, required this.builder});
 
+  final _ble = FlutterReactiveBle();
   final Widget Function(BuildContext context) builder;
 
-  @override
-  Widget build(BuildContext context) => Consumer<BleStatus?>(builder: _builder);
+  Widget _builder(BuildContext context, AsyncSnapshot<BleStatus> snapshot) {
+    final status = snapshot.data;
 
-  Widget _builder(BuildContext context, BleStatus? status, Widget? _) {
     if (status != BleStatus.ready) {
       return BluetoothOffWidget(state: status);
     }
 
     return builder(context);
   }
+
+  @override
+  Widget build(BuildContext context) => StreamBuilder(
+        stream: _ble.statusStream,
+        initialData: _ble.status,
+        builder: _builder,
+      );
 }
