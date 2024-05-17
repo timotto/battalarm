@@ -1,7 +1,5 @@
 import 'package:battery_alarm_app/bt/bt_guard_widget.dart';
-import 'package:battery_alarm_app/bt/device_scanner_widget.dart';
 import 'package:battery_alarm_app/device_client/device_client.dart';
-import 'package:battery_alarm_app/device_control.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:provider/provider.dart';
@@ -44,12 +42,13 @@ class _ConnectionStatusWidget extends StatelessWidget {
       return Text(_connectionStateAsText(update.requireData.connectionState));
     }
 
-    return const Text('...');
+    return Text(_connectionStateAsText(null));
   }
 }
 
-String _connectionStateAsText(DeviceConnectionState state) {
+String _connectionStateAsText(DeviceConnectionState? state) {
   switch (state) {
+    case null:
     case DeviceConnectionState.connecting:
       return 'Verbinde...';
 
