@@ -1,27 +1,29 @@
 import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:battery_alarm_app/model/status.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class DeviceStatusWidget extends StatelessWidget {
-  const DeviceStatusWidget({super.key});
+  const DeviceStatusWidget({
+    super.key,
+    required this.deviceClient,
+  });
+
+  final DeviceClient deviceClient;
 
   @override
-  Widget build(BuildContext context) => Consumer<DeviceClient>(
-        builder: (context, deviceClient, _) => StreamBuilder<DeviceStatus>(
-          stream: deviceClient.statusService.deviceStatus,
-          initialData: deviceClient.statusService.deviceStatusSnapshot,
-          builder: (context, status) => ListView(
-            children: [
-              _InGarageWidget(value: status.data?.inGarage),
-              _ChargingWidget(value: status.data?.charging),
-              _VBatWidget(value: status.data?.vbat),
-              _VBatDeltaWidget(value: status.data?.vbatDelta),
-              _RssiWidget(value: _lowRssiToNoValue(status.data?.rssi)),
-            ],
-          ),
-        ),
-      );
+  Widget build(BuildContext context) => StreamBuilder<DeviceStatus>(
+    stream: deviceClient.statusService.deviceStatus,
+    initialData: deviceClient.statusService.deviceStatusSnapshot,
+    builder: (context, status) => ListView(
+      children: [
+        _InGarageWidget(value: status.data?.inGarage),
+        _ChargingWidget(value: status.data?.charging),
+        _VBatWidget(value: status.data?.vbat),
+        _VBatDeltaWidget(value: status.data?.vbatDelta),
+        _RssiWidget(value: _lowRssiToNoValue(status.data?.rssi)),
+      ],
+    ),
+  );
 }
 
 final _inGarageTriState = _TriStateBool(

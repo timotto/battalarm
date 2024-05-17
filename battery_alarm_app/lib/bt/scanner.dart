@@ -4,20 +4,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
 class BleScanner {
-  BleScanner({
-    required FlutterReactiveBle ble,
-  }) : _ble = ble;
+  static final BleScanner _sharedInstance = BleScanner._();
 
-  final FlutterReactiveBle _ble;
+  factory BleScanner() => _sharedInstance;
+
+  BleScanner._();
+
+  final _ble = FlutterReactiveBle();
 
   final StreamController<BleScannerState> _stateStreamController =
       StreamController();
+
+  BleScannerState _stateSnapshot =
+      const BleScannerState(discoveredDevices: [], scanIsInProgress: false);
 
   final _devices = <DiscoveredDevice>[];
 
   StreamSubscription? _subscription;
 
   Stream<BleScannerState> get state => _stateStreamController.stream;
+
+  BleScannerState get stateSnapshot => _stateSnapshot;
 
   Future<void> dispose() async {
     await _stateStreamController.close();
@@ -46,12 +53,12 @@ class BleScanner {
   }
 
   void _pushState() {
-    _stateStreamController.add(
-      BleScannerState(
-        discoveredDevices: _devices,
-        scanIsInProgress: _subscription != null,
-      ),
+    final state = BleScannerState(
+      discoveredDevices: _devices,
+      scanIsInProgress: _subscription != null,
     );
+    _stateSnapshot = state;
+    _stateStreamController.add(state);
   }
 }
 

@@ -2,16 +2,20 @@ import 'package:battery_alarm_app/bt/bt_guard_widget.dart';
 import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
-import 'package:provider/provider.dart';
 
 class ConnectWidget extends StatelessWidget {
-  const ConnectWidget({super.key});
+  const ConnectWidget({
+    super.key,
+    required this.deviceClient,
+  });
+
+  final DeviceClient deviceClient;
 
   @override
   Widget build(BuildContext context) => BluetoothGuardWidget(
-      builder: (_) => Consumer<DeviceClient>(builder: _builder));
+      builder: _builder);
 
-  Widget _builder(BuildContext context, DeviceClient deviceClient, Widget? _) {
+  Widget _builder(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Battalarm'),

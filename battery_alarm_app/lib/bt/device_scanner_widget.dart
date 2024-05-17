@@ -3,36 +3,39 @@ import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:battery_alarm_app/model/bt_uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
-import 'package:provider/provider.dart';
 
 class DeviceScannerWidget extends StatelessWidget {
-  const DeviceScannerWidget({super.key});
+  DeviceScannerWidget({
+    super.key,
+    required this.deviceClient,
+  });
+
+  final scanner = BleScanner();
+  final DeviceClient deviceClient;
 
   @override
-  Widget build(BuildContext context) =>
-      Consumer3<BleScanner, BleScannerState?, DeviceClient>(
-          builder: (context, scanner, scannerState, deviceClient, _) =>
-              _DeviceScanWidget(
-                  deviceClient: deviceClient,
-                  bleScanner: scanner,
-                  bleScannerState: scannerState ??
-                      const BleScannerState(
-                        discoveredDevices: [],
-                        scanIsInProgress: false,
-                      )));
+  Widget build(BuildContext context) => StreamBuilder(
+        stream: scanner.state,
+        initialData: scanner.stateSnapshot,
+        builder: (context, scannerState) => _DeviceScanWidget(
+          bleScanner: scanner,
+          deviceClient: deviceClient,
+          scannerState: scannerState,
+        ),
+      );
 }
 
 class _DeviceScanWidget extends StatefulWidget {
   const _DeviceScanWidget({
     super.key,
     required this.bleScanner,
-    required this.bleScannerState,
     required this.deviceClient,
+    required this.scannerState,
   });
 
   final BleScanner bleScanner;
-  final BleScannerState bleScannerState;
   final DeviceClient deviceClient;
+  final AsyncSnapshot<BleScannerState> scannerState;
 
   @override
   State<StatefulWidget> createState() => _DeviceScanState();
@@ -51,6 +54,14 @@ class _DeviceScanState extends State<_DeviceScanWidget> {
     super.dispose();
   }
 
+  BleScannerState _scannerState() {
+    return widget.scannerState.data ??
+        const BleScannerState(
+          discoveredDevices: [],
+          scanIsInProgress: false,
+        );
+  }
+
   Future<void> _startScan() async {
     await widget.deviceClient.disconnect();
     widget.bleScanner.startScan([uuidStatusService, uuidConfigService]);
@@ -59,7 +70,7 @@ class _DeviceScanState extends State<_DeviceScanWidget> {
   Future<void> _stopScan() async => widget.bleScanner.stopScan();
 
   Widget _fab() {
-    if (widget.bleScannerState.scanIsInProgress) {
+    if (_scannerState().scanIsInProgress) {
       return FloatingActionButton(
         onPressed: _stopScan,
         backgroundColor: Colors.red,
@@ -73,12 +84,13 @@ class _DeviceScanState extends State<_DeviceScanWidget> {
     );
   }
 
-  Widget _resultList(BuildContext context, List<DiscoveredDevice> results, bool scanning) {
+  Widget _resultList(
+      BuildContext context, List<DiscoveredDevice> results, bool scanning) {
     if (results.isEmpty) {
       return Center(
-        child: Text(
-          scanning ? 'Suche nach Battalarm Adaptern...' : 'Keine Adapter gefunden'
-        ),
+        child: Text(scanning
+            ? 'Suche nach Battalarm Adaptern...'
+            : 'Keine Adapter gefunden'),
       );
     }
     final cpy = List<DiscoveredDevice>.from(results);
@@ -106,10 +118,11 @@ class _DeviceScanState extends State<_DeviceScanWidget> {
           onRefresh: _startScan,
           child: Column(
             children: [
-              _paddedText('Wenn der Adapter nicht gefunden wird, dann halte den Knopf am Adapter für ca. 5 Sekunden lang gedrückt, bis ein tiefer Piepton kommt.'),
+              _paddedText(
+                  'Wenn der Adapter nicht gefunden wird, dann halte den Knopf am Adapter für ca. 5 Sekunden lang gedrückt, bis ein tiefer Piepton kommt.'),
               Expanded(
-                child: _resultList(
-                    context, widget.bleScannerState.discoveredDevices, widget.bleScannerState.scanIsInProgress),
+                child: _resultList(context, _scannerState().discoveredDevices,
+                    _scannerState().scanIsInProgress),
               ),
             ],
           ),
@@ -124,7 +137,11 @@ Widget _paddedText(String text) => Padding(
     );
 
 class _ScanResultTile extends StatelessWidget {
-  const _ScanResultTile({super.key, required this.result, required this.onTap});
+  const _ScanResultTile({
+    super.key,
+    required this.result,
+    required this.onTap,
+  });
 
   final DiscoveredDevice result;
   final void Function() onTap;
