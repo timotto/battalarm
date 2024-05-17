@@ -16,7 +16,10 @@ BLECharacteristic *_bt_chr_status_vbat;
 BLECharacteristic *_bt_chr_status_vbat_delta;
 BLECharacteristic *_bt_chr_status_rssi;
 
-#define BT_CREATE_CHR_RDNTFY(p, c, u) {c=p->createCharacteristic(u, BLECharacteristic::PROPERTY_READ|BLECharacteristic::PROPERTY_NOTIFY);c->addDescriptor(new BLE2902());}
+#define BT_CREATE_CHR_RDNTFY(p, c, u) { \
+  c = p->createCharacteristic(u, BLECharacteristic::PROPERTY_READ|BLECharacteristic::PROPERTY_NOTIFY); \
+  c->addDescriptor(new BLE2902()); \
+}
 
 void _bt_setup_chr_status(BLEServer *pServer) {
   BLEService *pService = pServer->createService(BLEUUID(BT_SERVICE_STATUS_UUID), 20);
