@@ -1,5 +1,4 @@
 import 'package:battery_alarm_app/bt/scanner.dart';
-import 'package:battery_alarm_app/connect_widget.dart';
 import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:battery_alarm_app/model/bt_uuid.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +73,14 @@ class _DeviceScanState extends State<_DeviceScanWidget> {
     );
   }
 
-  Widget _resultList(BuildContext context, List<DiscoveredDevice> results) {
+  Widget _resultList(BuildContext context, List<DiscoveredDevice> results, bool scanning) {
+    if (results.isEmpty) {
+      return Center(
+        child: Text(
+          scanning ? 'Suche nach Battalarm Adaptern...' : 'Keine Adapter gefunden'
+        ),
+      );
+    }
     final cpy = List<DiscoveredDevice>.from(results);
     cpy.sort(_scanResultSorter);
     return ListView(
@@ -84,7 +90,6 @@ class _DeviceScanState extends State<_DeviceScanWidget> {
               result: result,
               onTap: () {
                 widget.deviceClient.connect(result.id);
-                // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ConnectWidget()));
               },
             ),
           )
@@ -95,15 +100,28 @@ class _DeviceScanState extends State<_DeviceScanWidget> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: const Text('Bluetooth scan'),
+          title: const Text('Battalarm'),
         ),
         body: RefreshIndicator(
           onRefresh: _startScan,
-          child: _resultList(context, widget.bleScannerState.discoveredDevices),
+          child: Column(
+            children: [
+              _paddedText('Wenn der Adapter nicht gefunden wird, dann halte den Knopf am Adapter für ca. 5 Sekunden lang gedrückt, bis ein tiefer Piepton kommt.'),
+              Expanded(
+                child: _resultList(
+                    context, widget.bleScannerState.discoveredDevices, widget.bleScannerState.scanIsInProgress),
+              ),
+            ],
+          ),
         ),
         floatingActionButton: _fab(),
       );
 }
+
+Widget _paddedText(String text) => Padding(
+      padding: const EdgeInsets.all(16),
+      child: Text(text),
+    );
 
 class _ScanResultTile extends StatelessWidget {
   const _ScanResultTile({super.key, required this.result, required this.onTap});
