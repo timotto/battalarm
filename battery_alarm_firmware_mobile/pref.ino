@@ -19,6 +19,7 @@ const char* _pref_key_vbat_tune_f = "vbtnf";
 const char* _pref_key_vbat_lp_f = "vblpf";
 const char* _pref_key_bt_beacon_addr = "btbcadr";
 const char* _pref_key_bt_beacon_rssi_in_garage = "btrsing";
+const char* _pref_key_bt_beacon_rssi_auto_tune = "btrsatn";
 const char* _pref_key_vbat_charge_voltage = "vbchv";
 const char* _pref_key_vbat_charge_delta_threshold = "vbchdt";
 const char* _pref_key_buzzer_alerts = "bzalrt";
@@ -38,6 +39,7 @@ void setup_pref() {
   configVbatLpF = preferences.getFloat(_pref_key_vbat_lp_f, configVbatLpF);
   configBtBeaconAddr = preferences.getString(_pref_key_bt_beacon_addr, "");
   configBtBeaconRssiInGarage = preferences.getFloat(_pref_key_bt_beacon_rssi_in_garage, 0);
+  configBtBeaconRssiAutoTune = preferences.getBool(_pref_key_bt_beacon_rssi_auto_tune, configBtBeaconRssiAutoTune);
   configVbatChargeVoltage = preferences.getFloat(_pref_key_vbat_charge_voltage, configVbatChargeVoltage);
   configVbatChargeDeltaThreshold = preferences.getFloat(_pref_key_vbat_charge_delta_threshold, configVbatChargeDeltaThreshold);
   configBuzzerAlerts = preferences.getUInt(_pref_key_buzzer_alerts, configBuzzerAlerts);
@@ -60,6 +62,7 @@ void loop_pref(const uint32_t now) {
   preferences.putFloat(_pref_key_vbat_lp_f, configVbatLpF);
   preferences.putString(_pref_key_bt_beacon_addr, configBtBeaconAddr);
   preferences.putFloat(_pref_key_bt_beacon_rssi_in_garage, configBtBeaconRssiInGarage);
+  preferences.putBool(_pref_key_bt_beacon_rssi_auto_tune, configBtBeaconRssiAutoTune);
   preferences.putFloat(_pref_key_vbat_charge_voltage, configVbatChargeVoltage);
   preferences.putFloat(_pref_key_vbat_charge_delta_threshold, configVbatChargeDeltaThreshold);
   preferences.putUInt(_pref_key_buzzer_alerts, configBuzzerAlerts);
