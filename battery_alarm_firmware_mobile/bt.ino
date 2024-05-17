@@ -19,6 +19,7 @@ bool _bt_scanActive = false;
 uint32_t _bt_beaconLastSeen = 0;
 int _bt_beaconRssi = -100;
 float _bt_beaconRssiLp = -100;
+bool _bt_beaconInRange = false;
 bool _bt_isInGarage = false;
 
 bool _bt_debug = false;
@@ -73,6 +74,10 @@ bool bt_isInGarage() {
 }
 
 float bt_rssiLp() {
+  if (!_bt_beaconInRange) {
+    return -100;
+  }
+
   return _bt_beaconRssiLp;
 }
 
@@ -286,8 +291,10 @@ void _bt_loop_compute(const uint32_t now) {
 
   bool state;
   if ((millis() - _bt_beaconLastSeen) > 2 * BT_SCAN_INTERVAL) {
+    _bt_beaconInRange = false;
     state = false;
   } else {
+    _bt_beaconInRange = true;
     float delta = _bt_beaconRssiLp - configBtBeaconRssiInGarage;
     state = delta >= 0;
     if (delta > 10) _bt_maybeIncreaseRssi(now);
@@ -321,7 +328,7 @@ void _bt_loop_chr(const uint32_t now) {
 
 void _bt_loop_toggle(const uint32_t now) {
   if (_bt_advertisingEnabled) {
-    if ((now - _bt_advertisingEnabledSince) > 60000) {
+    if ((now - _bt_advertisingEnabledSince) > BT_VISIBILITY_TIMEOUT) {
       bt_toggleVisibility();
     }
   }
