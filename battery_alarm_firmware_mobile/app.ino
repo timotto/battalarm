@@ -158,11 +158,7 @@ void _app_loop_bt(const uint32_t now) {
   if (_app_buttonPressedUltraLong) ultraLongPress = true;
 
   if (_app_buttonReleased) {
-    if (ultraLongPress && btVisible) {
-      btAuth = bt_toggleAuthentication();
-      buzzer_setBtPairing(btAuth);
-      led_setBtPairing(btAuth);
-    } else if (longPress) {
+    if (longPress) {
       btVisible = bt_toggleVisibility();
       buzzer_setBtVisible(btVisible);
       led_setBtVisible(btVisible);
@@ -176,12 +172,6 @@ void _app_loop_bt(const uint32_t now) {
     btVisible = false;
     buzzer_setBtVisible(btAuth);
     led_setBtVisible(btAuth);
-  }
-
-  if (btAuth && !bt_isAuthentication()) {
-    btAuth = false;
-    buzzer_setBtPairing(btVisible);
-    led_setBtPairing(btVisible);
   }
 }
 

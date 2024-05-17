@@ -7,12 +7,9 @@
 
 BLEScan *pBLEScan;
 BLEServer *pServer;
-BLECharacteristic *pCharacteristicConfig;
 
-bool _bt_advertisingEnabled = false;
+bool _bt_advertisingEnabled = true;
 uint32_t _bt_advertisingEnabledSince = 0;
-bool _bt_allowPairing = false;
-uint32_t _bt_allowPairingSince = 0;
 
 bool _bt_scanPrint = false;
 bool _bt_scanActive = false;
@@ -21,6 +18,8 @@ int _bt_beaconRssi = -100;
 float _bt_beaconRssiLp = -100;
 bool _bt_beaconInRange = false;
 bool _bt_isInGarage = false;
+
+uint32_t _bt_loop_millis = 0;
 
 bool _bt_debug = false;
 
@@ -38,22 +37,11 @@ void bt_status() {
   );
 }
 
-bool bt_toggleAuthentication() {
-  _bt_allowPairing = !_bt_allowPairing;
-  Serial.printf("bt: allow auth: %s\n", _bt_allowPairing ? "true" : "false");
-  if (_bt_allowPairing) _bt_allowPairingSince = millis();
-  return _bt_allowPairing;
-}
-
 bool bt_toggleVisibility() {
   _bt_advertisingEnabled = !_bt_advertisingEnabled;
   Serial.printf("bt: visible: %s\n", _bt_advertisingEnabled ? "true" : "false");
   if (_bt_advertisingEnabled) _bt_advertisingEnabledSince = millis();
   return _bt_advertisingEnabled;
-}
-
-bool bt_isAuthentication() {
-  return _bt_allowPairing;
 }
 
 bool bt_isVisible() {
@@ -154,33 +142,6 @@ void bt_debugOff() {
 bool _bt_deviceConnected = false;
 bool _bt_advertisingActive = false;
 
-class BtSecurityCallbacks : public BLESecurityCallbacks {
-  bool onSecurityRequest() {
-    return _bt_allowPairing;
-  }
-
-  bool onConfirmPIN(uint32_t pin) {
-    return _bt_allowPairing;
-  }
-
-	uint32_t onPassKeyRequest(){
-		return 123456;
-	}
-
-	void onPassKeyNotify(uint32_t pass_key){
-        // ESP_LOGI(LOG_TAG, "On passkey Notify number:%d", pass_key);
-	}
-
-	void onAuthenticationComplete(esp_ble_auth_cmpl_t cmpl){
-		// ESP_LOGI(LOG_TAG, "Starting BLE work!");
-		if(cmpl.success){
-			uint16_t length;
-			esp_ble_gap_get_whitelist_size(&length);
-			// ESP_LOGD(LOG_TAG, "size: %d", length);
-		}
-	}
-};
-
 class BtServerCallbacks : public BLEServerCallbacks {
   void onConnect(BLEServer* pServer) {
     _bt_deviceConnected = true;
@@ -222,12 +183,6 @@ class BtScanCallbacks : public BLEAdvertisedDeviceCallbacks {
 void setup_bt() {
   BLEDevice::init("Battalarm");
 
-  BLEDevice::setSecurityCallbacks(new BtSecurityCallbacks());
-  BLEDevice::setEncryptionLevel(ESP_BLE_SEC_ENCRYPT);
-
-  BLESecurity *btSec = new BLESecurity();
-  btSec->setCapability(ESP_IO_CAP_IO);
-
   pServer = BLEDevice::createServer();
   pServer->setCallbacks(new BtServerCallbacks());
 
@@ -262,6 +217,7 @@ void _bt_setup_scan() {
 void _bt_onScanResults(BLEScanResults results);
 
 void loop_bt(const uint32_t now) {
+  _bt_loop_millis = now;
   _bt_loop_scan(now);
   _bt_loop_compute(now);
   _bt_loop_chr(now);
@@ -290,7 +246,9 @@ void _bt_loop_compute(const uint32_t now) {
   static uint32_t last_state_change = 0;
 
   bool state;
-  if ((millis() - _bt_beaconLastSeen) > 2 * BT_SCAN_INTERVAL) {
+  const uint32_t dtLastSeen = now - _bt_beaconLastSeen;
+  const uint32_t lastSeenTimeout = 2 * BT_SCAN_INTERVAL;
+  if (dtLastSeen > lastSeenTimeout) {
     _bt_beaconInRange = false;
     state = false;
   } else {
@@ -332,12 +290,6 @@ void _bt_loop_toggle(const uint32_t now) {
       bt_toggleVisibility();
     }
   }
-
-  if (_bt_allowPairing) {
-    if ((now - _bt_allowPairingSince) > 60000) {
-      bt_toggleAuthentication();
-    }
-  }
 }
 
 void _bt_loop_debug(const uint32_t now) {
@@ -350,12 +302,14 @@ void _bt_loop_debug(const uint32_t now) {
 
   Serial.printf(
     "bt: beacon: in_garage=%s rssi=%d rssi_lp=%.0f last seen=%lu\n", 
-    _bt_isInGarage ? "true" : "false", _bt_beaconRssi, _bt_beaconRssiLp, millis() - _bt_beaconLastSeen);
+    _bt_isInGarage ? "true" : "false", _bt_beaconRssi, _bt_beaconRssiLp, now - _bt_beaconLastSeen);
 }
 
 void _bt_onBeaconRssi(int value) {
   static bool first = true;
-  _bt_beaconLastSeen = millis();
+  // on ESP32C3 the millis() call in the BleScanCallback seems to be slightly in the past
+  // _bt_beaconLastSeen = millis();
+  _bt_beaconLastSeen = _bt_loop_millis;
   _bt_beaconRssi = value;
 
   float f = value;
