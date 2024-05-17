@@ -11,6 +11,10 @@ class BluetoothGuardWidget extends StatelessWidget {
   Widget _builder(BuildContext context, AsyncSnapshot<BleStatus> snapshot) {
     final status = snapshot.data;
 
+    if (status == BleStatus.unknown) {
+      return const Center(child: Text(''));
+    }
+
     if (status != BleStatus.ready) {
       return BluetoothOffWidget(state: status);
     }
