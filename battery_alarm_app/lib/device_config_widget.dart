@@ -14,132 +14,135 @@ class DeviceConfigWidget extends StatelessWidget {
   final DeviceClient deviceClient;
 
   @override
-  Widget build(BuildContext context) =>
-      StreamBuilder<DeviceConfig>(
+  Widget build(BuildContext context) => StreamBuilder<DeviceConfig>(
         stream: deviceClient.configService.deviceConfig,
         initialData: deviceClient.configService.deviceConfigSnapshot,
-        builder: (context, config) =>
-            ListView(
-              children: [
-                DurationConfigWidget(
-                  title: 'Verzögerung bis zur Warnung',
-                  icon: Icons.timer,
-                  min: const Duration(seconds: 30),
-                  max: const Duration(minutes: 3),
-                  value: config.data?.delayWarn,
-                  onChange: _onChanged(
-                    deviceClient,
-                    config.data,
-                        (config, value) => config.delayWarn = value,
-                  ),
+        builder: (context, config) => RefreshIndicator(
+          onRefresh: deviceClient.configService.readAll,
+          child: ListView(
+            children: [
+              DurationConfigWidget(
+                title: 'Verzögerung bis zur Warnung',
+                icon: Icons.timer,
+                min: const Duration(seconds: 30),
+                max: const Duration(minutes: 3),
+                value: config.data?.delayWarn,
+                onChange: _onChanged(
+                  deviceClient,
+                  config.data,
+                  (config, value) => config.delayWarn = value,
                 ),
-                DurationConfigWidget(
-                  title: 'Verzögerung bis zum Alarm',
-                  icon: Icons.alarm,
-                  min: const Duration(seconds: 30),
-                  max: const Duration(minutes: 3),
-                  value: config.data?.delayAlarm,
-                  onChange: _onChanged(
-                    deviceClient,
-                    config.data,
-                        (config, value) => config.delayAlarm = value,
-                  ),
+              ),
+              DurationConfigWidget(
+                title: 'Verzögerung bis zum Alarm',
+                icon: Icons.alarm,
+                min: const Duration(seconds: 30),
+                max: const Duration(minutes: 3),
+                value: config.data?.delayAlarm,
+                onChange: _onChanged(
+                  deviceClient,
+                  config.data,
+                  (config, value) => config.delayAlarm = value,
                 ),
-                DurationConfigWidget(
-                  title: 'Snooze time',
-                  icon: Icons.bed,
-                  min: const Duration(seconds: 30),
-                  max: const Duration(minutes: 3),
-                  value: config.data?.snoozeTime,
-                  onChange: _onChanged(
-                    deviceClient,
-                    config.data,
-                        (config, value) => config.snoozeTime = value,
-                  ),
+              ),
+              DurationConfigWidget(
+                title: 'Snooze time',
+                icon: Icons.bed,
+                min: const Duration(seconds: 30),
+                max: const Duration(minutes: 3),
+                value: config.data?.snoozeTime,
+                onChange: _onChanged(
+                  deviceClient,
+                  config.data,
+                  (config, value) => config.snoozeTime = value,
                 ),
-                DoubleConfigWidget(
-                  title: 'Batteriespannung Tiefpass Faktor',
-                  icon: Icons.battery_4_bar,
-                  min: 0.5,
-                  max: 0.9999,
-                  value: config.data?.vbatLpF,
-                  digits: 4,
-                  unit: 'V',
-                  onChange: _onChanged(
-                    deviceClient,
-                    config.data,
-                        (config, value) => config.vbatLpF = value,
-                  ),
+              ),
+              DoubleConfigWidget(
+                title: 'Batteriespannung Tiefpass Faktor',
+                icon: Icons.battery_4_bar,
+                min: 0.5,
+                max: 0.9999,
+                value: config.data?.vbatLpF,
+                digits: 4,
+                unit: 'V',
+                onChange: _onChanged(
+                  deviceClient,
+                  config.data,
+                  (config, value) => config.vbatLpF = value,
                 ),
-                DoubleConfigWidget(
-                  title: 'Batterieladegerät Endspannung',
-                  icon: Icons.battery_charging_full,
-                  min: 12,
-                  max: 30,
-                  value: config.data?.vbatChargeThreshold,
-                  digits: 1,
-                  unit: 'V',
-                  onChange: _onChanged(
-                    deviceClient,
-                    config.data,
-                        (config, value) => config.vbatChargeThreshold = value,
-                  ),
+              ),
+              DoubleConfigWidget(
+                title: 'Batterieladegerät Endspannung',
+                icon: Icons.battery_charging_full,
+                min: 12,
+                max: 30,
+                value: config.data?.vbatChargeThreshold,
+                digits: 1,
+                unit: 'V',
+                onChange: _onChanged(
+                  deviceClient,
+                  config.data,
+                  (config, value) => config.vbatChargeThreshold = value,
                 ),
-                DoubleConfigWidget(
-                  title: 'Batterieladegerät Geschwindigkeit',
-                  icon: Icons.battery_charging_full,
-                  min: 0.001,
-                  max: 1,
-                  value: config.data?.vbatDeltaThreshold,
-                  digits: 1,
-                  unit: 'V/t',
-                  onChange: _onChanged(
-                    deviceClient,
-                    config.data,
-                        (config, value) => config.vbatDeltaThreshold = value,
-                  ),
+              ),
+              DoubleConfigWidget(
+                title: 'Batterieladegerät Geschwindigkeit',
+                icon: Icons.battery_charging_full,
+                min: 0.001,
+                max: 1,
+                value: config.data?.vbatDeltaThreshold,
+                digits: 1,
+                unit: 'V/t',
+                onChange: _onChanged(
+                  deviceClient,
+                  config.data,
+                  (config, value) => config.vbatDeltaThreshold = value,
                 ),
-                DoubleConfigWidget(
-                  title: 'Basisstation Signalstärke in Garage',
-                  icon: Icons.wifi,
-                  min: -80,
-                  max: 0,
-                  digits: 0,
-                  value: config.data?.btRssiThreshold,
-                  unit: 'dB',
-                  onChange: _onChanged(
-                    deviceClient,
-                    config.data,
-                        (config, value) => config.btRssiThreshold = value,
-                  ),
+              ),
+              DoubleConfigWidget(
+                title: 'Basisstation Signalstärke in Garage',
+                icon: Icons.wifi,
+                min: -80,
+                max: 0,
+                digits: 0,
+                value: config.data?.btRssiThreshold,
+                unit: 'dB',
+                onChange: _onChanged(
+                  deviceClient,
+                  config.data,
+                  (config, value) => config.btRssiThreshold = value,
                 ),
-                BoolConfigWidget(
-                  title: 'Signalstärke automatisch anpassen',
-                  value: config.data?.btRssiAutoTune,
-                  onChanged: _onChanged(
-                    deviceClient,
-                    config.data,
-                        (config, value) => config.btRssiAutoTune = value,
-                  ),
+              ),
+              BoolConfigWidget(
+                title: 'Signalstärke automatisch anpassen',
+                value: config.data?.btRssiAutoTune,
+                onChanged: _onChanged(
+                  deviceClient,
+                  config.data,
+                  (config, value) => config.btRssiAutoTune = value,
                 ),
-                const ListTile(
-                  title: Text('Akkustische Benachrichtigung bei:'),
+              ),
+              const ListTile(
+                title: Text('Akkustische Benachrichtigung bei:'),
+              ),
+              ..._buzzerWidgets(
+                values: config.data?.buzzerAlerts,
+                onChanged: _onChanged(
+                  deviceClient,
+                  config.data,
+                  (config, value) => config.buzzerAlerts = value,
                 ),
-                ..._buzzerWidgets(
-                  values: config.data?.buzzerAlerts,
-                  onChanged: _onChanged(
-                    deviceClient,
-                    config.data,
-                        (config, value) => config.buzzerAlerts = value,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
+          ),
+        ),
       );
 
-  void Function(T?) _onChanged<T>(DeviceClient deviceClient,
-      DeviceConfig? config,
-      void Function(DeviceConfig, T?) updater,) {
+  void Function(T?) _onChanged<T>(
+    DeviceClient deviceClient,
+    DeviceConfig? config,
+    void Function(DeviceConfig, T?) updater,
+  ) {
     return (value) {
       final cpy = config?.clone() ?? DeviceConfig();
       updater(cpy, value);
@@ -196,7 +199,7 @@ Widget _buzzerConfigWidget({
     title: title,
     onChanged: (value) {
       final cpy =
-      Map<BuzzerAlerts, bool>.from(values ?? <BuzzerAlerts, bool>{});
+          Map<BuzzerAlerts, bool>.from(values ?? <BuzzerAlerts, bool>{});
       cpy[key] = value ?? false;
       onChanged(cpy);
     },

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:battery_alarm_app/util/busy.dart';
 import 'package:battery_alarm_app/model/bt_uuid.dart';
 import 'package:battery_alarm_app/model/status.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
@@ -16,6 +17,8 @@ final Uuid _uuidChrBeaconRssi =
     Uuid.parse('106145DE-E2DA-435D-A093-C8C5CA870121');
 
 class StatusService {
+  StatusService(this.busy);
+
   final _ble = FlutterReactiveBle();
 
   DeviceStatus _state = DeviceStatus();
@@ -25,13 +28,15 @@ class StatusService {
 
   DeviceStatus get deviceStatusSnapshot => _state;
 
+  final BusyRunner busy;
+
   QualifiedCharacteristic? _chrInGarage;
   QualifiedCharacteristic? _chrCharging;
   QualifiedCharacteristic? _chrVbatVolt;
   QualifiedCharacteristic? _chrVbatDelta;
   QualifiedCharacteristic? _chrBeaconRssi;
 
-  void onDeviceConnected(String deviceId) async {
+  Future<void> onDeviceConnected(String deviceId) async {
     _chrInGarage = QualifiedCharacteristic(
         deviceId: deviceId,
         serviceId: uuidStatusService,
@@ -53,16 +58,18 @@ class StatusService {
         serviceId: uuidStatusService,
         characteristicId: _uuidChrBeaconRssi);
 
-    await _subscribeAndRead(
-        _chrInGarage!, (event) => _onInGarage(_parseChrBool(event)));
-    await _subscribeAndRead(
-        _chrCharging!, (event) => _onCharging(_parseChrBool(event)));
-    await _subscribeAndRead(
-        _chrVbatVolt!, (event) => _onVbat(_parseChrDouble(event)));
-    await _subscribeAndRead(
-        _chrVbatDelta!, (event) => _onVbatDelta(_parseChrDouble(event)));
-    await _subscribeAndRead(
-        _chrBeaconRssi!, (event) => _onRssi(_parseChrDouble(event)));
+    await busy.run(() async {
+      await _subscribeAndRead(
+          _chrInGarage!, (event) => _onInGarage(_parseChrBool(event)));
+      await _subscribeAndRead(
+          _chrCharging!, (event) => _onCharging(_parseChrBool(event)));
+      await _subscribeAndRead(
+          _chrVbatVolt!, (event) => _onVbat(_parseChrDouble(event)));
+      await _subscribeAndRead(
+          _chrVbatDelta!, (event) => _onVbatDelta(_parseChrDouble(event)));
+      await _subscribeAndRead(
+          _chrBeaconRssi!, (event) => _onRssi(_parseChrDouble(event)));
+    });
   }
 
   void onDeviceDisconnected() {

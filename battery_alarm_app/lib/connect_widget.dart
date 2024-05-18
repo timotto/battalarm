@@ -1,4 +1,3 @@
-import 'package:battery_alarm_app/bt/bt_guard_widget.dart';
 import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
@@ -12,22 +11,17 @@ class ConnectWidget extends StatelessWidget {
   final DeviceClient deviceClient;
 
   @override
-  Widget build(BuildContext context) => BluetoothGuardWidget(
-      builder: _builder);
-
-  Widget _builder(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Battalarm'),
-      ),
-      body: Center(
-        child: StreamBuilder(
-          stream: deviceClient.connectionStatusUpdate,
-          builder: (_, update) => _ConnectionStatusWidget(update: update),
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: const Text('Battalarm'),
         ),
-      ),
-    );
-  }
+        body: Center(
+          child: StreamBuilder(
+            stream: deviceClient.connectionStatusUpdate,
+            builder: (_, update) => _ConnectionStatusWidget(update: update),
+          ),
+        ),
+      );
 }
 
 class _ConnectionStatusWidget extends StatelessWidget {
@@ -37,16 +31,24 @@ class _ConnectionStatusWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DeviceConnectionState? state;
+
     if (update.hasData) {
       if (update.requireData.failure != null) {
         return Text(
             update.requireData.failure?.message ?? 'Verbindung Fehlgeschlagen');
       }
 
-      return Text(_connectionStateAsText(update.requireData.connectionState));
+      state = update.requireData.connectionState;
     }
 
-    return Text(_connectionStateAsText(null));
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const _ProgressSpinnerWidget(),
+        Text(_connectionStateAsText(state)),
+      ],
+    );
   }
 }
 
@@ -65,4 +67,40 @@ String _connectionStateAsText(DeviceConnectionState? state) {
     case DeviceConnectionState.disconnected:
       return 'Getrennt';
   }
+}
+
+class _ProgressSpinnerWidget extends StatefulWidget {
+  const _ProgressSpinnerWidget({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _ProgressSpinnerState();
+}
+
+class _ProgressSpinnerState extends State<_ProgressSpinnerWidget>
+    with TickerProviderStateMixin {
+  late AnimationController controller;
+
+  @override
+  void initState() {
+    controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    )
+      ..addListener(() => setState(() {}))
+      ..repeat();
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => CircularProgressIndicator(
+        value: controller.value,
+        semanticsLabel: 'Animation indicating activity',
+      );
 }

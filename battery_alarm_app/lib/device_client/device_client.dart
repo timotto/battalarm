@@ -1,13 +1,15 @@
 import 'dart:async';
 
+import 'package:battery_alarm_app/util/busy.dart';
 import 'package:battery_alarm_app/device_client/config_service.dart';
 import 'package:battery_alarm_app/device_client/status_service.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
 class DeviceClient {
+  final _busy = Busy();
   final _ble = FlutterReactiveBle();
-  final StatusService statusService = StatusService();
-  final ConfigService configService = ConfigService();
+  late StatusService statusService = StatusService(_busy);
+  late ConfigService configService = ConfigService(_busy);
 
   final StreamController<ConnectionStateUpdate> _connectionStatusUpdate =
       StreamController.broadcast();
@@ -15,6 +17,8 @@ class DeviceClient {
   StreamSubscription<ConnectionStateUpdate>? _connection;
 
   Stream<ConnectionStateUpdate> get connectionStatusUpdate => _connectionStatusUpdate.stream;
+
+  BusySource get busy => _busy;
 
   Future<void> connect(String address) async {
     await disconnect();
@@ -44,8 +48,8 @@ class DeviceClient {
     }
   }
 
-  void _onConnection(String deviceId) {
-    statusService.onDeviceConnected(deviceId);
-    configService.onDeviceConnected(deviceId);
+  void _onConnection(String deviceId) async {
+    await statusService.onDeviceConnected(deviceId);
+    await configService.onDeviceConnected(deviceId);
   }
 }
