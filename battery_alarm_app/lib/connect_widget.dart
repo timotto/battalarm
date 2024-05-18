@@ -1,4 +1,5 @@
 import 'package:battery_alarm_app/device_client/device_client.dart';
+import 'package:battery_alarm_app/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
@@ -13,7 +14,7 @@ class ConnectWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: const Text('Battalarm'),
+          title: const Text(Texts.appTitle),
         ),
         body: Center(
           child: StreamBuilder(

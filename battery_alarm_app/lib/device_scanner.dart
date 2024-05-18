@@ -1,6 +1,7 @@
 import 'package:battery_alarm_app/bt/scanner.dart';
 import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:battery_alarm_app/model/bt_uuid.dart';
+import 'package:battery_alarm_app/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
@@ -123,7 +124,7 @@ class _DeviceScanState extends State<_DeviceScanWidget> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: const Text('Battalarm'),
+          title: const Text(Texts.appTitle),
         ),
         body: RefreshIndicator(
           onRefresh: _startScan,

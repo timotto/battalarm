@@ -2,6 +2,7 @@ import 'package:battery_alarm_app/about_widget.dart';
 import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:battery_alarm_app/device_config_widget.dart';
 import 'package:battery_alarm_app/device_status_widget.dart';
+import 'package:battery_alarm_app/text.dart';
 import 'package:flutter/material.dart';
 
 class DeviceControlWidget extends StatelessWidget {
@@ -17,7 +18,7 @@ class DeviceControlWidget extends StatelessWidget {
         length: 3,
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('Batterie Alarm'),
+            title: const Text(Texts.appTitle),
           ),
           bottomNavigationBar: const TabBar(
             tabs: [
