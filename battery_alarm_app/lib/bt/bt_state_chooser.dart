@@ -1,5 +1,5 @@
 import 'package:battery_alarm_app/device_client/device_client.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
 class BluetoothStateChooserWidget extends StatelessWidget {
@@ -12,13 +12,17 @@ class BluetoothStateChooserWidget extends StatelessWidget {
   });
 
   final DeviceClient deviceClient;
-  final Widget Function(BuildContext) onDisconnected;
+  final Widget Function(BuildContext, {GenericFailure<ConnectionError>? error}) onDisconnected;
   final Widget Function(BuildContext) onConnecting;
   final Widget Function(BuildContext) onConnected;
 
   Widget _builder(BuildContext context, AsyncSnapshot<ConnectionStateUpdate> snapshot) {
     if (!snapshot.hasData) return onDisconnected(context);
     final update = snapshot.requireData;
+    if (update.failure != null) {
+      return onDisconnected(context, error: update.failure);
+    }
+
     switch (update.connectionState) {
       case DeviceConnectionState.disconnected:
         return onDisconnected(context);

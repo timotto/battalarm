@@ -8,10 +8,12 @@ class DeviceScannerWidget extends StatelessWidget {
   DeviceScannerWidget({
     super.key,
     required this.deviceClient,
+    this.error,
   });
 
   final scanner = BleScanner();
   final DeviceClient deviceClient;
+  final GenericFailure<ConnectionError>? error;
 
   @override
   Widget build(BuildContext context) => StreamBuilder(
@@ -21,6 +23,7 @@ class DeviceScannerWidget extends StatelessWidget {
           bleScanner: scanner,
           deviceClient: deviceClient,
           scannerState: scannerState,
+          error: error,
         ),
       );
 }
@@ -31,11 +34,13 @@ class _DeviceScanWidget extends StatefulWidget {
     required this.bleScanner,
     required this.deviceClient,
     required this.scannerState,
+    this.error,
   });
 
   final BleScanner bleScanner;
   final DeviceClient deviceClient;
   final AsyncSnapshot<BleScannerState> scannerState;
+  final GenericFailure<ConnectionError>? error;
 
   @override
   State<StatefulWidget> createState() => _DeviceScanState();
@@ -46,6 +51,7 @@ class _DeviceScanState extends State<_DeviceScanWidget> {
   void initState() {
     super.initState();
     _startScan();
+    _onError();
   }
 
   @override
@@ -54,13 +60,8 @@ class _DeviceScanState extends State<_DeviceScanWidget> {
     super.dispose();
   }
 
-  BleScannerState _scannerState() {
-    return widget.scannerState.data ??
-        const BleScannerState(
-          discoveredDevices: [],
-          scanIsInProgress: false,
-        );
-  }
+  BleScannerState _scannerState() =>
+      widget.scannerState.data ?? BleScannerState.empty();
 
   Future<void> _startScan() async {
     await widget.deviceClient.disconnect();
@@ -107,6 +108,16 @@ class _DeviceScanState extends State<_DeviceScanWidget> {
           )
           .toList(),
     );
+  }
+
+  void _onError() {
+    if (widget.error == null) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(const SnackBar(
+        content: Text('Die Verbindung wurde unterbrochen.'),
+      ));
+    });
   }
 
   @override

@@ -13,10 +13,9 @@ class BleScanner {
   final _ble = FlutterReactiveBle();
 
   final StreamController<BleScannerState> _stateStreamController =
-      StreamController();
+      StreamController.broadcast();
 
-  BleScannerState _stateSnapshot =
-      const BleScannerState(discoveredDevices: [], scanIsInProgress: false);
+  BleScannerState _stateSnapshot = BleScannerState.empty();
 
   final _devices = <DiscoveredDevice>[];
 
@@ -68,6 +67,11 @@ class BleScannerState {
     required this.discoveredDevices,
     required this.scanIsInProgress,
   });
+
+  static BleScannerState empty() => const BleScannerState(
+        discoveredDevices: [],
+        scanIsInProgress: false,
+      );
 
   final List<DiscoveredDevice> discoveredDevices;
   final bool scanIsInProgress;

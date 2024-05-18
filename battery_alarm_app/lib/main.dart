@@ -1,6 +1,6 @@
 import 'package:battery_alarm_app/bt/bt_guard_widget.dart';
 import 'package:battery_alarm_app/bt/bt_state_chooser.dart';
-import 'package:battery_alarm_app/bt/device_scanner_widget.dart';
+import 'package:battery_alarm_app/device_scanner.dart';
 import 'package:battery_alarm_app/connect_widget.dart';
 import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:battery_alarm_app/device_control.dart';
@@ -37,8 +37,9 @@ class _AppState extends State<App> {
           onConnecting: (_) => ConnectWidget(
             deviceClient: _deviceClient,
           ),
-          onDisconnected: (_) => DeviceScannerWidget(
+          onDisconnected: (_, {error}) => DeviceScannerWidget(
             deviceClient: _deviceClient,
+            error: error,
           ),
         ),
       ),
