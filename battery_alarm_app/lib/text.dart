@@ -2,6 +2,9 @@ class Texts {
   Texts._();
 
   static const appTitle = 'Batterie Alarm';
+
+  static const beaconScanTitle = 'Basisstation wählen';
+
   static const helpPageTexts = [
     'Mit dieser App kannst du den Fahrzeug-in-der-Garage-aber-Batterie-wird-nicht-geladen-Alarm-Adapter einstellen.',
     'Damit der Adapter zuverlässig erkennt, dass das Fahrzeug in der Garage steht, sollte die Signalstärke der Basisstation innerhalb der Garage stärker sein als vor der Garage. Daher sollte die Basisstation besser nicht in der Nähe vom Garagentor montiert werden.',

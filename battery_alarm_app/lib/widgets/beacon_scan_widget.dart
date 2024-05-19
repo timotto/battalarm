@@ -1,6 +1,7 @@
 import 'package:battery_alarm_app/bt/scanner.dart';
 import 'package:battery_alarm_app/model/bt_uuid.dart';
 import 'package:battery_alarm_app/text.dart';
+import 'package:battery_alarm_app/util/beacon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
@@ -115,7 +116,7 @@ class _BeaconScanWidgetState extends State<BeaconScanWidget> {
         initialData: _scanner.stateSnapshot,
         builder: (context, scannerStateSnapshot) => Scaffold(
           appBar: AppBar(
-            title: const Text(Texts.appTitle),
+            title: const Text(Texts.beaconScanTitle),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () => _onCancel(context),
@@ -152,7 +153,7 @@ Widget _deviceListTile({
   required void Function(DiscoveredDevice) onTap,
 }) {
   final hasName = device.name.isNotEmpty;
-  final id = device.id.toLowerCase();
+  final id = formatBeaconAddress(device.id);
   final title = hasName ? device.name : id;
   final subtitleWidget = hasName ? Text(id) : null;
 
