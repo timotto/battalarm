@@ -9,9 +9,11 @@ class DeviceConfigWidget extends StatelessWidget {
   const DeviceConfigWidget({
     super.key,
     required this.deviceClient,
+    required this.expert,
   });
 
   final DeviceClient deviceClient;
+  final bool expert;
 
   @override
   Widget build(BuildContext context) => StreamBuilder<DeviceConfig>(
@@ -81,75 +83,77 @@ class DeviceConfigWidget extends StatelessWidget {
                       (config, value) => config.btRssiAutoTune = value,
                 ),
               ),
-              const Divider(),
-              DoubleConfigWidget(
-                title: 'Batterieladegerät Endspannung',
-                icon: Icons.battery_charging_full,
-                min: 12,
-                max: 30,
-                value: config.data?.vbatChargeThreshold,
-                digits: 1,
-                unit: 'V',
-                onChange: _onChanged(
-                  deviceClient,
-                  config.data,
-                      (config, value) => config.vbatChargeThreshold = value,
+              if (expert) ...[
+                const Divider(),
+                DoubleConfigWidget(
+                  title: 'Batterieladegerät Endspannung',
+                  icon: Icons.battery_charging_full,
+                  min: 12,
+                  max: 30,
+                  value: config.data?.vbatChargeThreshold,
+                  digits: 1,
+                  unit: 'V',
+                  onChange: _onChanged(
+                    deviceClient,
+                    config.data,
+                        (config, value) => config.vbatChargeThreshold = value,
+                  ),
                 ),
-              ),
-              DoubleConfigWidget(
-                title: 'Batterieladegerät Geschwindigkeit',
-                icon: Icons.battery_charging_full,
-                min: 0.001,
-                max: 1,
-                value: config.data?.vbatDeltaThreshold,
-                digits: 1,
-                unit: 'V/t',
-                onChange: _onChanged(
-                  deviceClient,
-                  config.data,
-                      (config, value) => config.vbatDeltaThreshold = value,
+                DoubleConfigWidget(
+                  title: 'Batterieladegerät Geschwindigkeit',
+                  icon: Icons.battery_charging_full,
+                  min: 0.001,
+                  max: 1,
+                  value: config.data?.vbatDeltaThreshold,
+                  digits: 1,
+                  unit: 'V/t',
+                  onChange: _onChanged(
+                    deviceClient,
+                    config.data,
+                        (config, value) => config.vbatDeltaThreshold = value,
+                  ),
                 ),
-              ),
-              DoubleConfigWidget(
-                title: 'Batteriespannung Feinjustierung',
-                icon: Icons.show_chart,
-                min: 0.5,
-                max: 1.5,
-                value: config.data?.vbatTuneFactor,
-                digits: 2,
-                unit: '',
-                onChange: _onChanged(
-                  deviceClient,
-                  config.data,
-                      (config, value) => config.vbatTuneFactor = value,
+                DoubleConfigWidget(
+                  title: 'Batteriespannung Feinjustierung',
+                  icon: Icons.show_chart,
+                  min: 0.5,
+                  max: 1.5,
+                  value: config.data?.vbatTuneFactor,
+                  digits: 2,
+                  unit: '',
+                  onChange: _onChanged(
+                    deviceClient,
+                    config.data,
+                        (config, value) => config.vbatTuneFactor = value,
+                  ),
                 ),
-              ),
-              DoubleConfigWidget(
-                title: 'Batteriespannung Tiefpass Faktor',
-                icon: Icons.battery_4_bar,
-                min: 0.5,
-                max: 0.9999,
-                value: config.data?.vbatLpF,
-                digits: 4,
-                unit: 'V',
-                onChange: _onChanged(
-                  deviceClient,
-                  config.data,
-                  (config, value) => config.vbatLpF = value,
+                DoubleConfigWidget(
+                  title: 'Batteriespannung Tiefpass Faktor',
+                  icon: Icons.battery_4_bar,
+                  min: 0.5,
+                  max: 0.9999,
+                  value: config.data?.vbatLpF,
+                  digits: 4,
+                  unit: 'V',
+                  onChange: _onChanged(
+                    deviceClient,
+                    config.data,
+                        (config, value) => config.vbatLpF = value,
+                  ),
                 ),
-              ),
-              const Divider(),
-              const ListTile(
-                title: Text('Akkustische Benachrichtigung bei:'),
-              ),
-              ..._buzzerWidgets(
-                values: config.data?.buzzerAlerts,
-                onChanged: _onChanged(
-                  deviceClient,
-                  config.data,
-                  (config, value) => config.buzzerAlerts = value,
+                const Divider(),
+                const ListTile(
+                  title: Text('Akkustische Benachrichtigung bei:'),
                 ),
-              ),
+                ..._buzzerWidgets(
+                  values: config.data?.buzzerAlerts,
+                  onChanged: _onChanged(
+                    deviceClient,
+                    config.data,
+                        (config, value) => config.buzzerAlerts = value,
+                  ),
+                ),
+              ],
             ],
           ),
         ),

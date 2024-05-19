@@ -5,13 +5,43 @@ import 'package:battery_alarm_app/device_status_widget.dart';
 import 'package:battery_alarm_app/text.dart';
 import 'package:flutter/material.dart';
 
-class DeviceControlWidget extends StatelessWidget {
-  const DeviceControlWidget({
-    super.key,
-    required this.deviceClient,
-  });
+class DeviceControlWidget extends StatefulWidget {
+  const DeviceControlWidget({super.key, required this.deviceClient});
 
   final DeviceClient deviceClient;
+
+  @override
+  State<StatefulWidget> createState() => _DeviceControlWidgetState();
+}
+
+class _DeviceControlWidgetState extends State<DeviceControlWidget> {
+  bool _expert = false;
+
+  void _toggleExpertMode(bool? value) {
+    setState(() {
+      _expert = value ?? false;
+    });
+  }
+
+  Widget _appMenu(BuildContext context) => MenuAnchor(
+        builder: (context, controller, _) => IconButton(
+          onPressed: () {
+            if (controller.isOpen) {
+              controller.close();
+            } else {
+              controller.open();
+            }
+          },
+          icon: const Icon(Icons.more_vert),
+        ),
+        menuChildren: [
+          CheckboxMenuButton(
+            value: _expert,
+            onChanged: _toggleExpertMode,
+            child: const Text('Experten Ansicht'),
+          ),
+        ],
+      );
 
   @override
   Widget build(BuildContext context) => DefaultTabController(
@@ -19,6 +49,7 @@ class DeviceControlWidget extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             title: const Text(Texts.appTitle),
+            actions: [_appMenu(context)],
           ),
           bottomNavigationBar: const TabBar(
             tabs: [
@@ -37,8 +68,8 @@ class DeviceControlWidget extends StatelessWidget {
             ],
           ),
           body: StreamBuilder(
-            stream: deviceClient.busy.stream,
-            initialData: deviceClient.busy.value,
+            stream: widget.deviceClient.busy.stream,
+            initialData: widget.deviceClient.busy.value,
             builder: (context, busy) => Column(
               children: [
                 LinearProgressIndicator(
@@ -48,10 +79,11 @@ class DeviceControlWidget extends StatelessWidget {
                   child: TabBarView(
                     children: [
                       DeviceStatusWidget(
-                        deviceClient: deviceClient,
+                        deviceClient: widget.deviceClient,
                       ),
                       DeviceConfigWidget(
-                        deviceClient: deviceClient,
+                        deviceClient: widget.deviceClient,
+                        expert: _expert,
                       ),
                       const AboutWidget(),
                     ],
