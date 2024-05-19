@@ -33,7 +33,7 @@ class BleScanner {
     _devices.clear();
     _subscription?.cancel();
     _subscription =
-        _ble.scanForDevices(withServices: serviceIds).listen((device) {
+        _ble.scanForDevices(withServices: serviceIds, scanMode: ScanMode.lowLatency).listen((device) {
       final knownDeviceIndex = _devices.indexWhere((d) => d.id == device.id);
       if (knownDeviceIndex >= 0) {
         _devices[knownDeviceIndex] = device;

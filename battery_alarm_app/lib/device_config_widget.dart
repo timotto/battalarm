@@ -1,5 +1,6 @@
 import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:battery_alarm_app/model/config.dart';
+import 'package:battery_alarm_app/widgets/beacon_config_widget.dart';
 import 'package:battery_alarm_app/widgets/bool_config_widget.dart';
 import 'package:battery_alarm_app/widgets/double_config_widget.dart';
 import 'package:battery_alarm_app/widgets/duration_config_widget.dart';
@@ -71,19 +72,28 @@ class DeviceConfigWidget extends StatelessWidget {
                 onChange: _onChanged(
                   deviceClient,
                   config.data,
-                      (config, value) => config.btRssiThreshold = value,
+                  (config, value) => config.btRssiThreshold = value,
                 ),
               ),
               BoolConfigWidget(
                 title: 'Signalstärke automatisch anpassen',
+                icon: Icons.science,
                 value: config.data?.btRssiAutoTune,
                 onChanged: _onChanged(
                   deviceClient,
                   config.data,
-                      (config, value) => config.btRssiAutoTune = value,
+                  (config, value) => config.btRssiAutoTune = value,
                 ),
               ),
               if (expert) ...[
+                BeaconConfigWidget(
+                  value: config.data?.btBeaconAddress,
+                  onChanged: _onChanged(
+                    deviceClient,
+                    config.data,
+                    (config, value) => config.btBeaconAddress = value,
+                  ),
+                ),
                 const Divider(),
                 DoubleConfigWidget(
                   title: 'Batterieladegerät Endspannung',
@@ -96,7 +106,7 @@ class DeviceConfigWidget extends StatelessWidget {
                   onChange: _onChanged(
                     deviceClient,
                     config.data,
-                        (config, value) => config.vbatChargeThreshold = value,
+                    (config, value) => config.vbatChargeThreshold = value,
                   ),
                 ),
                 DoubleConfigWidget(
@@ -110,7 +120,7 @@ class DeviceConfigWidget extends StatelessWidget {
                   onChange: _onChanged(
                     deviceClient,
                     config.data,
-                        (config, value) => config.vbatDeltaThreshold = value,
+                    (config, value) => config.vbatDeltaThreshold = value,
                   ),
                 ),
                 DoubleConfigWidget(
@@ -124,7 +134,7 @@ class DeviceConfigWidget extends StatelessWidget {
                   onChange: _onChanged(
                     deviceClient,
                     config.data,
-                        (config, value) => config.vbatTuneFactor = value,
+                    (config, value) => config.vbatTuneFactor = value,
                   ),
                 ),
                 DoubleConfigWidget(
@@ -138,19 +148,20 @@ class DeviceConfigWidget extends StatelessWidget {
                   onChange: _onChanged(
                     deviceClient,
                     config.data,
-                        (config, value) => config.vbatLpF = value,
+                    (config, value) => config.vbatLpF = value,
                   ),
                 ),
                 const Divider(),
                 const ListTile(
                   title: Text('Akkustische Benachrichtigung bei:'),
+                  leading: Icon(Icons.volume_up),
                 ),
                 ..._buzzerWidgets(
                   values: config.data?.buzzerAlerts,
                   onChanged: _onChanged(
                     deviceClient,
                     config.data,
-                        (config, value) => config.buzzerAlerts = value,
+                    (config, value) => config.buzzerAlerts = value,
                   ),
                 ),
               ],
