@@ -111,6 +111,20 @@ class DeviceConfigWidget extends StatelessWidget {
                 ),
               ),
               DoubleConfigWidget(
+                title: 'Batteriespannung Feinjustierung',
+                icon: Icons.show_chart,
+                min: 0.5,
+                max: 1.5,
+                value: config.data?.vbatTuneFactor,
+                digits: 2,
+                unit: '',
+                onChange: _onChanged(
+                  deviceClient,
+                  config.data,
+                      (config, value) => config.vbatTuneFactor = value,
+                ),
+              ),
+              DoubleConfigWidget(
                 title: 'Batteriespannung Tiefpass Faktor',
                 icon: Icons.battery_4_bar,
                 min: 0.5,

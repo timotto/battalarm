@@ -6,6 +6,7 @@ class DeviceConfig {
     this.vbatLpF,
     this.vbatChargeThreshold,
     this.vbatDeltaThreshold,
+    this.vbatTuneFactor,
     this.btBeaconAddress,
     this.btRssiThreshold,
     this.btRssiAutoTune,
@@ -19,6 +20,7 @@ class DeviceConfig {
         vbatLpF: vbatLpF,
         vbatChargeThreshold: vbatChargeThreshold,
         vbatDeltaThreshold: vbatDeltaThreshold,
+        vbatTuneFactor: vbatTuneFactor,
         btBeaconAddress: btBeaconAddress,
         btRssiThreshold: btRssiThreshold,
         btRssiAutoTune: btRssiAutoTune,
@@ -32,6 +34,7 @@ class DeviceConfig {
   double? vbatLpF;
   double? vbatChargeThreshold;
   double? vbatDeltaThreshold;
+  double? vbatTuneFactor;
 
   String? btBeaconAddress;
   double? btRssiThreshold;

@@ -16,6 +16,8 @@ final Uuid _uuidChrVbatChargeT =
     Uuid.parse('106145DE-E2DA-435D-A093-C8C5CA870212');
 final Uuid _uuidChrVbatDeltaT =
     Uuid.parse('106145DE-E2DA-435D-A093-C8C5CA870213');
+final Uuid _uuidChrVbatTuneF =
+    Uuid.parse('106145DE-E2DA-435D-A093-C8C5CA870214');
 final Uuid _uuidChrBtBeaconAddr =
     Uuid.parse('106145DE-E2DA-435D-A093-C8C5CA870221');
 final Uuid _uuidChrBtRssiT = Uuid.parse('106145DE-E2DA-435D-A093-C8C5CA870222');
@@ -46,6 +48,7 @@ class ConfigService {
   QualifiedCharacteristic? _chrVbatLpF;
   QualifiedCharacteristic? _chrVbatChargeT;
   QualifiedCharacteristic? _chrVbatDeltaT;
+  QualifiedCharacteristic? _chrVbatTuneF;
 
   QualifiedCharacteristic? _chrBtBeaconAddr;
   QualifiedCharacteristic? _chrBtBeaconRssiT;
@@ -86,6 +89,12 @@ class ConfigService {
 
     _chrVbatDeltaT = QualifiedCharacteristic(
       characteristicId: _uuidChrVbatDeltaT,
+      serviceId: uuidConfigService,
+      deviceId: deviceId,
+    );
+
+    _chrVbatTuneF = QualifiedCharacteristic(
+      characteristicId: _uuidChrVbatTuneF,
       serviceId: uuidConfigService,
       deviceId: deviceId,
     );
@@ -141,6 +150,8 @@ class ConfigService {
           update.vbatChargeThreshold, _formatChrDouble(1));
       await _writeIfChanged(_chrVbatDeltaT, _state.vbatDeltaThreshold,
           update.vbatDeltaThreshold, _formatChrDouble(2));
+      await _writeIfChanged(_chrVbatTuneF, _state.vbatTuneFactor,
+          update.vbatTuneFactor, _formatChrDouble(2));
 
       await _writeIfChanged(_chrBtBeaconAddr, _state.btBeaconAddress,
           update.btBeaconAddress, _formatChrString);
@@ -169,6 +180,7 @@ class ConfigService {
         vbatLpF: await _readChrDouble(_chrVbatLpF),
         vbatChargeThreshold: await _readChrDouble(_chrVbatChargeT),
         vbatDeltaThreshold: await _readChrDouble(_chrVbatDeltaT),
+        vbatTuneFactor: await _readChrDouble(_chrVbatTuneF),
         btBeaconAddress: await _readChrString(_chrBtBeaconAddr),
         btRssiThreshold: await _readChrDouble(_chrBtBeaconRssiT),
         btRssiAutoTune: await _readChrBool(_chrBtBeaconRssiAutoTune),

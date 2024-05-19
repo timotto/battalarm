@@ -35,7 +35,7 @@ void setup_pref() {
   configDelayWarn = preferences.getUInt(_pref_key_delay_warn, configDelayWarn);
   configDelayAlarm = preferences.getUInt(_pref_key_delay_alarm, configDelayAlarm);
   configSnoozeTime = preferences.getUInt(_pref_key_snooze_time, configSnoozeTime);
-  configVbatTuneF = preferences.getFloat(_pref_key_vbat_tune_f, 1.0);
+  configVbatTuneF = preferences.getFloat(_pref_key_vbat_tune_f, configVbatTuneF);
   configVbatLpF = preferences.getFloat(_pref_key_vbat_lp_f, configVbatLpF);
   configBtBeaconAddr = preferences.getString(_pref_key_bt_beacon_addr, "");
   configBtBeaconRssiInGarage = preferences.getFloat(_pref_key_bt_beacon_rssi_in_garage, 0);
