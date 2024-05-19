@@ -122,7 +122,7 @@ void setup() {
   pServer->setCallbacks(new MyServerCallbacks());
 
   init_service();
-  init_beacon();
+  // init_beacon();
 
   Serial.println("iBeacon + service defined and advertising!");
 }
