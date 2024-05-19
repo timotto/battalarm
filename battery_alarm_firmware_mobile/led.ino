@@ -1,4 +1,4 @@
-#include <FastLED.h>
+#include <LiteLED.h>
 #include "pins.h"
 
 #define LED_SEQUENCE_END  0xffffffff
@@ -65,7 +65,7 @@ void led_buttonUltraLong() {
 void led_setBtVisible(bool state) {}
 void led_setBtPairing(bool state) {}
 
-CRGB leds[LED_COUNT];
+LiteLED liteLed(LED_STRIP_WS2812, 0);
 
 int _led_step = 0;
 uint32_t _led_stepStart = 0;
@@ -73,7 +73,8 @@ uint32_t _led_rgbCurrent = 0;
 uint32_t _led_rgbFrom = 0;
 
 void setup_led() {
-  FastLED.addLeds<NEOPIXEL, PIN_LED>(leds, LED_COUNT);
+  liteLed.begin(PIN_LED, 1);
+  liteLed.brightness(255);
 }
 
 void loop_led(const uint32_t now) {
@@ -114,10 +115,7 @@ void loop_led(const uint32_t now) {
 }
 
 void _led_set() {
-  for(auto i = 0; i < LED_COUNT; i++) {
-    leds[i] = _led_rgbCurrent;
-  }
-  FastLED.show();
+  liteLed.setPixel(0, _led_rgbCurrent, 1);
 }
 
 void _led_setMode(const uint32_t *sequence) {
