@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:battery_alarm_app/device_client/value_characteristic.dart';
 import 'package:battery_alarm_app/util/busy.dart';
 import 'package:battery_alarm_app/model/bt_uuid.dart';
 import 'package:battery_alarm_app/model/status.dart';
@@ -19,10 +20,10 @@ final Uuid _uuidChrBeaconRssi =
 class StatusService {
   StatusService(this.busy);
 
-  final _ble = FlutterReactiveBle();
-
   DeviceStatus _state = DeviceStatus();
-  final StreamController<DeviceStatus> _stateController = StreamController.broadcast();
+
+  final StreamController<DeviceStatus> _stateController =
+      StreamController.broadcast();
 
   Stream<DeviceStatus> get deviceStatus => _stateController.stream;
 
@@ -30,45 +31,48 @@ class StatusService {
 
   final BusyRunner busy;
 
-  QualifiedCharacteristic? _chrInGarage;
-  QualifiedCharacteristic? _chrCharging;
-  QualifiedCharacteristic? _chrVbatVolt;
-  QualifiedCharacteristic? _chrVbatDelta;
-  QualifiedCharacteristic? _chrBeaconRssi;
+  BoolCharacteristic? _chrInGarage;
+  BoolCharacteristic? _chrCharging;
+  DoubleCharacteristic? _chrVbatVolt;
+  DoubleCharacteristic? _chrVbatDelta;
+  DoubleCharacteristic? _chrBeaconRssi;
 
   Future<void> onDeviceConnected(String deviceId) async {
-    _chrInGarage = QualifiedCharacteristic(
-        deviceId: deviceId,
-        serviceId: uuidStatusService,
-        characteristicId: _uuidChrInGarage);
-    _chrCharging = QualifiedCharacteristic(
-        deviceId: deviceId,
-        serviceId: uuidStatusService,
-        characteristicId: _uuidChrCharging);
-    _chrVbatVolt = QualifiedCharacteristic(
-        deviceId: deviceId,
-        serviceId: uuidStatusService,
-        characteristicId: _uuidChrVbatVolt);
-    _chrVbatDelta = QualifiedCharacteristic(
-        deviceId: deviceId,
-        serviceId: uuidStatusService,
-        characteristicId: _uuidChrVbatDelta);
-    _chrBeaconRssi = QualifiedCharacteristic(
-        deviceId: deviceId,
-        serviceId: uuidStatusService,
-        characteristicId: _uuidChrBeaconRssi);
+    _chrInGarage = BoolCharacteristic(
+      deviceId: deviceId,
+      serviceId: uuidStatusService,
+      characteristicId: _uuidChrInGarage,
+    );
+    _chrCharging = BoolCharacteristic(
+      deviceId: deviceId,
+      serviceId: uuidStatusService,
+      characteristicId: _uuidChrCharging,
+    );
+    _chrVbatVolt = DoubleCharacteristic(
+      deviceId: deviceId,
+      serviceId: uuidStatusService,
+      characteristicId: _uuidChrVbatVolt,
+      digits: 1,
+    );
+    _chrVbatDelta = DoubleCharacteristic(
+      deviceId: deviceId,
+      serviceId: uuidStatusService,
+      characteristicId: _uuidChrVbatDelta,
+      digits: 2,
+    );
+    _chrBeaconRssi = DoubleCharacteristic(
+      deviceId: deviceId,
+      serviceId: uuidStatusService,
+      characteristicId: _uuidChrBeaconRssi,
+      digits: 0,
+    );
 
     await busy.run(() async {
-      await _subscribeAndRead(
-          _chrInGarage!, (event) => _onInGarage(_parseChrBool(event)));
-      await _subscribeAndRead(
-          _chrCharging!, (event) => _onCharging(_parseChrBool(event)));
-      await _subscribeAndRead(
-          _chrVbatVolt!, (event) => _onVbat(_parseChrDouble(event)));
-      await _subscribeAndRead(
-          _chrVbatDelta!, (event) => _onVbatDelta(_parseChrDouble(event)));
-      await _subscribeAndRead(
-          _chrBeaconRssi!, (event) => _onRssi(_parseChrDouble(event)));
+      await _subscribeAndRead2(_chrInGarage, _onInGarage);
+      await _subscribeAndRead2(_chrCharging, _onCharging);
+      await _subscribeAndRead2(_chrVbatVolt, _onVbat);
+      await _subscribeAndRead2(_chrVbatDelta, _onVbatDelta);
+      await _subscribeAndRead2(_chrBeaconRssi, _onRssi);
     });
   }
 
@@ -87,11 +91,11 @@ class StatusService {
     _stateController.add(state);
   }
 
-  Future<void> _subscribeAndRead(
-      QualifiedCharacteristic chr, void Function(List<int> event) onData) async {
-    _ble.subscribeToCharacteristic(chr).listen(onData, cancelOnError: true);
-    final data = await _ble.readCharacteristic(chr);
-    onData(data);
+  Future<void> _subscribeAndRead2<T>(
+      ValueCharacteristic<T>? chr, void Function(T?) onData) async {
+    if (chr == null) return;
+    chr.subscribe(onData);
+    onData(await chr.read());
   }
 
   void _onInGarage(bool? value) {
@@ -139,8 +143,3 @@ class StatusService {
         rssi: value));
   }
 }
-
-bool? _parseChrBool(List<int> value) => value.isEmpty ? null : value[0] == 1;
-
-double? _parseChrDouble(List<int> value) =>
-    double.tryParse(String.fromCharCodes(value));
