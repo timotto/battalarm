@@ -2,6 +2,7 @@ import 'package:battery_alarm_app/bt/scanner.dart';
 import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:battery_alarm_app/model/bt_uuid.dart';
 import 'package:battery_alarm_app/text.dart';
+import 'package:battery_alarm_app/widgets/about_app_dialog.dart';
 import 'package:battery_alarm_app/widgets/scan_result_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
@@ -120,10 +121,30 @@ class _DeviceScanState extends State<_DeviceScanWidget> {
     });
   }
 
+  Widget _appMenu(BuildContext context) => MenuAnchor(
+    builder: (context, controller, _) => IconButton(
+      onPressed: () {
+        if (controller.isOpen) {
+          controller.close();
+        } else {
+          controller.open();
+        }
+      },
+      icon: const Icon(Icons.more_vert),
+    ),
+    menuChildren: [
+      MenuItemButton(
+        onPressed: () => showAboutAppDialog(context),
+        child: const Text(Texts.aboutAppMenuItemTitle),
+      ),
+    ],
+  );
+
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: const Text(Texts.appTitle),
+          actions: [_appMenu(context)],
         ),
         body: RefreshIndicator(
           onRefresh: _startScan,

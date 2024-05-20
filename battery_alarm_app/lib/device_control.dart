@@ -3,6 +3,7 @@ import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:battery_alarm_app/device_config_widget.dart';
 import 'package:battery_alarm_app/device_status_widget.dart';
 import 'package:battery_alarm_app/text.dart';
+import 'package:battery_alarm_app/widgets/about_app_dialog.dart';
 import 'package:flutter/material.dart';
 
 class DeviceControlWidget extends StatefulWidget {
@@ -39,6 +40,10 @@ class _DeviceControlWidgetState extends State<DeviceControlWidget> {
             value: _expert,
             onChanged: _toggleExpertMode,
             child: const Text('Experten Ansicht'),
+          ),
+          MenuItemButton(
+            onPressed: () => showAboutAppDialog(context),
+            child: const Text(Texts.aboutAppMenuItemTitle),
           ),
         ],
       );

@@ -11,4 +11,7 @@ class Texts {
     'Mit der Experten Ansicht lassen sich die Messwerte des Adapters feinjustieren. Das ist hilfreich, wenn du dir einen Adapter selber gebaut hast.',
     'Den Source Code vom Adapter, sowie alle weiteren Informationen um dir selber einen zu bauen, findest du unter https://github.com/timotto/battalarm',
   ];
+
+  static const aboutAppMenuItemTitle = 'Über die App';
+  static const aboutAppLegalese = 'Mit dieser App kannst du den Fahrzeug-in-der-Garage-aber-Batterie-wird-nicht-geladen-Alarm-Adapter einstellen.';
 }
