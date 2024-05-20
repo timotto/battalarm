@@ -1,7 +1,8 @@
 import 'package:battery_alarm_app/bt/scanner.dart';
 import 'package:battery_alarm_app/model/bt_uuid.dart';
 import 'package:battery_alarm_app/text.dart';
-import 'package:battery_alarm_app/widgets/scan_result_list_tile.dart';
+import 'package:battery_alarm_app/widgets/scan_fab_widget.dart';
+import 'package:battery_alarm_app/widgets/scan_result_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
@@ -72,45 +73,6 @@ class _BeaconScanWidgetState extends State<BeaconScanWidget> {
     Navigator.pop(context, device.id.toLowerCase());
   }
 
-  Widget _scanResultList(BuildContext context,
-      AsyncSnapshot<BleScannerState> scannerStateSnapshot) {
-    final result = scannerStateSnapshot.data?.discoveredDevices ?? [];
-
-    result.sort(_scanResultSorter);
-
-    return ListView(
-        children: result
-            .where((device) => _notABattalarmDevice(device))
-            .map((device) => ScanResultListTile(
-                  device: device,
-                  isCurrent: _isCurrent(device),
-                  showRssi: true,
-                  onTap: (device) => _onSelect(context, device),
-                ))
-            .toList(growable: false));
-  }
-
-  bool _isCurrent(DiscoveredDevice device) {
-    return device.id.toLowerCase() == widget.currentBeaconId;
-  }
-
-  Widget _fab(BuildContext context,
-      AsyncSnapshot<BleScannerState> scannerStateSnapshot) {
-    final scanning = scannerStateSnapshot.data?.scanIsInProgress ?? false;
-    if (scanning) {
-      return FloatingActionButton(
-        onPressed: _stopScan,
-        backgroundColor: Colors.red,
-        child: const Icon(Icons.stop),
-      );
-    } else {
-      return FloatingActionButton(
-        onPressed: _startScan,
-        child: const Icon(Icons.search),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) => StreamBuilder<BleScannerState>(
         stream: _scanner.state,
@@ -123,11 +85,22 @@ class _BeaconScanWidgetState extends State<BeaconScanWidget> {
               onPressed: () => _onCancel(context),
             ),
           ),
-          floatingActionButton: _fab(context, scannerStateSnapshot),
-          body: _scanResultList(context, scannerStateSnapshot),
+          floatingActionButton: ScanFabWidget(
+            state: scannerStateSnapshot.data,
+            onStartScan: _startScan,
+            onStopScan: _stopScan,
+          ),
+          body: ScanResultWidget(
+            state: scannerStateSnapshot.data,
+            showRssi: true,
+            currentDeviceId: widget.currentBeaconId,
+            filter: _notABattalarmDevice,
+            onSelect: (device) => _onSelect(context, device),
+          ),
         ),
       );
 }
+
 
 bool _notABattalarmDevice(DiscoveredDevice device) {
   final isAdapter = [uuidConfigService, uuidStatusService]
@@ -136,14 +109,4 @@ bool _notABattalarmDevice(DiscoveredDevice device) {
       .isNotEmpty;
 
   return !isAdapter;
-}
-
-int _scanResultSorter(DiscoveredDevice a, DiscoveredDevice b) {
-  if (a.name.isNotEmpty && b.name.isEmpty) return -1;
-  if (b.name.isNotEmpty && a.name.isEmpty) return 1;
-
-  final result = a.name.compareTo(b.name);
-  if (result != 0) return result;
-
-  return a.id.compareTo(b.id);
 }

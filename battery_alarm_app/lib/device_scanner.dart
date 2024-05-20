@@ -3,7 +3,8 @@ import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:battery_alarm_app/model/bt_uuid.dart';
 import 'package:battery_alarm_app/text.dart';
 import 'package:battery_alarm_app/widgets/about_app_dialog.dart';
-import 'package:battery_alarm_app/widgets/scan_result_list_tile.dart';
+import 'package:battery_alarm_app/widgets/scan_fab_widget.dart';
+import 'package:battery_alarm_app/widgets/scan_result_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
@@ -63,9 +64,6 @@ class _DeviceScanState extends State<_DeviceScanWidget> {
     super.dispose();
   }
 
-  BleScannerState _scannerState() =>
-      widget.scannerState.data ?? BleScannerState.empty();
-
   Future<void> _startScan() async {
     await widget.deviceClient.disconnect();
     widget.bleScanner.startScan([uuidStatusService, uuidConfigService]);
@@ -73,43 +71,11 @@ class _DeviceScanState extends State<_DeviceScanWidget> {
 
   Future<void> _stopScan() async => widget.bleScanner.stopScan();
 
-  Widget _fab() {
-    if (_scannerState().scanIsInProgress) {
-      return FloatingActionButton(
-        onPressed: _stopScan,
-        backgroundColor: Colors.red,
-        child: const Icon(Icons.stop),
-      );
-    }
-
-    return FloatingActionButton(
-      onPressed: _startScan,
-      child: const Icon(Icons.search),
-    );
-  }
-
-  Widget _resultList(
-      BuildContext context, List<DiscoveredDevice> results, bool scanning) {
-    if (results.isEmpty) {
-      return Center(
+  Widget _onEmpty(bool scanning) => Center(
         child: Text(scanning
             ? 'Suche nach Battalarm Adaptern...'
             : 'Keine Adapter gefunden'),
       );
-    }
-    final cpy = List<DiscoveredDevice>.from(results);
-    cpy.sort(_scanResultSorter);
-    return ListView(
-      children: cpy
-          .map<Widget>(
-            (device) => ScanResultListTile(
-              device: device,
-              onTap: (device) => widget.deviceClient.connect(device.id),
-            ),
-          )
-          .toList(),
-    );
-  }
 
   void _onError() {
     if (widget.error == null) return;
@@ -122,23 +88,23 @@ class _DeviceScanState extends State<_DeviceScanWidget> {
   }
 
   Widget _appMenu(BuildContext context) => MenuAnchor(
-    builder: (context, controller, _) => IconButton(
-      onPressed: () {
-        if (controller.isOpen) {
-          controller.close();
-        } else {
-          controller.open();
-        }
-      },
-      icon: const Icon(Icons.more_vert),
-    ),
-    menuChildren: [
-      MenuItemButton(
-        onPressed: () => showAboutAppDialog(context),
-        child: const Text(Texts.aboutAppMenuItemTitle),
-      ),
-    ],
-  );
+        builder: (context, controller, _) => IconButton(
+          onPressed: () {
+            if (controller.isOpen) {
+              controller.close();
+            } else {
+              controller.open();
+            }
+          },
+          icon: const Icon(Icons.more_vert),
+        ),
+        menuChildren: [
+          MenuItemButton(
+            onPressed: () => showAboutAppDialog(context),
+            child: const Text(Texts.aboutAppMenuItemTitle),
+          ),
+        ],
+      );
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -153,13 +119,20 @@ class _DeviceScanState extends State<_DeviceScanWidget> {
               _paddedText(
                   'Wenn der Adapter nicht gefunden wird, dann halte den Knopf am Adapter für ca. 5 Sekunden lang gedrückt, bis ein tiefer Piepton kommt.'),
               Expanded(
-                child: _resultList(context, _scannerState().discoveredDevices,
-                    _scannerState().scanIsInProgress),
+                child: ScanResultWidget(
+                  state: widget.scannerState.data,
+                  onEmpty: _onEmpty(widget.scannerState.data?.scanIsInProgress ?? false),
+                  onSelect: (device) => widget.deviceClient.connect(device.id),
+                ),
               ),
             ],
           ),
         ),
-        floatingActionButton: _fab(),
+        floatingActionButton: ScanFabWidget(
+          state: widget.scannerState.data,
+          onStartScan: _startScan,
+          onStopScan: _stopScan,
+        ),
       );
 }
 
@@ -167,13 +140,3 @@ Widget _paddedText(String text) => Padding(
       padding: const EdgeInsets.all(16),
       child: Text(text),
     );
-
-int _scanResultSorter(DiscoveredDevice a, DiscoveredDevice b) {
-  if (a.name.isNotEmpty && b.name.isEmpty) return -1;
-  if (b.name.isNotEmpty && a.name.isEmpty) return 1;
-
-  final result = a.name.compareTo(b.name);
-  if (result != 0) return result;
-
-  return a.id.compareTo(b.id);
-}
