@@ -2,6 +2,7 @@ import 'package:battery_alarm_app/bt/scanner.dart';
 import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:battery_alarm_app/model/bt_uuid.dart';
 import 'package:battery_alarm_app/text.dart';
+import 'package:battery_alarm_app/widgets/scan_result_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
@@ -100,11 +101,9 @@ class _DeviceScanState extends State<_DeviceScanWidget> {
     return ListView(
       children: cpy
           .map<Widget>(
-            (result) => _ScanResultTile(
-              result: result,
-              onTap: () {
-                widget.deviceClient.connect(result.id);
-              },
+            (device) => ScanResultListTile(
+              device: device,
+              onTap: (device) => widget.deviceClient.connect(device.id),
             ),
           )
           .toList(),
@@ -147,28 +146,6 @@ Widget _paddedText(String text) => Padding(
       padding: const EdgeInsets.all(16),
       child: Text(text),
     );
-
-class _ScanResultTile extends StatelessWidget {
-  const _ScanResultTile({
-    super.key,
-    required this.result,
-    required this.onTap,
-  });
-
-  final DiscoveredDevice result;
-  final void Function() onTap;
-
-  String get _name => result.name.isNotEmpty ? result.name : result.id;
-
-  Widget? get _subtitle => result.name.isNotEmpty ? Text(result.id) : null;
-
-  @override
-  Widget build(BuildContext context) => ListTile(
-        title: Text(_name),
-        subtitle: _subtitle,
-        onTap: onTap,
-      );
-}
 
 int _scanResultSorter(DiscoveredDevice a, DiscoveredDevice b) {
   if (a.name.isNotEmpty && b.name.isEmpty) return -1;

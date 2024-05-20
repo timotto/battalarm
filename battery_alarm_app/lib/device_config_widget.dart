@@ -31,7 +31,6 @@ class DeviceConfigWidget extends StatelessWidget {
                 max: const Duration(minutes: 3),
                 value: config.data?.delayWarn,
                 onChange: _onChanged(
-                  deviceClient,
                   config.data,
                   (config, value) => config.delayWarn = value,
                 ),
@@ -43,7 +42,6 @@ class DeviceConfigWidget extends StatelessWidget {
                 max: const Duration(minutes: 3),
                 value: config.data?.delayAlarm,
                 onChange: _onChanged(
-                  deviceClient,
                   config.data,
                   (config, value) => config.delayAlarm = value,
                 ),
@@ -55,7 +53,6 @@ class DeviceConfigWidget extends StatelessWidget {
                 max: const Duration(minutes: 3),
                 value: config.data?.snoozeTime,
                 onChange: _onChanged(
-                  deviceClient,
                   config.data,
                   (config, value) => config.snoozeTime = value,
                 ),
@@ -70,7 +67,6 @@ class DeviceConfigWidget extends StatelessWidget {
                 value: config.data?.btRssiThreshold,
                 unit: 'dB',
                 onChange: _onChanged(
-                  deviceClient,
                   config.data,
                   (config, value) => config.btRssiThreshold = value,
                 ),
@@ -80,7 +76,6 @@ class DeviceConfigWidget extends StatelessWidget {
                 icon: Icons.science,
                 value: config.data?.btRssiAutoTune,
                 onChanged: _onChanged(
-                  deviceClient,
                   config.data,
                   (config, value) => config.btRssiAutoTune = value,
                 ),
@@ -89,7 +84,6 @@ class DeviceConfigWidget extends StatelessWidget {
                 BeaconConfigWidget(
                   value: config.data?.btBeaconAddress,
                   onChanged: _onChanged(
-                    deviceClient,
                     config.data,
                     (config, value) => config.btBeaconAddress = value,
                   ),
@@ -104,7 +98,6 @@ class DeviceConfigWidget extends StatelessWidget {
                   digits: 1,
                   unit: 'V',
                   onChange: _onChanged(
-                    deviceClient,
                     config.data,
                     (config, value) => config.vbatChargeThreshold = value,
                   ),
@@ -118,7 +111,6 @@ class DeviceConfigWidget extends StatelessWidget {
                   digits: 1,
                   unit: 'V/t',
                   onChange: _onChanged(
-                    deviceClient,
                     config.data,
                     (config, value) => config.vbatDeltaThreshold = value,
                   ),
@@ -132,7 +124,6 @@ class DeviceConfigWidget extends StatelessWidget {
                   digits: 2,
                   unit: '',
                   onChange: _onChanged(
-                    deviceClient,
                     config.data,
                     (config, value) => config.vbatTuneFactor = value,
                   ),
@@ -146,7 +137,6 @@ class DeviceConfigWidget extends StatelessWidget {
                   digits: 4,
                   unit: 'V',
                   onChange: _onChanged(
-                    deviceClient,
                     config.data,
                     (config, value) => config.vbatLpF = value,
                   ),
@@ -159,7 +149,6 @@ class DeviceConfigWidget extends StatelessWidget {
                 ..._buzzerWidgets(
                   values: config.data?.buzzerAlerts,
                   onChanged: _onChanged(
-                    deviceClient,
                     config.data,
                     (config, value) => config.buzzerAlerts = value,
                   ),
@@ -171,7 +160,6 @@ class DeviceConfigWidget extends StatelessWidget {
       );
 
   void Function(T?) _onChanged<T>(
-    DeviceClient deviceClient,
     DeviceConfig? config,
     void Function(DeviceConfig, T?) updater,
   ) {

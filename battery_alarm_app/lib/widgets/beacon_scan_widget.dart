@@ -1,7 +1,7 @@
 import 'package:battery_alarm_app/bt/scanner.dart';
 import 'package:battery_alarm_app/model/bt_uuid.dart';
 import 'package:battery_alarm_app/text.dart';
-import 'package:battery_alarm_app/util/beacon.dart';
+import 'package:battery_alarm_app/widgets/scan_result_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
@@ -81,9 +81,10 @@ class _BeaconScanWidgetState extends State<BeaconScanWidget> {
     return ListView(
         children: result
             .where((device) => _notABattalarmDevice(device))
-            .map((device) => _deviceListTile(
+            .map((device) => ScanResultListTile(
                   device: device,
                   isCurrent: _isCurrent(device),
+                  showRssi: true,
                   onTap: (device) => _onSelect(context, device),
                 ))
             .toList(growable: false));
@@ -145,34 +146,4 @@ int _scanResultSorter(DiscoveredDevice a, DiscoveredDevice b) {
   if (result != 0) return result;
 
   return a.id.compareTo(b.id);
-}
-
-Widget _deviceListTile({
-  required DiscoveredDevice device,
-  required bool isCurrent,
-  required void Function(DiscoveredDevice) onTap,
-}) {
-  final hasName = device.name.isNotEmpty;
-  final id = formatBeaconAddress(device.id);
-  final title = hasName ? device.name : id;
-  final subtitleWidget = hasName ? Text(id) : null;
-
-  return ListTile(
-    title: Text(title),
-    subtitle: subtitleWidget,
-    leading: Icon(_rssiToIconData(device.rssi)),
-    trailing: Text(device.rssi.toString()),
-    onTap: () => onTap(device),
-    selected: isCurrent,
-  );
-}
-
-IconData _rssiToIconData(int rssi) {
-  if (rssi >= -60) {
-    return Icons.wifi;
-  }
-  if (rssi >= -80) {
-    return Icons.wifi_2_bar;
-  }
-  return Icons.wifi_1_bar;
 }
