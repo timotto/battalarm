@@ -1,4 +1,4 @@
-package com.example.battery_alarm_app
+package io.timotto.battalarm
 
 import android.os.Bundle
 import android.util.Log

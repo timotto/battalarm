@@ -29,7 +29,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace "io.timotto.battery_alarm_app"
+    namespace "io.timotto.battalarm"
     compileSdk flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
