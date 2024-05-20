@@ -80,6 +80,7 @@ class _DeviceControlWidgetState extends State<DeviceControlWidget> {
                     children: [
                       DeviceStatusWidget(
                         deviceClient: widget.deviceClient,
+                        expert: _expert,
                       ),
                       DeviceConfigWidget(
                         deviceClient: widget.deviceClient,

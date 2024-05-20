@@ -11,9 +11,11 @@ class DeviceStatusWidget extends StatelessWidget {
   const DeviceStatusWidget({
     super.key,
     required this.deviceClient,
+    required this.expert,
   });
 
   final DeviceClient deviceClient;
+  final bool expert;
 
   @override
   Widget build(BuildContext context) => StreamBuilder<DeviceStatus>(
@@ -24,7 +26,7 @@ class DeviceStatusWidget extends StatelessWidget {
             InGarageTile(value: status.data?.inGarage),
             ChargingTile(value: status.data?.charging),
             VBatTile(value: status.data?.vbat),
-            VBatDeltaTile(value: status.data?.vbatDelta),
+            if (expert) VBatDeltaTile(value: status.data?.vbatDelta),
             RssiTile(value: _lowRssiToNoValue(status.data?.rssi)),
           ],
         ),
