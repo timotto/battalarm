@@ -68,11 +68,26 @@ class StatusService {
     );
 
     await busy.run(() async {
-      await _subscribeAndRead2(_chrInGarage, _onInGarage);
-      await _subscribeAndRead2(_chrCharging, _onCharging);
-      await _subscribeAndRead2(_chrVbatVolt, _onVbat);
-      await _subscribeAndRead2(_chrVbatDelta, _onVbatDelta);
-      await _subscribeAndRead2(_chrBeaconRssi, _onRssi);
+      await _subscribeAndRead(
+        _chrInGarage,
+        (value) => _updateStateValue((update) => update.inGarage = value),
+      );
+      await _subscribeAndRead(
+        _chrCharging,
+        (value) => _updateStateValue((update) => update.charging = value),
+      );
+      await _subscribeAndRead(
+        _chrVbatVolt,
+        (value) => _updateStateValue((update) => update.vbat = value),
+      );
+      await _subscribeAndRead(
+        _chrVbatDelta,
+        (value) => _updateStateValue((update) => update.vbatDelta = value),
+      );
+      await _subscribeAndRead(
+        _chrBeaconRssi,
+        (value) => _updateStateValue((update) => update.rssi = value),
+      );
     });
   }
 
@@ -91,55 +106,16 @@ class StatusService {
     _stateController.add(state);
   }
 
-  Future<void> _subscribeAndRead2<T>(
+  void _updateStateValue(void Function(DeviceStatus update) fn) {
+    final cpy = _state.clone();
+    fn(cpy);
+    _updateState(cpy);
+  }
+
+  Future<void> _subscribeAndRead<T>(
       ValueCharacteristic<T>? chr, void Function(T?) onData) async {
     if (chr == null) return;
     chr.subscribe(onData);
     onData(await chr.read());
-  }
-
-  void _onInGarage(bool? value) {
-    _updateState(DeviceStatus(
-        inGarage: value,
-        charging: _state.charging,
-        vbat: _state.vbat,
-        vbatDelta: _state.vbatDelta,
-        rssi: _state.rssi));
-  }
-
-  void _onCharging(bool? value) {
-    _updateState(DeviceStatus(
-        inGarage: _state.inGarage,
-        charging: value,
-        vbat: _state.vbat,
-        vbatDelta: _state.vbatDelta,
-        rssi: _state.rssi));
-  }
-
-  void _onVbat(double? value) {
-    _updateState(DeviceStatus(
-        inGarage: _state.inGarage,
-        charging: _state.charging,
-        vbat: value,
-        vbatDelta: _state.vbatDelta,
-        rssi: _state.rssi));
-  }
-
-  void _onVbatDelta(double? value) {
-    _updateState(DeviceStatus(
-        inGarage: _state.inGarage,
-        charging: _state.charging,
-        vbat: _state.vbat,
-        vbatDelta: value,
-        rssi: _state.rssi));
-  }
-
-  void _onRssi(double? value) {
-    _updateState(DeviceStatus(
-        inGarage: _state.inGarage,
-        charging: _state.charging,
-        vbat: _state.vbat,
-        vbatDelta: _state.vbatDelta,
-        rssi: value));
   }
 }
