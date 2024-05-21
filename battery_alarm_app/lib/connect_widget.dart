@@ -26,7 +26,7 @@ class ConnectWidget extends StatelessWidget {
 }
 
 class _ConnectionStatusWidget extends StatelessWidget {
-  const _ConnectionStatusWidget({super.key, required this.update});
+  const _ConnectionStatusWidget({required this.update});
 
   final AsyncSnapshot<ConnectionStateUpdate> update;
 
@@ -71,7 +71,7 @@ String _connectionStateAsText(DeviceConnectionState? state) {
 }
 
 class _ProgressSpinnerWidget extends StatefulWidget {
-  const _ProgressSpinnerWidget({super.key});
+  const _ProgressSpinnerWidget();
 
   @override
   State<StatefulWidget> createState() => _ProgressSpinnerState();
