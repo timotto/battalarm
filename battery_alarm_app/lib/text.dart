@@ -14,4 +14,9 @@ class Texts {
 
   static const aboutAppMenuItemTitle = 'Über die App';
   static const aboutAppLegalese = 'Mit dieser App kannst du den Fahrzeug-in-der-Garage-aber-Batterie-wird-nicht-geladen-Alarm-Adapter einstellen.';
+
+  static const deviceScannerHint = 'Wenn der Adapter nicht gefunden wird, dann halte den Knopf am Adapter für ca. 5 Sekunden lang gedrückt, bis ein tiefer Piepton kommt.';
+  static const deviceScannerSearching = 'Suche nach Battalarm Adaptern...';
+  static const deviceScannerNoResults = 'Keine Adapter gefunden';
+  static const deviceScannerError = 'Die Verbindung wurde unterbrochen.';
 }

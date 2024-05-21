@@ -3,7 +3,7 @@ import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:battery_alarm_app/device_config_widget.dart';
 import 'package:battery_alarm_app/device_status_widget.dart';
 import 'package:battery_alarm_app/text.dart';
-import 'package:battery_alarm_app/widgets/about_app_dialog.dart';
+import 'package:battery_alarm_app/widgets/app_menu_widget.dart';
 import 'package:flutter/material.dart';
 
 class DeviceControlWidget extends StatefulWidget {
@@ -24,37 +24,23 @@ class _DeviceControlWidgetState extends State<DeviceControlWidget> {
     });
   }
 
-  Widget _appMenu(BuildContext context) => MenuAnchor(
-        builder: (context, controller, _) => IconButton(
-          onPressed: () {
-            if (controller.isOpen) {
-              controller.close();
-            } else {
-              controller.open();
-            }
-          },
-          icon: const Icon(Icons.more_vert),
-        ),
-        menuChildren: [
-          CheckboxMenuButton(
-            value: _expert,
-            onChanged: _toggleExpertMode,
-            child: const Text('Experten Ansicht'),
-          ),
-          MenuItemButton(
-            onPressed: () => showAboutAppDialog(context),
-            child: const Text(Texts.aboutAppMenuItemTitle),
-          ),
-        ],
-      );
-
   @override
   Widget build(BuildContext context) => DefaultTabController(
         length: 3,
         child: Scaffold(
           appBar: AppBar(
             title: const Text(Texts.appTitle),
-            actions: [_appMenu(context)],
+            actions: [
+              AppMenuWidget(
+                menuItems: [
+                  CheckboxMenuButton(
+                    value: _expert,
+                    onChanged: _toggleExpertMode,
+                    child: const Text('Experten Ansicht'),
+                  ),
+                ],
+              )
+            ],
           ),
           bottomNavigationBar: const TabBar(
             tabs: [

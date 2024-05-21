@@ -2,55 +2,28 @@ import 'package:battery_alarm_app/bt/scanner.dart';
 import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:battery_alarm_app/model/bt_uuid.dart';
 import 'package:battery_alarm_app/text.dart';
-import 'package:battery_alarm_app/widgets/about_app_dialog.dart';
+import 'package:battery_alarm_app/widgets/app_menu_widget.dart';
 import 'package:battery_alarm_app/widgets/scan_fab_widget.dart';
 import 'package:battery_alarm_app/widgets/scan_result_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
-class DeviceScannerWidget extends StatelessWidget {
+class DeviceScannerWidget extends StatefulWidget {
   DeviceScannerWidget({
     super.key,
     required this.deviceClient,
     this.error,
   });
 
-  final scanner = BleScanner();
+  final bleScanner = BleScanner();
   final DeviceClient deviceClient;
   final GenericFailure<ConnectionError>? error;
 
   @override
-  Widget build(BuildContext context) => StreamBuilder(
-        stream: scanner.state,
-        initialData: scanner.stateSnapshot,
-        builder: (context, scannerState) => _DeviceScanWidget(
-          bleScanner: scanner,
-          deviceClient: deviceClient,
-          scannerState: scannerState,
-          error: error,
-        ),
-      );
+  State<StatefulWidget> createState() => _DeviceScannerWidgetState();
 }
 
-class _DeviceScanWidget extends StatefulWidget {
-  const _DeviceScanWidget({
-    super.key,
-    required this.bleScanner,
-    required this.deviceClient,
-    required this.scannerState,
-    this.error,
-  });
-
-  final BleScanner bleScanner;
-  final DeviceClient deviceClient;
-  final AsyncSnapshot<BleScannerState> scannerState;
-  final GenericFailure<ConnectionError>? error;
-
-  @override
-  State<StatefulWidget> createState() => _DeviceScanState();
-}
-
-class _DeviceScanState extends State<_DeviceScanWidget> {
+class _DeviceScannerWidgetState extends State<DeviceScannerWidget> {
   @override
   void initState() {
     super.initState();
@@ -73,8 +46,8 @@ class _DeviceScanState extends State<_DeviceScanWidget> {
 
   Widget _onEmpty(bool scanning) => Center(
         child: Text(scanning
-            ? 'Suche nach Battalarm Adaptern...'
-            : 'Keine Adapter gefunden'),
+            ? Texts.deviceScannerSearching
+            : Texts.deviceScannerNoResults),
       );
 
   void _onError() {
@@ -82,56 +55,42 @@ class _DeviceScanState extends State<_DeviceScanWidget> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ScaffoldMessenger.maybeOf(context)?.showSnackBar(const SnackBar(
-        content: Text('Die Verbindung wurde unterbrochen.'),
+        content: Text(Texts.deviceScannerError),
       ));
     });
   }
 
-  Widget _appMenu(BuildContext context) => MenuAnchor(
-        builder: (context, controller, _) => IconButton(
-          onPressed: () {
-            if (controller.isOpen) {
-              controller.close();
-            } else {
-              controller.open();
-            }
-          },
-          icon: const Icon(Icons.more_vert),
-        ),
-        menuChildren: [
-          MenuItemButton(
-            onPressed: () => showAboutAppDialog(context),
-            child: const Text(Texts.aboutAppMenuItemTitle),
-          ),
-        ],
-      );
-
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: const Text(Texts.appTitle),
-          actions: [_appMenu(context)],
-        ),
-        body: RefreshIndicator(
-          onRefresh: _startScan,
-          child: Column(
-            children: [
-              _paddedText(
-                  'Wenn der Adapter nicht gefunden wird, dann halte den Knopf am Adapter für ca. 5 Sekunden lang gedrückt, bis ein tiefer Piepton kommt.'),
-              Expanded(
-                child: ScanResultWidget(
-                  state: widget.scannerState.data,
-                  onEmpty: _onEmpty(widget.scannerState.data?.scanIsInProgress ?? false),
-                  onSelect: (device) => widget.deviceClient.connect(device.id),
-                ),
-              ),
-            ],
+  Widget build(BuildContext context) => StreamBuilder(
+        stream: widget.bleScanner.state,
+        initialData: widget.bleScanner.stateSnapshot,
+        builder: (context, scannerState) => Scaffold(
+          appBar: AppBar(
+            title: const Text(Texts.appTitle),
+            actions: const [AppMenuWidget()],
           ),
-        ),
-        floatingActionButton: ScanFabWidget(
-          state: widget.scannerState.data,
-          onStartScan: _startScan,
-          onStopScan: _stopScan,
+          body: RefreshIndicator(
+            onRefresh: _startScan,
+            child: Column(
+              children: [
+                _paddedText(Texts.deviceScannerHint),
+                Expanded(
+                  child: ScanResultWidget(
+                    state: scannerState.data,
+                    onEmpty:
+                        _onEmpty(scannerState.data?.scanIsInProgress ?? false),
+                    onSelect: (device) =>
+                        widget.deviceClient.connect(device.id),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          floatingActionButton: ScanFabWidget(
+            state: scannerState.data,
+            onStartScan: _startScan,
+            onStopScan: _stopScan,
+          ),
         ),
       );
 }
