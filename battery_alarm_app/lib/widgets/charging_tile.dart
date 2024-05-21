@@ -19,6 +19,7 @@ final _chargingTriState = TriStateBool(
   isTrue: TriStateBoolValue(
     text: 'wird geladen',
     icon: Icons.battery_charging_full,
+    trailing: const Icon(Icons.check_circle, color: Color.fromARGB(255, 0, 255, 0),),
   ),
   isFalse: TriStateBoolValue(
     text: 'wird nicht geladen',

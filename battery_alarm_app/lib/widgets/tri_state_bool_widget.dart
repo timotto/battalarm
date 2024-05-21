@@ -22,6 +22,7 @@ class TriStateBoolWidget extends StatelessWidget {
         title: Text(title),
         subtitle: Text(_state().text),
         leading: Icon(_state().icon),
+        trailing: _state().trailing,
       );
 }
 
@@ -38,8 +39,13 @@ class TriStateBool {
 }
 
 class TriStateBoolValue {
-  TriStateBoolValue({required this.text, required this.icon});
+  TriStateBoolValue({
+    required this.text,
+    required this.icon,
+    this.trailing,
+  });
 
   final String text;
   final IconData icon;
+  final Widget? trailing;
 }

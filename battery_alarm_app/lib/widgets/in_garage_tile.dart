@@ -19,6 +19,7 @@ final _inGarageTriState = TriStateBool(
   isTrue: TriStateBoolValue(
     text: 'in der Garage',
     icon: Icons.home,
+    trailing: const Icon(Icons.check_circle, color: Color.fromARGB(255, 0, 255, 0),),
   ),
   isFalse: TriStateBoolValue(
     text: 'nicht in der Garage',
