@@ -16,12 +16,12 @@ class ScanFabWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => (state?.scanIsInProgress ?? false)
       ? FloatingActionButton(
-          onPressed: onStartScan,
-          child: const Icon(Icons.search),
-        )
-      : FloatingActionButton(
           backgroundColor: Colors.red,
           onPressed: onStopScan,
           child: const Icon(Icons.stop),
+        )
+      : FloatingActionButton(
+          onPressed: onStartScan,
+          child: const Icon(Icons.search),
         );
 }
