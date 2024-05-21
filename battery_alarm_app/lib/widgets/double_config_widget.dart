@@ -1,3 +1,4 @@
+import 'package:battery_alarm_app/util/stream_and_value.dart';
 import 'package:battery_alarm_app/widgets/double_edit_dialog.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +13,8 @@ class DoubleConfigWidget extends StatelessWidget {
     required this.value,
     required this.unit,
     required this.onChange,
+    this.currentReading,
+    this.onNoCurrentReading,
   });
 
   final String title;
@@ -21,6 +24,9 @@ class DoubleConfigWidget extends StatelessWidget {
   final int digits;
   final String unit;
   final void Function(double?) onChange;
+
+  final StreamAndValue<double?>? currentReading;
+  final String? onNoCurrentReading;
 
   String _value() {
     if (value == null) return '-';
@@ -39,6 +45,8 @@ class DoubleConfigWidget extends StatelessWidget {
               digits: digits,
               onChange: onChange,
               value: value,
+              currentReading: currentReading,
+              onNoCurrentReading: onNoCurrentReading,
             ));
   }
 

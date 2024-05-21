@@ -1,3 +1,4 @@
+import 'package:battery_alarm_app/util/stream_and_value.dart';
 import 'package:flutter/material.dart';
 
 class DoubleEditDialog extends StatefulWidget {
@@ -11,6 +12,8 @@ class DoubleEditDialog extends StatefulWidget {
     required this.digits,
     this.value,
     required this.onChange,
+    this.currentReading,
+    this.onNoCurrentReading,
   });
 
   final String title;
@@ -20,6 +23,9 @@ class DoubleEditDialog extends StatefulWidget {
   final String unit;
   final double? value;
   final void Function(double?) onChange;
+
+  final StreamAndValue<double?>? currentReading;
+  final String? onNoCurrentReading;
 
   @override
   State<StatefulWidget> createState() => _DoubleEditDialogState();
@@ -56,47 +62,127 @@ class _DoubleEditDialogState extends State<DoubleEditDialog> {
 
     if (value < widget.min) {
       setState(() {
-        _errorText = 'Die Eingabe ist zu niedrig, mindestens ${widget.min.toStringAsFixed(widget.digits)}.';
+        _errorText =
+            'Die Eingabe ist zu niedrig, mindestens ${widget.min.toStringAsFixed(widget.digits)}.';
       });
       return;
     }
 
     if (value > widget.max) {
       setState(() {
-        _errorText = 'Die Eingabe ist zu hoch, höchstens ${widget.max.toStringAsFixed(widget.digits)}.';
+        _errorText =
+            'Die Eingabe ist zu hoch, höchstens ${widget.max.toStringAsFixed(widget.digits)}.';
       });
       return;
     }
 
-    setState((){
+    setState(() {
       _currentValue = value;
       _errorText = null;
     });
   }
 
+  void _onApply(double value) {
+    final text = value.toStringAsFixed(widget.digits);
+    _controller?.text = text;
+    _textChanged(text);
+  }
+
   @override
   Widget build(BuildContext context) => AlertDialog(
         title: Text(widget.title),
-        content: TextField(
-          controller: _controller,
-          decoration: InputDecoration(
-            suffix: Text(widget.unit),
-            errorText: _errorText,
-          ),
-          keyboardType: TextInputType.numberWithOptions(
-            decimal: widget.digits == 0,
-            signed: _signed(),
-          ),
-          onChanged: _textChanged,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: _controller,
+              decoration: InputDecoration(
+                suffix: Text(widget.unit),
+                errorText: _errorText,
+              ),
+              keyboardType: TextInputType.numberWithOptions(
+                decimal: widget.digits == 0,
+                signed: _signed(),
+              ),
+              onChanged: _textChanged,
+            ),
+            if (widget.currentReading != null)
+              _CurrentReadingWidget(
+                currentReading: widget.currentReading!,
+                onNoCurrentReading: widget.onNoCurrentReading,
+                unit: widget.unit,
+                digits: widget.digits,
+              ),
+          ],
         ),
         actions: [
+          if (widget.currentReading != null)
+            _ApplyCurrentReadingWidget(
+              currentReading: widget.currentReading!,
+              onApply: _onApply,
+            ),
           TextButton(
-            onPressed: _hasErrors() ? null : () {
-              widget.onChange(_currentValue);
-              Navigator.pop(context);
-            },
+            onPressed: _hasErrors()
+                ? null
+                : () {
+                    widget.onChange(_currentValue);
+                    Navigator.pop(context);
+                  },
             child: const Text('OK'),
           ),
         ],
       );
+}
+
+class _CurrentReadingWidget extends StatelessWidget {
+  const _CurrentReadingWidget({
+    required this.currentReading,
+    required this.onNoCurrentReading,
+    required this.unit,
+    required this.digits,
+  });
+
+  final StreamAndValue<double?> currentReading;
+  final String? onNoCurrentReading;
+  final String unit;
+  final int digits;
+
+  String _value(double? value) {
+    if (value == null) {
+      if (onNoCurrentReading != null) return onNoCurrentReading!;
+      return '-';
+    }
+
+    return '${value.toStringAsFixed(digits)} $unit';
+  }
+
+  @override
+  Widget build(BuildContext context) => StreamBuilder(
+        stream: currentReading.stream,
+        initialData: currentReading.value,
+        builder: (context, readingSnapshot) =>
+            Text('Aktueller Wert: ${_value(readingSnapshot.data)}'),
+      );
+}
+
+class _ApplyCurrentReadingWidget extends StatelessWidget {
+  const _ApplyCurrentReadingWidget({
+    required this.currentReading,
+    required this.onApply,
+  });
+
+  final StreamAndValue<double?> currentReading;
+  final void Function(double) onApply;
+
+  void Function()? _applyFunction(double? value) =>
+      value == null ? null : () => onApply(value);
+
+  @override
+  Widget build(BuildContext context) => StreamBuilder(
+      stream: currentReading.stream,
+      initialData: currentReading.value,
+      builder: (context, readingSnapshot) => TextButton(
+            onPressed: _applyFunction(readingSnapshot.data),
+            child: const Text('Wert übernehmen'),
+          ));
 }

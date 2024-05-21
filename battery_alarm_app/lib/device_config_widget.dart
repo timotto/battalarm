@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:battery_alarm_app/model/config.dart';
+import 'package:battery_alarm_app/util/stream_and_value.dart';
 import 'package:battery_alarm_app/widgets/beacon_config_widget.dart';
 import 'package:battery_alarm_app/widgets/bool_config_widget.dart';
 import 'package:battery_alarm_app/widgets/double_config_widget.dart';
@@ -15,6 +18,30 @@ class DeviceConfigWidget extends StatelessWidget {
 
   final DeviceClient deviceClient;
   final bool expert;
+
+  StreamAndValue<double?> _currentRssiReading() => StreamAndValue(
+      stream: deviceClient.statusService.deviceStatus.transform(
+        StreamTransformer.fromHandlers(handleData: (data, sink) {
+          sink.add(data.rssi);
+        }),
+      ),
+      value: deviceClient.statusService.deviceStatusSnapshot.rssi);
+
+  StreamAndValue<double?> _currentVbatReading() => StreamAndValue(
+      stream: deviceClient.statusService.deviceStatus.transform(
+        StreamTransformer.fromHandlers(handleData: (data, sink) {
+          sink.add(data.vbat);
+        }),
+      ),
+      value: deviceClient.statusService.deviceStatusSnapshot.vbat);
+
+  StreamAndValue<double?> _currentVbatDeltaReading() => StreamAndValue(
+      stream: deviceClient.statusService.deviceStatus.transform(
+        StreamTransformer.fromHandlers(handleData: (data, sink) {
+          sink.add(data.vbatDelta);
+        }),
+      ),
+      value: deviceClient.statusService.deviceStatusSnapshot.vbatDelta);
 
   @override
   Widget build(BuildContext context) => StreamBuilder<DeviceConfig>(
@@ -70,6 +97,8 @@ class DeviceConfigWidget extends StatelessWidget {
                   config.data,
                   (config, value) => config.btRssiThreshold = value,
                 ),
+                currentReading: _currentRssiReading(),
+                onNoCurrentReading: 'Kein Empfang',
               ),
               BoolConfigWidget(
                 title: 'Signalstärke automatisch anpassen',
@@ -101,6 +130,7 @@ class DeviceConfigWidget extends StatelessWidget {
                     config.data,
                     (config, value) => config.vbatChargeThreshold = value,
                   ),
+                  currentReading: _currentVbatReading(),
                 ),
                 DoubleConfigWidget(
                   title: 'Batterieladegerät Geschwindigkeit',
@@ -108,12 +138,13 @@ class DeviceConfigWidget extends StatelessWidget {
                   min: 0.001,
                   max: 1,
                   value: config.data?.vbatDeltaThreshold,
-                  digits: 1,
+                  digits: 3,
                   unit: 'V/t',
                   onChange: _onChanged(
                     config.data,
                     (config, value) => config.vbatDeltaThreshold = value,
                   ),
+                  currentReading: _currentVbatDeltaReading(),
                 ),
                 DoubleConfigWidget(
                   title: 'Batteriespannung Feinjustierung',
