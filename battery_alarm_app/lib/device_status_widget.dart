@@ -27,11 +27,8 @@ class DeviceStatusWidget extends StatelessWidget {
             ChargingTile(value: status.data?.charging),
             VBatTile(value: status.data?.vbat),
             if (expert) VBatDeltaTile(value: status.data?.vbatDelta),
-            RssiTile(value: _lowRssiToNoValue(status.data?.rssi)),
+            RssiTile(value: status.data?.rssi),
           ],
         ),
       );
 }
-
-double? _lowRssiToNoValue(double? value) =>
-    (value == null || value <= -100) ? null : value;

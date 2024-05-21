@@ -86,7 +86,7 @@ class StatusService {
       );
       await _subscribeAndRead(
         _chrBeaconRssi,
-        (value) => _updateStateValue((update) => update.rssi = value),
+        (value) => _updateStateValue((update) => update.rssi = _beaconRssiValueGuard(value)),
       );
     });
   }
@@ -119,3 +119,6 @@ class StatusService {
     onData(await chr.read());
   }
 }
+
+double? _beaconRssiValueGuard(double? value) =>
+    value == null || value <= -100 ? null : value;
