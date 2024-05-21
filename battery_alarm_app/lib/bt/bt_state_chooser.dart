@@ -3,15 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
 class BluetoothStateChooserWidget extends StatelessWidget {
-  const BluetoothStateChooserWidget({
+  BluetoothStateChooserWidget({
     super.key,
     required this.onDisconnected,
     required this.onConnecting,
     required this.onConnected,
-    required this.deviceClient,
   });
 
-  final DeviceClient deviceClient;
+  final deviceClient = DeviceClient();
   final Widget Function(BuildContext, {GenericFailure<ConnectionError>? error}) onDisconnected;
   final Widget Function(BuildContext) onConnecting;
   final Widget Function(BuildContext) onConnected;

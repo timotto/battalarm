@@ -6,6 +6,12 @@ import 'package:battery_alarm_app/device_client/status_service.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
 class DeviceClient {
+  static final DeviceClient _sharedInstance = DeviceClient._();
+
+  factory DeviceClient() => _sharedInstance;
+
+  DeviceClient._();
+
   final _busy = Busy();
   final _ble = FlutterReactiveBle();
   late StatusService statusService = StatusService(_busy);

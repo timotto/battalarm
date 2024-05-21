@@ -1,9 +1,8 @@
 import 'package:battery_alarm_app/bt/bt_guard_widget.dart';
 import 'package:battery_alarm_app/bt/bt_state_chooser.dart';
-import 'package:battery_alarm_app/device_scanner.dart';
 import 'package:battery_alarm_app/connect_widget.dart';
-import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:battery_alarm_app/device_control.dart';
+import 'package:battery_alarm_app/device_scanner.dart';
 import 'package:battery_alarm_app/text.dart';
 import 'package:flutter/material.dart';
 
@@ -19,8 +18,6 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  final _deviceClient = DeviceClient();
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -31,17 +28,9 @@ class _AppState extends State<App> {
       ),
       home: BluetoothGuardWidget(
         builder: (_) => BluetoothStateChooserWidget(
-          deviceClient: _deviceClient,
-          onConnected: (_) => DeviceControlWidget(
-            deviceClient: _deviceClient,
-          ),
-          onConnecting: (_) => ConnectWidget(
-            deviceClient: _deviceClient,
-          ),
-          onDisconnected: (_, {error}) => DeviceScannerWidget(
-            deviceClient: _deviceClient,
-            error: error,
-          ),
+          onConnected: (_) => DeviceControlWidget(),
+          onConnecting: (_) => ConnectWidget(),
+          onDisconnected: (_, {error}) => DeviceScannerWidget(error: error),
         ),
       ),
     );

@@ -4,12 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
 class ConnectWidget extends StatelessWidget {
-  const ConnectWidget({
-    super.key,
-    required this.deviceClient,
-  });
+  ConnectWidget({super.key});
 
-  final DeviceClient deviceClient;
+  final _deviceClient = DeviceClient();
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -18,7 +15,7 @@ class ConnectWidget extends StatelessWidget {
         ),
         body: Center(
           child: StreamBuilder(
-            stream: deviceClient.connectionStatusUpdate,
+            stream: _deviceClient.connectionStatusUpdate,
             builder: (_, update) => _ConnectionStatusWidget(update: update),
           ),
         ),

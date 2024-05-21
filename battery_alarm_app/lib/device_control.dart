@@ -7,9 +7,9 @@ import 'package:battery_alarm_app/widgets/app_menu_widget.dart';
 import 'package:flutter/material.dart';
 
 class DeviceControlWidget extends StatefulWidget {
-  const DeviceControlWidget({super.key, required this.deviceClient});
+  DeviceControlWidget({super.key});
 
-  final DeviceClient deviceClient;
+  final _deviceClient = DeviceClient();
 
   @override
   State<StatefulWidget> createState() => _DeviceControlWidgetState();
@@ -59,8 +59,8 @@ class _DeviceControlWidgetState extends State<DeviceControlWidget> {
             ],
           ),
           body: StreamBuilder(
-            stream: widget.deviceClient.busy.stream,
-            initialData: widget.deviceClient.busy.value,
+            stream: widget._deviceClient.busy.stream,
+            initialData: widget._deviceClient.busy.value,
             builder: (context, busy) => Column(
               children: [
                 LinearProgressIndicator(
@@ -70,11 +70,11 @@ class _DeviceControlWidgetState extends State<DeviceControlWidget> {
                   child: TabBarView(
                     children: [
                       DeviceStatusWidget(
-                        deviceClient: widget.deviceClient,
+                        deviceClient: widget._deviceClient,
                         expert: _expert,
                       ),
                       DeviceConfigWidget(
-                        deviceClient: widget.deviceClient,
+                        deviceClient: widget._deviceClient,
                         expert: _expert,
                       ),
                       const AboutWidget(),

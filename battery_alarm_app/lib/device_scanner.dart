@@ -11,12 +11,11 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 class DeviceScannerWidget extends StatefulWidget {
   DeviceScannerWidget({
     super.key,
-    required this.deviceClient,
     this.error,
   });
 
   final bleScanner = BleScanner();
-  final DeviceClient deviceClient;
+  final deviceClient = DeviceClient();
   final GenericFailure<ConnectionError>? error;
 
   @override
