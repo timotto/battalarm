@@ -1,0 +1,15 @@
+# https://taskfile.dev
+
+version: '3'
+
+silent: true
+
+tasks:
+  app_icons:
+    cmds:
+      - dart run flutter_launcher_icons
+
+  android:
+    cmds:
+      - flutter build appbundle --build-number {{.BUILD_NUMBER}}
+      - cp build/app/outputs/bundle/release/app-release.aab ~/tmp/
