@@ -1,0 +1,75 @@
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: ghcr.io/cirruslabs/flutter
+    semver_constraint: ~3.19.x
+inputs:
+- name: app-source
+  path: app
+- name: app-version
+- name: app-number-version
+outputs:
+- name: artifacts
+- name: docker
+caches:
+- path: cache/pub-cache
+- path: cache/gradle
+- path: cache/gradle-wrapper
+params:
+  RELEASE_KEYSTORE: ((android.release_keystore))
+  RELEASE_KEYSTORE_PASSWORD: ((android.release_keystore_password))
+  RELEASE_KEYSTORE_KEY_ALIAS: ((android.release_keystore_key_alias))
+  RELEASE_KEYSTORE_KEY_PASSWORD: ((android.release_keystore_key_password))
+run:
+  path: bash
+  user: root
+  args:
+  - -ec
+  - |
+    target=$PWD/artifacts
+    version=$(cat app-version/version)
+    version_number=$(cat app-number-version/version | cut -d. -f1)
+    
+    cachedir() {
+      rm -rf "${1}"
+      mkdir -p "`dirname "${1}"`"
+      ln -s "$PWD/cache/${2}" "${1}"
+    }
+    debase64() {
+      echo -n "$1" \
+      | base64 --decode \
+      > $2
+    }
+    
+    cachedir /home/cirrus/.pub-cache pub-cache
+    cachedir /root/.pub-cache pub-cache
+    cachedir /root/.gradle/wrapper gradle-wrapper
+    cachedir /root/.gradle/caches gradle
+    
+    mkdir -p /root/.android
+    debase64 "$RELEASE_KEYSTORE" /root/.android/release.keystore
+    
+    flutter doctor --android-licenses < <(yes)
+    
+    cd app/battery_alarm_app
+    cat > android/key.properties <<EOT
+    storePassword=${RELEASE_KEYSTORE_PASSWORD}
+    keyPassword=${RELEASE_KEYSTORE_KEY_PASSWORD}
+    keyAlias=${RELEASE_KEYSTORE_KEY_ALIAS}
+    storeFile=/root/.android/release.keystore
+    EOT
+    
+    cat > lib/version.dart <<EOT
+    const appVersion = '$version';
+    EOT
+    
+    flutter doctor
+    flutter test
+    flutter \
+      build appbundle \
+      --release \
+      --build-number=${version_number} \
+      --build-name=${version}
+    
+    cp -v build/app/outputs/bundle/release/app-release.aab $target/app-${version}.aab

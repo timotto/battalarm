@@ -65,12 +65,22 @@ temp:
           path: build
 
 resources:
-- name: ci-source
+- name: pipeline-source
   <<: *repo
   source:
     <<: *repo_source
     paths:
-    - pipeline.yml
+    - ci/pipeline.yml
+
+- name: ci
+  <<: *repo
+  source:
+    <<: *repo_source
+    paths:
+    - ci
+    - battery_alarm_app/android/fastlane
+    ignore_paths:
+    - ci/pipeline.yml
 
 # region docs
 
@@ -136,6 +146,8 @@ resources:
 
 # endregion
 
+# region backend
+
 - name: production
   type: helm
   check_every: 24h
@@ -150,6 +162,41 @@ resources:
     repos:
     - name: ((charts-repo.name))
       url: ((charts-repo.url))
+
+# endregion
+
+# region app
+
+- name: app-source
+  <<: *repo
+  source:
+    <<: *repo_source
+    paths:
+    - battery_alarm_app
+
+- name: android-artifact
+  type: s3
+  source:
+    access_key_id: ((s3.access_key_id))
+    bucket: ((s3.artifacts_bucket))
+    endpoint: ((s3.endpoint))
+    regexp: battalarm/app/app-(.*).aab
+    region_name: ((s3.region_name))
+    secret_access_key: ((s3.secret_access_key))
+
+- name: app-version
+  <<: *semver
+  source:
+    <<: *semver_source
+    key: battalarm/app/apk
+
+- name: app-number-version
+  <<: *semver
+  source:
+    <<: *semver_source
+    key: battalarm/app/apk-number
+
+# endregion
 
 - name: slack-alert
   type: slack
@@ -184,14 +231,14 @@ resource_types:
 
 jobs:
 
-# region ci
+# region pipeline
 
 - name: pipeline
   serial: true
   plan:
   - <<: *slack_alert
     do:
-    - get: ci-source
+    - get: pipeline-source
       trigger: true
     - set_pipeline: self
       file: ci-source/pipeline.yml
@@ -329,6 +376,10 @@ jobs:
           chart: chart/battalarm.tgz
           version_file: chart-version/version
 
+# endregion
+
+# region backend
+
 - name: deploy
   serial: true
   serial_groups: [docs, chart]
@@ -370,5 +421,101 @@ jobs:
         - key: docs_image.tag
           path: docs-image-version/version
           type: string
+
+# endregion
+
+# region app
+
+- name: app
+  plan:
+  - in_parallel:
+    - get: app-source
+      trigger: true
+    - put: app-version
+      params:
+        pre: build
+    - put: app-number-version
+      params:
+        bump: major
+    - get: ci
+
+  - load_var: version
+    file: app-version/version
+  - task: build
+    file: ci/ci/tasks/build_app.yml
+    params:
+      RELEASE_KEYSTORE: ((android.release_keystore))
+      RELEASE_KEYSTORE_PASSWORD: ((android.release_keystore_password))
+      RELEASE_KEYSTORE_KEY_ALIAS: ((android.release_keystore_key_alias))
+      RELEASE_KEYSTORE_KEY_PASSWORD: ((android.release_keystore_key_password))
+
+  - in_parallel:
+    - put: android-artifact
+      params:
+        content_type: application/vnd.android.package-archive
+        file: artifacts/app-*.aab
+    - put: app-source
+      params:
+        repository: app-source
+        tag: app-version/version
+        tag_prefix: app-v
+        only_tag: true
+
+- name: publish-android-internal
+  serial: true
+  plan:
+  - in_parallel:
+    - get: android-artifact
+      trigger: true
+      passed: [app]
+    - get: ci
+
+  - task: publish
+    file: ci/ci/tasks/publish_android.yml
+    params:
+      FASTLANE_TARGET: internal
+      SERVICE_ACCOUNT_JSON: ((android.service_account_json))
+
+- name: promote-android-internal-to-closed
+  serial: true
+  plan:
+  - in_parallel:
+    - get: android-artifact
+      passed: [publish-android-internal]
+    - get: ci
+
+  - task: publish
+    file: ci/ci/tasks/publish_android.yml
+    params:
+      FASTLANE_TARGET: promote_internal_to_closed
+      SERVICE_ACCOUNT_JSON: ((android.service_account_json))
+
+- name: promote-android-closed-to-open
+  serial: true
+  plan:
+  - in_parallel:
+    - get: android-artifact
+      passed: [promote-android-internal-to-closed]
+    - get: ci
+
+  - task: publish
+    file: ci/ci/tasks/publish_android.yml
+    params:
+      FASTLANE_TARGET: promote_closed_to_open
+      SERVICE_ACCOUNT_JSON: ((android.service_account_json))
+
+- name: promote-android-open-to-prod
+  serial: true
+  plan:
+  - in_parallel:
+    - get: android-artifact
+      passed: [promote-android-closed-to-open]
+    - get: ci
+
+  - task: publish
+    file: ci/ci/tasks/publish_android.yml
+    params:
+      FASTLANE_TARGET: promote_open_to_prod
+      SERVICE_ACCOUNT_JSON: ((android.service_account_json))
 
 # endregion

@@ -27,7 +27,7 @@ platform :android do
       aab: "../build/app/outputs/bundle/release/app-release.aab",
       skip_upload_images: true,
       skip_upload_screenshots: true,
-      track: "internal"
+      track: "internal-testing"
     )
   end
 
@@ -44,5 +44,38 @@ platform :android do
   lane :deploy do
     gradle(task: "clean assembleRelease")
     upload_to_play_store
+  end
+
+  desc "Promote Internal Testing to Closed Testing"
+  lane :promote_internal_to_closed do
+    upload_to_play_store(
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_changelogs: true,
+      track: "internal-testing",
+      track_promote_to: "closed-testing",
+    )
+  end
+
+  desc "Promote Closed Testing to Open Testing"
+  lane :promote_closed_to_open do
+    upload_to_play_store(
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_changelogs: true,
+      track: "closed-testing",
+      track_promote_to: "open-testing",
+    )
+  end
+
+  desc "Promote Open Testing to production"
+  lane :promote_open_to_prod do
+    upload_to_play_store(
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_changelogs: true,
+      track: "open-testing",
+      track_promote_to: "production",
+    )
   end
 end

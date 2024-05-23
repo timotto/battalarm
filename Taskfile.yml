@@ -5,7 +5,7 @@ version: '3'
 tasks:
   set-pipeline:
     cmds:
-    - "fly -t apps set-pipeline -p battalarm -c pipeline.yml"
+    - "fly -t apps set-pipeline -p battalarm -c ci/pipeline.yml"
 
   sp:
     cmds:
