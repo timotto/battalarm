@@ -3,7 +3,7 @@ image_resource:
   type: registry-image
   source:
     repository: ghcr.io/cirruslabs/flutter
-    semver_constraint: ~3.19.x
+    semver_constraint: ~3.22.x
 inputs:
 - name: app-source
   path: app
