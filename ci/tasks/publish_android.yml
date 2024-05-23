@@ -3,7 +3,7 @@ image_resource:
   type: registry-image
   source:
     repository: cirrusci/flutter
-    semver_constraint: ~3.0.x
+    semver_constraint: ~3.22.x
 inputs:
 - name: android-artifact
 - name: ci
