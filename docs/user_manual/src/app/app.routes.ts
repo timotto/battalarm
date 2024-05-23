@@ -8,7 +8,7 @@ export const routes: Routes = [
   {
     path: "",
     pathMatch: "full",
-    component: ChapterIntroductionComponent,
+    redirectTo: "introduction",
   },
   {
     path: "introduction",
