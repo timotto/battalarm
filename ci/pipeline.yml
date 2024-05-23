@@ -79,6 +79,8 @@ resources:
     paths:
     - ci
     - battery_alarm_app/android/fastlane
+    - battery_alarm_app/android/Gemfile
+    - battery_alarm_app/android/Gemfile.lock
     ignore_paths:
     - ci/pipeline.yml
 
@@ -173,6 +175,10 @@ resources:
     <<: *repo_source
     paths:
     - battery_alarm_app
+    ignore_paths:
+    - battery_alarm_app/android/fastlane
+    - battery_alarm_app/android/Gemfile
+    - battery_alarm_app/android/Gemfile.lock
 
 - name: android-artifact
   type: s3
