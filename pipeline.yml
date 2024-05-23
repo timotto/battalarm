@@ -232,7 +232,7 @@ jobs:
         - path: source-code/docs/user_manual/node_modules
         run:
           path: bash
-          dir: source-code/docs/battery_alarm_user_manual
+          dir: source-code/docs/user_manual
           args:
           - -exc
           - |
