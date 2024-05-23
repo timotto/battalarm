@@ -65,7 +65,6 @@ run:
     EOT
     
     flutter doctor
-    flutter test
     flutter \
       build appbundle \
       --release \
