@@ -5,7 +5,15 @@ version: '3'
 tasks:
   extract-i18n:
     cmds:
-    - npm run ng extract-i18n -- --output-path src/locales
+    - |
+      npm run ng extract-i18n -- \
+        --output-path src/locales \
+        --format arb \
+        --out-file app_en.arb
+
+  translate:
+    cmds:
+    - flutter pub global run lyrebird
 
   build-docker:
     cmds:

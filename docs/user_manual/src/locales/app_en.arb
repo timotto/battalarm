@@ -1,0 +1,543 @@
+{
+  "@@locale": "en",
+  "5998398125478312393": "Battery Alarm User's Guide",
+  "@5998398125478312393": {
+    "x-locations": [
+      {
+        "file": "src/app/app.component.html",
+        "start": { "line": "5", "column": "24" },
+        "end": { "line": "6", "column": "3" }
+      },
+      {
+        "file": "src/app/app.component.ts",
+        "start": { "line": "32", "column": "28" },
+        "end": { "line": "32", "column": "57" }
+      }
+    ]
+  },
+  "3008420115644088420": "Configuration",
+  "@3008420115644088420": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-configuration/chapter-configuration.component.html",
+        "start": { "line": "0", "column": "18" },
+        "end": { "line": "1", "column": "5" }
+      },
+      {
+        "file": "src/app/chapter-introduction/chapter-introduction.component.html",
+        "start": { "line": "8", "column": "83" },
+        "end": { "line": "9", "column": "6" }
+      },
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "4", "column": "47" },
+        "end": { "line": "5", "column": "6" }
+      },
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "9", "column": "47" },
+        "end": { "line": "10", "column": "6" }
+      },
+      {
+        "file": "src/app/toc/toc.component.html",
+        "start": { "line": "4", "column": "83" },
+        "end": { "line": "5", "column": "6" }
+      }
+    ]
+  },
+  "3937614375849871568": "There's a smartphone app to configure the adapter.",
+  "@3937614375849871568": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-configuration/chapter-configuration.component.html",
+        "start": { "line": "1", "column": "17" },
+        "end": { "line": "2", "column": "6" }
+      }
+    ]
+  },
+  "6948888269364629483": "screenshot of the app's adapter status view",
+  "@6948888269364629483": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-configuration/chapter-configuration.component.html",
+        "start": { "line": "5", "column": "16" },
+        "end": { "line": "6", "column": "0" }
+      }
+    ]
+  },
+  "5723485713249242420": "screenshot of the app's adapter configuration view",
+  "@5723485713249242420": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-configuration/chapter-configuration.component.html",
+        "start": { "line": "13", "column": "16" },
+        "end": { "line": "14", "column": "0" }
+      }
+    ]
+  },
+  "3044447626642746848": "With the app you can configure a bunch of parameters, like the duration until the adapter sounds the warning or the alert tone, the voltage of your battery charger, or the signal strength of the base station when the vehicle is in the garage.",
+  "@3044447626642746848": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-configuration/chapter-configuration.component.html",
+        "start": { "line": "18", "column": "17" },
+        "end": { "line": "19", "column": "6" }
+      }
+    ]
+  },
+  "8215142644533009744": "Usually configuration is a one time job, or at least it's just necessary for a few times after installing the adapter and the base station.",
+  "@8215142644533009744": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-configuration/chapter-configuration.component.html",
+        "start": { "line": "19", "column": "17" },
+        "end": { "line": "20", "column": "6" }
+      }
+    ]
+  },
+  "5496454247219181295": "Getting the app",
+  "@5496454247219181295": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-configuration/chapter-configuration.component.html",
+        "start": { "line": "20", "column": "18" },
+        "end": { "line": "21", "column": "5" }
+      }
+    ]
+  },
+  "8055782655750684773": "You can download the Android app from Google Play.",
+  "@8055782655750684773": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-configuration/chapter-configuration.component.html",
+        "start": { "line": "21", "column": "17" },
+        "end": { "line": "22", "column": "6" }
+      }
+    ]
+  },
+  "1368585105563605641": "To install the iPhone app you need a Mac computer and build and install it on your own. I neither have an iPhone nor do I pay the annual fee to Apple to be able to publish iPhone apps.",
+  "@1368585105563605641": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-configuration/chapter-configuration.component.html",
+        "start": { "line": "27", "column": "17" },
+        "end": { "line": "28", "column": "6" }
+      }
+    ]
+  },
+  "7419787782755641631": "Installation",
+  "@7419787782755641631": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-installation/chapter-installation.component.html",
+        "start": { "line": "0", "column": "18" },
+        "end": { "line": "1", "column": "5" }
+      },
+      {
+        "file": "src/app/chapter-introduction/chapter-introduction.component.html",
+        "start": { "line": "7", "column": "81" },
+        "end": { "line": "8", "column": "6" }
+      },
+      {
+        "file": "src/app/toc/toc.component.html",
+        "start": { "line": "3", "column": "81" },
+        "end": { "line": "4", "column": "6" }
+      }
+    ]
+  },
+  "1534175289878567733": "You need install the adapter in your vehicle and the base station in your garage.",
+  "@1534175289878567733": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-installation/chapter-installation.component.html",
+        "start": { "line": "1", "column": "17" },
+        "end": { "line": "2", "column": "6" }
+      }
+    ]
+  },
+  "9107315259351049078": "Vehicle adapter",
+  "@9107315259351049078": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-installation/chapter-installation.component.html",
+        "start": { "line": "2", "column": "18" },
+        "end": { "line": "3", "column": "5" }
+      }
+    ]
+  },
+  "4220468555929676362": "image of the vehicle adapter",
+  "@4220468555929676362": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-installation/chapter-installation.component.html",
+        "start": { "line": "6", "column": "16" },
+        "end": { "line": "7", "column": "0" }
+      }
+    ]
+  },
+  "542391593226245590": "The adapter has a standard vehicle power connector. It also has a standard vehicle power socket, so you can use other electric devices without unplugging the adapter.",
+  "@542391593226245590": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-installation/chapter-installation.component.html",
+        "start": { "line": "10", "column": "17" },
+        "end": { "line": "11", "column": "6" }
+      }
+    ]
+  },
+  "507757992618352035": "Mount it on your vehicle using velcro tape to make sure it does not flap around.",
+  "@507757992618352035": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-installation/chapter-installation.component.html",
+        "start": { "line": "11", "column": "17" },
+        "end": { "line": "12", "column": "6" }
+      }
+    ]
+  },
+  "9008335113235607328": "Base station",
+  "@9008335113235607328": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-installation/chapter-installation.component.html",
+        "start": { "line": "12", "column": "18" },
+        "end": { "line": "13", "column": "5" }
+      }
+    ]
+  },
+  "2221198552255851811": "image of the base station",
+  "@2221198552255851811": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-installation/chapter-installation.component.html",
+        "start": { "line": "16", "column": "16" },
+        "end": { "line": "17", "column": "0" }
+      }
+    ]
+  },
+  "6883495823120325919": "Mount the base station inside your garage.",
+  "@6883495823120325919": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-installation/chapter-installation.component.html",
+        "start": { "line": "20", "column": "17" },
+        "end": { "line": "21", "column": "6" }
+      }
+    ]
+  },
+  "5799991593349358966": "Keep it away from the gate so the adapter has a stronger signal when the vehicle is inside the garage. Otherwise the adapter might wrongly assume the vehicle to be in the garage when in fact it is parked outside in front of it.",
+  "@5799991593349358966": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-installation/chapter-installation.component.html",
+        "start": { "line": "21", "column": "17" },
+        "end": { "line": "22", "column": "6" }
+      }
+    ]
+  },
+  "2171894153326157864": "Introduction",
+  "@2171894153326157864": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-introduction/chapter-introduction.component.html",
+        "start": { "line": "0", "column": "18" },
+        "end": { "line": "1", "column": "5" }
+      },
+      {
+        "file": "src/app/toc/toc.component.html",
+        "start": { "line": "1", "column": "81" },
+        "end": { "line": "2", "column": "6" }
+      }
+    ]
+  },
+  "2026475972435825428": "The Battery Alarm adapter is meant to solve a specific problem.",
+  "@2026475972435825428": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-introduction/chapter-introduction.component.html",
+        "start": { "line": "1", "column": "17" },
+        "end": { "line": "2", "column": "6" }
+      }
+    ]
+  },
+  "3663536501687537758": "We all know it and it has happened to everybody: you pick up your phone on your way out and the battery is almost dead because we forgot to plug it in.",
+  "@3663536501687537758": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-introduction/chapter-introduction.component.html",
+        "start": { "line": "2", "column": "17" },
+        "end": { "line": "3", "column": "6" }
+      }
+    ]
+  },
+  "5858433833340452206": "The same can happen to power hungry vehicles: you receive an alert, jump into your truck and the starter doesn't even budge because you forgot to plug in the charging cable after your previous trip.",
+  "@5858433833340452206": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-introduction/chapter-introduction.component.html",
+        "start": { "line": "3", "column": "17" },
+        "end": { "line": "4", "column": "6" }
+      }
+    ]
+  },
+  "4775370835096625187": "This User's Manual contains all the information to get you started. See the chapters for details:",
+  "@4775370835096625187": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-introduction/chapter-introduction.component.html",
+        "start": { "line": "4", "column": "17" },
+        "end": { "line": "5", "column": "6" }
+      }
+    ]
+  },
+  "1283895920974679461": "Operation",
+  "@1283895920974679461": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-introduction/chapter-introduction.component.html",
+        "start": { "line": "6", "column": "75" },
+        "end": { "line": "7", "column": "6" }
+      },
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "0", "column": "18" },
+        "end": { "line": "1", "column": "5" }
+      },
+      {
+        "file": "src/app/toc/toc.component.html",
+        "start": { "line": "2", "column": "75" },
+        "end": { "line": "3", "column": "6" }
+      }
+    ]
+  },
+  "4461439950652462754": "The Adapter alerts you when you forget to connect the battery charger to your vehicle.",
+  "@4461439950652462754": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "1", "column": "17" },
+        "end": { "line": "3", "column": "2" }
+      }
+    ]
+  },
+  "1916939770343224041": "It discovers the garage when the signal of the base station is above the configured level (see chapter ",
+  "@1916939770343224041": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "3", "column": "22" },
+        "end": { "line": "4", "column": "3" }
+      }
+    ]
+  },
+  "8002015900985931553": "It detects if the battery charger is connected by comparing the vehicle's battery voltage with the configured level (again, see chapter ",
+  "@8002015900985931553": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "8", "column": "22" },
+        "end": { "line": "9", "column": "3" }
+      }
+    ]
+  },
+  "7430887648866923648": "Before the alert, which is quite annoying, there is a warning. Both alert and warning can be snoozed by touching the adapter.",
+  "@7430887648866923648": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "12", "column": "17" },
+        "end": { "line": "13", "column": "6" }
+      }
+    ]
+  },
+  "4896078362616682438": "Power on",
+  "@4896078362616682438": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "13", "column": "18" },
+        "end": { "line": "14", "column": "5" }
+      }
+    ]
+  },
+  "5377541612857860023": "On power on the adapter cycles colors on the LED and chimes a happy tune.",
+  "@5377541612857860023": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "14", "column": "17" },
+        "end": { "line": "15", "column": "6" }
+      }
+    ]
+  },
+  "6971361422184451083": "Garage detected",
+  "@6971361422184451083": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "21", "column": "18" },
+        "end": { "line": "22", "column": "5" }
+      }
+    ]
+  },
+  "1686430829964816799": "When the adapter detects the garage it plays two short beeps and one long beep.",
+  "@1686430829964816799": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "22", "column": "17" },
+        "end": { "line": "23", "column": "6" }
+      }
+    ]
+  },
+  "6759205696902713848": "Warning",
+  "@6759205696902713848": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "29", "column": "18" },
+        "end": { "line": "30", "column": "5" }
+      }
+    ]
+  },
+  "7072804110053894183": "When the vehicle is in the garage but is not charging the adapter will give you a warning.",
+  "@7072804110053894183": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "30", "column": "17" },
+        "end": { "line": "31", "column": "6" }
+      }
+    ]
+  },
+  "5393911261930249347": "The LED will slowly flash yellow and there is a short beep every five seconds.",
+  "@5393911261930249347": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "31", "column": "17" },
+        "end": { "line": "32", "column": "6" }
+      }
+    ]
+  },
+  "5726454104363206493": "Alert",
+  "@5726454104363206493": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "38", "column": "18" },
+        "end": { "line": "39", "column": "5" }
+      }
+    ]
+  },
+  "1436458522604546322": "After the warning you are alerted by a fast flashing red LED and an almost constant tone. It really is annoying.",
+  "@1436458522604546322": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "39", "column": "17" },
+        "end": { "line": "40", "column": "6" }
+      }
+    ]
+  },
+  "7978238029400116062": "Snooze",
+  "@7978238029400116062": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "46", "column": "18" },
+        "end": { "line": "47", "column": "5" }
+      }
+    ]
+  },
+  "3554923179346767222": "You can snooze the warning and the alert by touching the adapter for a few seconds. The LED will flash orange as long as the adapter is snoozing. It will resume to warn or alert you, whatever you interrupted.",
+  "@3554923179346767222": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "47", "column": "17" },
+        "end": { "line": "48", "column": "6" }
+      }
+    ]
+  },
+  "6607566558640114073": "Charging",
+  "@6607566558640114073": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "54", "column": "18" },
+        "end": { "line": "55", "column": "5" }
+      }
+    ]
+  },
+  "3384564502992460713": "The LED flashes slowly in a comforting green when the vehicle is in the garage and charging.",
+  "@3384564502992460713": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "55", "column": "17" },
+        "end": { "line": "56", "column": "6" }
+      }
+    ]
+  },
+  "86496755481868866": "When the adapter detects the battery charger it beeps three times short and two times long.",
+  "@86496755481868866": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "56", "column": "17" },
+        "end": { "line": "57", "column": "6" }
+      }
+    ]
+  },
+  "6630971595398358399": "Turn on Bluetooth",
+  "@6630971595398358399": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "63", "column": "18" },
+        "end": { "line": "64", "column": "5" }
+      }
+    ]
+  },
+  "3428244436564937159": "Touch the adapter for a few seconds until there is a low pitched beep to turn on Bluetooth.",
+  "@3428244436564937159": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "64", "column": "17" },
+        "end": { "line": "65", "column": "6" }
+      }
+    ]
+  },
+  "7415184388372702286": "The adapter will play two short and one long beep when it turns Bluetooth on.",
+  "@7415184388372702286": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "65", "column": "17" },
+        "end": { "line": "66", "column": "6" }
+      }
+    ]
+  },
+  "3388184313871879585": "You can turn Bluetooth off in the same fashion. The adapter will confirm it turned off Bluetooth with one long and two short tones.",
+  "@3388184313871879585": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "66", "column": "17" },
+        "end": { "line": "67", "column": "6" }
+      }
+    ]
+  },
+  "2882008409280723816": "This does not work if the adapter is already warning or alerting you.",
+  "@2882008409280723816": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-operation/chapter-operation.component.html",
+        "start": { "line": "67", "column": "17" },
+        "end": { "line": "68", "column": "6" }
+      }
+    ]
+  }
+}
