@@ -16,3 +16,6 @@
 #endif
 
 #define LED_COUNT   1
+
+#define BUTTON_INPUT INPUT_PULLDOWN
+#define BUTTON_ACTIVE HIGH

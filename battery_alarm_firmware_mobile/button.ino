@@ -22,18 +22,19 @@ void button_read(int *pressed, int *released, int *longPressed, int *ultraLongPr
 }
 
 void setup_button() {
-  pinMode(PIN_BUTTON, INPUT_PULLUP);
+  pinMode(PIN_BUTTON, BUTTON_INPUT);
 }
 
 void loop_button(const uint32_t now) {
   static bool was_pressed = false;
   static uint32_t pressed_since = 0;
-  const bool pressed = digitalRead(PIN_BUTTON) == LOW;
+  const bool pressed = digitalRead(PIN_BUTTON) == BUTTON_ACTIVE;
 
   if (pressed) {
     if (!was_pressed) {
       was_pressed = true;
       pressed_since = now;
+      Serial.println("button: state=press");
     }
 
     const uint32_t dt = now - pressed_since;
@@ -54,6 +55,7 @@ void loop_button(const uint32_t now) {
       was_pressed = false;
       _button_released = true;
       _button_releasedCount++;
+      Serial.println("button: state=release");
     }
     _button_pressed = false;
     _button_pressedLong = false;
