@@ -22,8 +22,8 @@ export class ChapterConfigurationComponent implements OnDestroy {
     this.mobileQuery.addEventListener('change', this._mobileQueryListener);
   }
 
-  protected get imageClass(): string {
-    return this.mobileQuery.matches ? 'mobile-image' : 'float-left-image'
+  protected get screenshotContainerClass(): string {
+    return this.mobileQuery.matches ? 'screenshots-container-mobile' : 'screenshots-container';
   }
 
   protected get imageWidth(): string {
