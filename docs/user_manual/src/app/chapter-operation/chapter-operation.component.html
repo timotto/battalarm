@@ -1,0 +1,74 @@
+<h1 i18n>Operation</h1>
+<p i18n>The Adapter alerts you when you forget to connect the battery charger to your vehicle.</p>
+<p>
+  <span i18n>It discovers the garage when the signal of the base station is above the configured level (see chapter </span>
+  <a routerLink="/configuration" i18n>Configuration</a>
+  <span>).</span>
+</p>
+<p>
+  <span i18n>It detects if the battery charger is connected by comparing the vehicle's battery voltage with the configured level (again, see chapter </span>
+  <a routerLink="/configuration" i18n>Configuration</a>
+  <span>).</span>
+</p>
+<p i18n>Before the alert, which is quite annoying, there is a warning. Both alert and warning can be snoozed by touching the adapter.</p>
+<h2 i18n>Power on</h2>
+<p i18n>On power on the adapter cycles colors on the LED and chimes a happy tune.</p>
+<app-video src="assets/power_on_720.mp4"></app-video>
+<!--<vg-player class="video">-->
+<!--  <video #media preload="auto" controls>-->
+<!--    <source src="assets/power_on_720.mp4" type="video/mp4">-->
+<!--  </video>-->
+<!--</vg-player>-->
+<h2 i18n>Garage detected</h2>
+<p i18n>When the adapter detects the garage it plays two short beeps and one long beep.</p>
+<app-video src="assets/in_garage_720.mp4"></app-video>
+<!--<vg-player class="video">-->
+<!--  <video #media preload="auto" controls>-->
+<!--    <source src="assets/in_garage_720.mp4" type="video/mp4">-->
+<!--  </video>-->
+<!--</vg-player>-->
+<h2 i18n>Warning</h2>
+<p i18n>When the vehicle is in the garage but is not charging the adapter will give you a warning.</p>
+<p i18n>The LED will slowly flash yellow and there is a short beep every five seconds.</p>
+<app-video src="assets/warning_720.mp4"></app-video>
+<!--<vg-player class="video">-->
+<!--  <video #media preload="auto" controls>-->
+<!--    <source src="assets/warning_720.mp4" type="video/mp4">-->
+<!--  </video>-->
+<!--</vg-player>-->
+<h2 i18n>Alert</h2>
+<p i18n>After the warning you are alerted by a fast flashing red LED and an almost constant tone. It really is annoying.</p>
+<app-video src="assets/alert_720.mp4"></app-video>
+<!--<vg-player class="video">-->
+<!--  <video #media preload="auto" controls>-->
+<!--    <source src="assets/alert_720.mp4" type="video/mp4">-->
+<!--  </video>-->
+<!--</vg-player>-->
+<h2 i18n>Snooze</h2>
+<p i18n>You can snooze the warning and the alert by touching the adapter for a few seconds. The LED will flash orange as long as the adapter is snoozing. It will resume to warn or alert you, whatever you interrupted.</p>
+<app-video src="assets/snooze_720.mp4"></app-video>
+<!--<vg-player class="video">-->
+<!--  <video #media preload="auto" controls>-->
+<!--    <source src="assets/snooze_720.mp4" type="video/mp4">-->
+<!--  </video>-->
+<!--</vg-player>-->
+<h2 i18n>Charging</h2>
+<p i18n>The LED flashes slowly in a comforting green when the vehicle is in the garage and charging.</p>
+<p i18n>When the adapter detects the battery charger it beeps three times short and two times long.</p>
+<app-video src="assets/charging_720.mp4"></app-video>
+<!--<vg-player class="video">-->
+<!--  <video #media preload="auto" controls>-->
+<!--    <source src="assets/charging_720.mp4" type="video/mp4">-->
+<!--  </video>-->
+<!--</vg-player>-->
+<h2 i18n>Turn on Bluetooth</h2>
+<p i18n>Touch the adapter for a few seconds until there is a low pitched beep to turn on Bluetooth.</p>
+<p i18n>The adapter will play two short and one long beep when it turns Bluetooth on.</p>
+<p i18n>You can turn Bluetooth off in the same fashion. The adapter will confirm it turned off Bluetooth with one long and two short tones.</p>
+<p i18n>This does not work if the adapter is already warning or alerting you.</p>
+<app-video src="assets/bluetooth_720.mp4"></app-video>
+<!--<vg-player class="video">-->
+<!--  <video #media preload="auto" controls>-->
+<!--    <source src="assets/bluetooth_720.mp4" type="video/mp4">-->
+<!--  </video>-->
+<!--</vg-player>-->

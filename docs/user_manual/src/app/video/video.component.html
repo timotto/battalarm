@@ -1,0 +1,6 @@
+<video controls
+       [class]="videoClass"
+       onclick="this.paused ? this.play() : this.pause(); arguments[0].preventDefault();">
+  <source [src]="src" type="video/mp4"/>
+  Browser not supported
+</video>

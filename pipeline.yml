@@ -1,0 +1,374 @@
+temp:
+  misc:
+    alpine_image: &alpine_image
+      type: registry-image
+      source:
+        repository: alpine
+        tag: latest
+
+  resources:
+    repo: &repo
+      type: git
+      icon: github
+      webhook_token: ((webhook_token))
+      check_every: 24h
+    repo_source: &repo_source
+      uri: ((git.url))
+      branch: ((git.branch))
+      private_key: ((git.private_key))
+
+    image: &image
+      type: registry-image
+      icon: floppy
+    image_source: &image_source
+      username: ((private-docker.username))
+      password: ((private-docker.password))
+
+    semver: &semver
+      type: semver
+      icon: numeric
+    semver_source: &semver_source
+      access_key_id: ((s3.access_key_id))
+      bucket: ((s3.versions_bucket))
+      driver: s3
+      endpoint: ((s3.endpoint))
+      region_name: ((s3.region_name))
+      secret_access_key: ((s3.secret_access_key))
+      initial_version: 0.0.1
+
+  tasks:
+    slack_alert: &slack_alert
+      on_failure:
+        put: slack-alert
+        params: { alert_type: failed }
+      on_abort:
+        put: slack-alert
+        params: { alert_type: aborted }
+      on_error:
+        put: slack-alert
+        params: { alert_type: errored }
+
+    oci_task: &oci_task
+      privileged: true
+      config:
+        platform: linux
+        image_resource:
+          type: registry-image
+          source:
+            repository: concourse/oci-build-task
+        inputs:
+        - name: docker
+          path: .
+        outputs:
+        - name: image
+        run:
+          path: build
+
+resources:
+- name: ci-source
+  <<: *repo
+  source:
+    <<: *repo_source
+    paths:
+    - pipeline.yml
+
+# region docs
+
+- name: docs-source
+  <<: *repo
+  source:
+    <<: *repo_source
+    paths:
+    - docs/user_manual
+
+- name: docs-image
+  type: docker-manifest
+  icon: floppy
+  source:
+    <<: *image_source
+    repository: ((docs-image-repo))
+
+- name: docs-image-arm64
+  <<: *image
+  source:
+    <<: *image_source
+    repository: ((docs-image-repo))
+    tag: arm64
+
+- name: docs-image-amd64
+  <<: *image
+  source:
+    <<: *image_source
+    repository: ((docs-image-repo))
+    tag: amd64
+
+- name: docs-image-version
+  <<: *semver
+  source:
+    <<: *semver_source
+    key: battalarm/docs-image-version
+
+# endregion
+
+# region chart
+
+- name: chart-source
+  <<: *repo
+  source:
+    <<: *repo_source
+    paths:
+    - helm
+
+- name: chart-version
+  <<: *semver
+  source:
+    <<: *semver_source
+    key: battalarm/chart-version
+
+- name: chart
+  type: chartmuseum
+  icon: map
+  source:
+    server_url: ((charts-repo.url))/api/charts
+    chart_name: battalarm
+    basic_auth_username: ((charts-repo.username))
+    basic_auth_password: ((charts-repo.password))
+
+# endregion
+
+- name: production
+  type: helm
+  check_every: 24h
+  icon: factory
+  source:
+    admin_cert: ((helm.admin_cert))
+    admin_key: ((helm.admin_key))
+    cluster_ca_base64: ((helm.cluster_ca))
+    cluster_url: ((helm.cluster_url))
+    namespace: ((helm.namespace))
+    release: ((helm.release))
+    repos:
+    - name: ((charts-repo.name))
+      url: ((charts-repo.url))
+
+- name: slack-alert
+  type: slack
+  icon: bell
+  source:
+    url: ((slack.webhook_url))
+    channel: ((slack.sad))
+
+resource_types:
+- name: docker-manifest
+  type: registry-image
+  source:
+    #repository: mbialon/concourse-docker-manifest-resource
+    repository: timotto/concourse-docker-manifest-resource
+    tag: private-registry
+
+- name: chartmuseum
+  type: registry-image
+  source:
+    repository: cathive/concourse-chartmuseum-resource
+
+- name: helm
+  type: registry-image
+  source:
+    repository: ghcr.io/typositoire/concourse-helm3-resource
+    tag: v1.26.1
+
+- name: slack
+  type: registry-image
+  source:
+    repository: arbourd/concourse-slack-alert-resource
+
+jobs:
+
+# region ci
+
+- name: pipeline
+  serial: true
+  plan:
+  - <<: *slack_alert
+    do:
+    - get: ci-source
+      trigger: true
+    - set_pipeline: self
+      file: ci-source/pipeline.yml
+      vars:
+        docs-image-repo: ((docs-image-repo))
+
+# endregion
+
+# region docs
+
+- name: docs
+  serial: true
+  serial_groups: [docs]
+  plan:
+  - <<: *slack_alert
+    do:
+    - in_parallel:
+      - get: source-code
+        resource: docs-source
+        trigger: true
+      - get: version
+        resource: docs-image-version
+        params: {bump: patch}
+    - task: build
+      config:
+        platform: linux
+        image_resource:
+          type: registry-image
+          source:
+            repository: node
+            semver_constraint: "~20.x"
+        inputs:
+        - name: source-code
+        outputs:
+        - name: artifact
+          path: source-code/docs/user_manual/dist/battery_alarm_user_manual
+        caches:
+        - path: source-code/docs/user_manual/node_modules
+        run:
+          path: bash
+          dir: source-code/docs/battery_alarm_user_manual
+          args:
+          - -exc
+          - |
+            npm i --no-progress < /dev/null
+            npm run build < /dev/null
+            cp -v nginx.conf Dockerfile dist/battery_alarm_user_manual
+
+    - in_parallel:
+      - do:
+        - task: docs-image-arm64
+          <<: *oci_task
+          input_mapping:
+            docker: artifact
+          output_mapping:
+            image: docs-image-arm64
+          params:
+            IMAGE_PLATFORM: linux/arm64
+        - put: docs-image-arm64
+          params:
+            image: docs-image-arm64/image.tar
+      - do:
+        - task: docs-image-amd64
+          <<: *oci_task
+          input_mapping:
+            docker: artifact
+          output_mapping:
+            image: docs-image-amd64
+          params:
+            IMAGE_PLATFORM: linux/amd64
+        - put: docs-image-amd64
+          params:
+            image: docs-image-amd64/image.tar
+
+    - in_parallel:
+      - put: docs-image-version
+        params: {file: version/version}
+      - put: docs-image
+        params:
+          tag_file: version/version
+          manifests:
+          - arch: arm64
+            variant: v8
+            os: linux
+            digest_file: docs-image-arm64/digest
+          - arch: amd64
+            os: linux
+            digest_file: docs-image-amd64/digest
+
+# endregion
+
+# region chart
+
+- name: chart
+  serial: true
+  serial_groups: [chart]
+  plan:
+  - <<: *slack_alert
+    do:
+    - in_parallel:
+      - get: source-code
+        resource: chart-source
+        trigger: true
+      - get: chart-version
+        params: {bump: patch}
+
+    - task: build
+      config:
+        platform: linux
+        image_resource:
+          type: registry-image
+          source:
+            repository: ghcr.io/typositoire/concourse-helm3-resource
+            tag: v1.26.1
+        inputs:
+        - name: source-code
+        - name: chart-version
+        outputs:
+        - name: chart
+        run:
+          path: sh
+          args:
+          - -ec
+          - |
+            CHART_VERSION=$(cat chart-version/version)
+            mkdir -p build
+            helm package --destination build --version "$CHART_VERSION" source-code/helm/battalarm
+            cp -v build/battalarm-*.tgz chart/battalarm.tgz
+
+    - in_parallel:
+      - put: chart-version
+        params: {file: chart-version/version}
+      - put: chart
+        params:
+          chart: chart/battalarm.tgz
+          version_file: chart-version/version
+
+- name: deploy
+  serial: true
+  serial_groups: [docs, chart]
+  plan:
+  - <<: *slack_alert
+    do:
+    - in_parallel:
+      - get: docs-image-version
+        trigger: true
+        passed: [docs]
+      - get: chart-version
+        trigger: true
+        passed: [chart]
+
+    - task: values_yaml
+      config:
+        platform: linux
+        image_resource:
+          <<: *alpine_image
+        outputs:
+        - name: values
+          path: .
+        params:
+          VALUES_YAML: ((prod.values_yaml))
+        run:
+          path: sh
+          args:
+          - -ec
+          - |
+            echo "$VALUES_YAML" > values.yaml
+
+    - put: production
+      params:
+        chart: tims-charts/battalarm
+        version: chart-version/version
+        wait_until_ready: 300
+        values: values/values.yaml
+        override_values:
+        - key: docs_image.tag
+          path: docs-image-version/version
+          type: string
+
+# endregion
