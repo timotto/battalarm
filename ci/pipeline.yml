@@ -241,7 +241,7 @@ jobs:
     - get: pipeline-source
       trigger: true
     - set_pipeline: self
-      file: ci-source/pipeline.yml
+      file: pipeline-source/ci/pipeline.yml
       vars:
         docs-image-repo: ((docs-image-repo))
 
