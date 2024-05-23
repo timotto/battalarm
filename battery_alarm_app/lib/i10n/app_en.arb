@@ -1,0 +1,104 @@
+{
+    "@@locale": "en",
+    "appTitle": "Battery alarm",
+    "beaconScanTitle": "Choose base station",
+    "aboutAppMenuItemTitle": "About this app",
+    "aboutAppLegalese": "With this app you can configure the vehicle-is-in-the-garage-but-the-battery-is-not-getting-charged adapter.",
+    "connectionFailed": "Connection failed",
+    "@connectionFailed": {
+        "description": "Alert the user of a failed connection"
+    },
+    "connecting": "Connecting...",
+    "@connecting": {
+        "description": "Notify the user of a connection being established"
+    },
+    "connected": "Connected",
+    "@connected": {
+        "description": "Notify the user of an established connection"
+    },
+    "disconnecting": "Disconnecting...",
+    "@disconnecting": {
+        "description": "Notify the user of the connection being disconnected"
+    },
+    "disconnected": "Disconnected",
+    "@disconnected": {
+        "description": "Notify the user of the disconnected connection"
+    },
+    "labelDelayWarn": "Warning delay",
+    "@labelDelayWarn": {
+        "description": "Label for the property \"delay until warning\""
+    },
+    "labelDelayAlert": "Alert delay",
+    "@labelDelayAlert": {
+        "description": "Label for the property \"delay until alert\""
+    },
+    "labelSnoozeTime": "Snooze time",
+    "@labelSnoozeTime": {
+        "description": "Lable for the property \"snooze time"
+    },
+    "labelRssi": "Base station signal strength in garage",
+    "@labelRssi": {
+        "description": "Label for the property \"current signal strength\""
+    },
+    "labelNoSignal": "No signal",
+    "@labelNoSignal": {
+        "description": "Displayed instead of a value when there is no signal."
+    },
+    "labelAutoTuneRssi": "Auto tune signal strength",
+    "@labelAutoTuneRssi": {
+        "description": "Label for the property \"auto adjust signal strength threshold\""
+    },
+    "labelVbatChargeThreshold": "Battery charger end voltage",
+    "@labelVbatChargeThreshold": {
+        "description": "Label for the property \"vbat threshold indicating active charging\""
+    },
+    "labelVbatDeltaThreshold": "Battery charger speed",
+    "@labelVbatDeltaThreshold": {
+        "description": "Label for the property \"vbat delta threshold indicating charging\""
+    },
+    "labelVbatTuneFactor": "Battery voltage fine tuning",
+    "@labelVbatTuneFactor": {
+        "description": "Label for the property \"vbat fine adjustment\""
+    },
+    "labelVbatLpF": "Battery voltage low pass factor",
+    "@labelVbatLpF": {
+        "description": "Label for the property \"vbat low pass filter\""
+    },
+    "labelBuzzerAlerts": "Acoustic notification for:",
+    "@labelBuzzerAlerts": {
+        "description": "Label for the property \"accoustic notifications\""
+    },
+    "labelBuzzerGarage": "Enter or leave garage",
+    "labelBuzzerCharging": "Battery charger connected",
+    "labelBuzzerHello": "Device powered on",
+    "labelBuzzerButton": "Button",
+    "labelBuzzerBluetooth": "Bluetooth activity",
+    "menuItemExpertView": "Expert view",
+    "tabLabelStatus": "Status",
+    "tabLabelSettings": "Settings",
+    "tabLabelHelp": "Help",
+    "deviceScannerHint": "If the adapter is not found press the button on the adapter for about 5 seconds until there is a low pitched beep.",
+    "deviceScannerSearching": "Searching for Battalarm adapters...",
+    "deviceScannerNoResults": "No adapter found",
+    "deviceScannerError": "The connection was terminated",
+    "labelBeacon": "Base station",
+    "labelChargingTitle": "The battery",
+    "labelChargingIsCharging": "is being charged",
+    "labelChargingIsNotCharging": "is not being charged",
+    "buttonOk": "OK",
+    "buttonApplyValue": "Apply value",
+    "labelCurrentValue": "Current value",
+    "doubleEditDialogNotANumber": "This is not a number",
+    "doubleEditDialogToLow": "This value is too low, at least {min}.",
+    "@doubleEditDialogToLow": {
+        "placeholders": {
+            "min": {}
+        }
+    },
+    "doubleEditDialogToHigh": "This value is too high, at most {max}.",
+    "@doubleEditDialogToHigh": {
+        "placeholders": {
+            "max": {}
+        }
+    }
+}

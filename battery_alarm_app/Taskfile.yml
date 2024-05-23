@@ -5,7 +5,7 @@ version: '3'
 silent: true
 
 tasks:
-  app_icons:
+  app-icons:
     cmds:
       - dart run flutter_launcher_icons
 
@@ -13,3 +13,26 @@ tasks:
     cmds:
       - flutter build appbundle --build-number {{.BUILD_NUMBER}}
       - cp build/app/outputs/bundle/release/app-release.aab ~/tmp/
+
+  # translate arb files
+  translate:
+    cmds:
+      - flutter pub run lyrebird
+
+  gen-arb:
+    cmds:
+      - |
+        dart run intl_translation:extract_to_arb \
+          --output-dir=lib/i10n \
+          --output-file=app_de.arb \
+          --locale=de \
+          lib/text.dart
+
+  gen-i10n:
+    cmds:
+      - |
+        dart run intl_translation:generate_from_arb \
+          --output-dir=lib/i10n \
+          --generated-file-prefix=app \
+          lib/text.dart \
+          lib/i10n/app_*.arb

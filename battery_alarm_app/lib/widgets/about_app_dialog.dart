@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 void showAboutAppDialog(BuildContext context) {
   showDialog(
     context: context,
-    builder: (context) => const AboutDialog(
-      applicationName: Texts.appTitle,
+    builder: (context) => AboutDialog(
+      applicationName: Texts.appTitle(),
       applicationVersion: appVersion,
-      applicationLegalese: Texts.aboutAppLegalese,
-      applicationIcon: AppIcon(),
+      applicationLegalese: Texts.aboutAppLegalese(),
+      applicationIcon: const AppIcon(),
     ),
   );
 }

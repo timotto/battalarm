@@ -1,3 +1,4 @@
+import 'package:battery_alarm_app/text.dart';
 import 'package:battery_alarm_app/util/stream_and_value.dart';
 import 'package:flutter/material.dart';
 
@@ -55,23 +56,23 @@ class _DoubleEditDialogState extends State<DoubleEditDialog> {
     final value = double.tryParse(text);
     if (value == null) {
       setState(() {
-        _errorText = 'Das ist keine Zahl 🤦';
+        _errorText = Texts.doubleEditDialogNotANumber();
       });
       return;
     }
 
     if (value < widget.min) {
       setState(() {
-        _errorText =
-            'Die Eingabe ist zu niedrig, mindestens ${widget.min.toStringAsFixed(widget.digits)}.';
+        _errorText = Texts.doubleEditDialogToLow(
+            widget.min.toStringAsFixed(widget.digits));
       });
       return;
     }
 
     if (value > widget.max) {
       setState(() {
-        _errorText =
-            'Die Eingabe ist zu hoch, höchstens ${widget.max.toStringAsFixed(widget.digits)}.';
+        _errorText = Texts.doubleEditDialogToHigh(
+            widget.max.toStringAsFixed(widget.digits));
       });
       return;
     }
@@ -128,7 +129,7 @@ class _DoubleEditDialogState extends State<DoubleEditDialog> {
                     widget.onChange(_currentValue);
                     Navigator.pop(context);
                   },
-            child: const Text('OK'),
+            child: Text(Texts.buttonOk()),
           ),
         ],
       );
@@ -160,8 +161,8 @@ class _CurrentReadingWidget extends StatelessWidget {
   Widget build(BuildContext context) => StreamBuilder(
         stream: currentReading.stream,
         initialData: currentReading.value,
-        builder: (context, readingSnapshot) =>
-            Text('Aktueller Wert: ${_value(readingSnapshot.data)}'),
+        builder: (context, readingSnapshot) => Text(
+            '${Texts.labelCurrentValue()}: ${_value(readingSnapshot.data)}'),
       );
 }
 
@@ -183,6 +184,6 @@ class _ApplyCurrentReadingWidget extends StatelessWidget {
       initialData: currentReading.value,
       builder: (context, readingSnapshot) => TextButton(
             onPressed: _applyFunction(readingSnapshot.data),
-            child: const Text('Wert übernehmen'),
+            child: Text(Texts.buttonApplyValue()),
           ));
 }

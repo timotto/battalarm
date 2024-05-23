@@ -45,16 +45,16 @@ class _DeviceScannerWidgetState extends State<DeviceScannerWidget> {
 
   Widget _onEmpty(bool scanning) => Center(
         child: Text(scanning
-            ? Texts.deviceScannerSearching
-            : Texts.deviceScannerNoResults),
+            ? Texts.deviceScannerSearching()
+            : Texts.deviceScannerNoResults()),
       );
 
   void _onError() {
     if (widget.error == null) return;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ScaffoldMessenger.maybeOf(context)?.showSnackBar(const SnackBar(
-        content: Text(Texts.deviceScannerError),
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
+        content: Text(Texts.deviceScannerError()),
       ));
     });
   }
@@ -65,14 +65,14 @@ class _DeviceScannerWidgetState extends State<DeviceScannerWidget> {
         initialData: widget.bleScanner.stateSnapshot,
         builder: (context, scannerState) => Scaffold(
           appBar: AppBar(
-            title: const Text(Texts.appTitle),
+            title: Text(Texts.appTitle()),
             actions: const [AppMenuWidget()],
           ),
           body: RefreshIndicator(
             onRefresh: _startScan,
             child: Column(
               children: [
-                _paddedText(Texts.deviceScannerHint),
+                _paddedText(Texts.deviceScannerHint()),
                 Expanded(
                   child: ScanResultWidget(
                     state: scannerState.data,

@@ -26,7 +26,7 @@ class AppMenuWidget extends StatelessWidget {
           if (menuItems != null) ...menuItems!,
           MenuItemButton(
             onPressed: () => showAboutAppDialog(context),
-            child: const Text(Texts.aboutAppMenuItemTitle),
+            child: Text(Texts.aboutAppMenuItemTitle()),
           ),
         ],
       );

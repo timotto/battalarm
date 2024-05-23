@@ -1,3 +1,4 @@
+import 'package:battery_alarm_app/text.dart';
 import 'package:battery_alarm_app/widgets/tri_state_bool_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -6,7 +7,7 @@ class ChargingTile extends TriStateBoolWidget {
     super.key,
     super.value,
   }) : super(
-          title: 'Die Batterie',
+          title: Texts.labelChargingTitle(),
           labels: _chargingTriState,
         );
 }
@@ -17,12 +18,12 @@ final _chargingTriState = TriStateBool(
     icon: Icons.pending,
   ),
   isTrue: TriStateBoolValue(
-    text: 'wird geladen',
+    text: Texts.labelChargingIsCharging(),
     icon: Icons.battery_charging_full,
     trailing: const Icon(Icons.check_circle, color: Color.fromARGB(255, 0, 255, 0),),
   ),
   isFalse: TriStateBoolValue(
-    text: 'wird nicht geladen',
+    text: Texts.labelChargingIsNotCharging(),
     icon: Icons.battery_2_bar,
   ),
 );

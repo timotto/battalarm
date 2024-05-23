@@ -1,0 +1,269 @@
+{
+  "@@locale": "de",
+  "@@last_modified": "2024-05-23T18:08:37.123095",
+  "appTitle": "Batterie Alarm",
+  "@appTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "beaconScanTitle": "Basisstation wählen",
+  "@beaconScanTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "aboutAppMenuItemTitle": "Über die App",
+  "@aboutAppMenuItemTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "aboutAppLegalese": "Mit dieser App kannst du den Fahrzeug-in-der-Garage-aber-Batterie-wird-nicht-geladen-Alarm-Adapter einstellen.",
+  "@aboutAppLegalese": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "connectionFailed": "Verbindung Fehlgeschlagen",
+  "@connectionFailed": {
+    "description": "Alert the user of a failed connection",
+    "type": "text",
+    "placeholders": {}
+  },
+  "connecting": "Verbinde...",
+  "@connecting": {
+    "description": "Notify the user of a connection being established",
+    "type": "text",
+    "placeholders": {}
+  },
+  "connected": "Verbunden",
+  "@connected": {
+    "description": "Notify the user of an established connection",
+    "type": "text",
+    "placeholders": {}
+  },
+  "disconnecting": "Trennen...",
+  "@disconnecting": {
+    "description": "Notify the user of the connection being disconnected",
+    "type": "text",
+    "placeholders": {}
+  },
+  "disconnected": "Getrennt",
+  "@disconnected": {
+    "description": "Notify the user of the disconnected connection",
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelDelayWarn": "Verzögerung bis zur Warnung",
+  "@labelDelayWarn": {
+    "description": "Label for the property \"delay until warning\"",
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelDelayAlert": "Verzögerung bis zum Alarm",
+  "@labelDelayAlert": {
+    "description": "Label for the property \"delay until alert\"",
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelSnoozeTime": "Snooze time",
+  "@labelSnoozeTime": {
+    "description": "Lable for the property \"snooze time",
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelRssi": "Basisstation Signalstärke in Garage",
+  "@labelRssi": {
+    "description": "Label for the property \"current signal strength\"",
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelNoSignal": "Kein Empfang",
+  "@labelNoSignal": {
+    "description": "Displayed instead of a value when there is no signal.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelAutoTuneRssi": "Signalstärke automatisch anpassen",
+  "@labelAutoTuneRssi": {
+    "description": "Label for the property \"auto adjust signal strength threshold\"",
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelVbatChargeThreshold": "Batterieladegerät Endspannung",
+  "@labelVbatChargeThreshold": {
+    "description": "Label for the property \"vbat threshold indicating active charging\"",
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelVbatDeltaThreshold": "Batterieladegerät Geschwindigkeit",
+  "@labelVbatDeltaThreshold": {
+    "description": "Label for the property \"vbat delta threshold indicating charging\"",
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelVbatTuneFactor": "Batteriespannung Feinjustierung",
+  "@labelVbatTuneFactor": {
+    "description": "Label for the property \"vbat fine adjustment\"",
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelVbatLpF": "Batteriespannung Tiefpass Faktor",
+  "@labelVbatLpF": {
+    "description": "Label for the property \"vbat low pass filter\"",
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelBuzzerAlerts": "Akkustische Benachrichtigung bei:",
+  "@labelBuzzerAlerts": {
+    "description": "Label for the property \"accoustic notifications\"",
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelBuzzerGarage": "Garage betreten oder verlassen",
+  "@labelBuzzerGarage": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelBuzzerCharging": "Batterieladegerät angeschlossen",
+  "@labelBuzzerCharging": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelBuzzerHello": "Begrüßung",
+  "@labelBuzzerHello": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelBuzzerButton": "Knopf am Gerät",
+  "@labelBuzzerButton": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelBuzzerBluetooth": "Bluetooth Aktivität",
+  "@labelBuzzerBluetooth": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "menuItemExpertView": "Experten Ansicht",
+  "@menuItemExpertView": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "tabLabelStatus": "Status",
+  "@tabLabelStatus": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "tabLabelSettings": "Einstellungen",
+  "@tabLabelSettings": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "tabLabelHelp": "Hilfe",
+  "@tabLabelHelp": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "deviceScannerHint": "Wenn der Adapter nicht gefunden wird, dann halte den Knopf am Adapter für ca. 5 Sekunden lang gedrückt, bis ein tiefer Piepton kommt.",
+  "@deviceScannerHint": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "deviceScannerSearching": "Suche nach Battalarm Adaptern...",
+  "@deviceScannerSearching": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "deviceScannerNoResults": "Keine Adapter gefunden",
+  "@deviceScannerNoResults": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "deviceScannerError": "Die Verbindung wurde unterbrochen.",
+  "@deviceScannerError": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelBeacon": "Basisstation",
+  "@labelBeacon": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelChargingTitle": "Die Batterie",
+  "@labelChargingTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelChargingIsCharging": "wird geladen",
+  "@labelChargingIsCharging": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelChargingIsNotCharging": "wird nicht geladen",
+  "@labelChargingIsNotCharging": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "buttonOk": "OK",
+  "@buttonOk": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "buttonApplyValue": "Wert übernehmen",
+  "@buttonApplyValue": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelCurrentValue": "Aktueller Wert",
+  "@labelCurrentValue": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "doubleEditDialogNotANumber": "Das ist keine Zahl 🤦",
+  "@doubleEditDialogNotANumber": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "doubleEditDialogToLow": "Die Eingabe ist zu niedrig, mindestens {min}.",
+  "@doubleEditDialogToLow": {
+    "type": "text",
+    "placeholders": {
+      "min": {}
+    }
+  },
+  "doubleEditDialogToHigh": "Die Eingabe ist zu hoch, höchstens {max}.",
+  "@doubleEditDialogToHigh": {
+    "type": "text",
+    "placeholders": {
+      "max": {}
+    }
+  },
+  "labelInGarageTile": "Das Fahrzeug befindet sich",
+  "@labelInGarageTile": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelInGarageTileInGarage": "in der Garage",
+  "@labelInGarageTileInGarage": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelInGarageTileNotInGarage": "nicht in der Garage",
+  "@labelInGarageTileNotInGarage": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelRssiTile": "Signalstärke Basisstation",
+  "@labelRssiTile": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelVbatDeltaTile": "Ladungsveränderung",
+  "@labelVbatDeltaTile": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelVbatTile": "Batteriespannung",
+  "@labelVbatTile": {
+    "type": "text",
+    "placeholders": {}
+  }
+}

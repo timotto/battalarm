@@ -29,32 +29,32 @@ class _DeviceControlWidgetState extends State<DeviceControlWidget> {
         length: 3,
         child: Scaffold(
           appBar: AppBar(
-            title: const Text(Texts.appTitle),
+            title: Text(Texts.appTitle()),
             actions: [
               AppMenuWidget(
                 menuItems: [
                   CheckboxMenuButton(
                     value: _expert,
                     onChanged: _toggleExpertMode,
-                    child: const Text('Experten Ansicht'),
+                    child: Text(Texts.menuItemExpertView()),
                   ),
                 ],
               )
             ],
           ),
-          bottomNavigationBar: const TabBar(
+          bottomNavigationBar: TabBar(
             tabs: [
               Tab(
-                icon: Icon(Icons.info_outline),
-                text: 'Status',
+                icon: const Icon(Icons.info_outline),
+                text: Texts.tabLabelStatus(),
               ),
               Tab(
-                icon: Icon(Icons.settings),
-                text: 'Einstellungen',
+                icon: const Icon(Icons.settings),
+                text: Texts.tabLabelSettings(),
               ),
               Tab(
-                icon: Icon(Icons.help_outline),
-                text: 'Hilfe',
+                icon: const Icon(Icons.help_outline),
+                text: Texts.tabLabelHelp(),
               ),
             ],
           ),

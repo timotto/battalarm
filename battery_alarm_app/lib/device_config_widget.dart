@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:battery_alarm_app/model/config.dart';
+import 'package:battery_alarm_app/text.dart';
 import 'package:battery_alarm_app/util/stream_and_value.dart';
 import 'package:battery_alarm_app/widgets/beacon_config_widget.dart';
 import 'package:battery_alarm_app/widgets/bool_config_widget.dart';
@@ -52,7 +53,7 @@ class DeviceConfigWidget extends StatelessWidget {
           child: ListView(
             children: [
               DurationConfigWidget(
-                title: 'Verzögerung bis zur Warnung',
+                title: Texts.labelDelayWarn(),
                 icon: Icons.timer,
                 min: const Duration(seconds: 30),
                 max: const Duration(minutes: 3),
@@ -63,7 +64,7 @@ class DeviceConfigWidget extends StatelessWidget {
                 ),
               ),
               DurationConfigWidget(
-                title: 'Verzögerung bis zum Alarm',
+                title: Texts.labelDelayAlert(),
                 icon: Icons.alarm,
                 min: const Duration(seconds: 30),
                 max: const Duration(minutes: 3),
@@ -74,7 +75,7 @@ class DeviceConfigWidget extends StatelessWidget {
                 ),
               ),
               DurationConfigWidget(
-                title: 'Snooze time',
+                title: Texts.labelSnoozeTime(),
                 icon: Icons.bed,
                 min: const Duration(seconds: 30),
                 max: const Duration(minutes: 3),
@@ -86,7 +87,7 @@ class DeviceConfigWidget extends StatelessWidget {
               ),
               const Divider(),
               DoubleConfigWidget(
-                title: 'Basisstation Signalstärke in Garage',
+                title: Texts.labelRssi(),
                 icon: Icons.wifi,
                 min: -80,
                 max: 0,
@@ -98,10 +99,10 @@ class DeviceConfigWidget extends StatelessWidget {
                   (config, value) => config.btRssiThreshold = value,
                 ),
                 currentReading: _currentRssiReading(),
-                onNoCurrentReading: 'Kein Empfang',
+                onNoCurrentReading: Texts.labelNoSignal(),
               ),
               BoolConfigWidget(
-                title: 'Signalstärke automatisch anpassen',
+                title: Texts.labelAutoTuneRssi(),
                 icon: Icons.science,
                 value: config.data?.btRssiAutoTune,
                 onChanged: _onChanged(
@@ -119,7 +120,7 @@ class DeviceConfigWidget extends StatelessWidget {
                 ),
                 const Divider(),
                 DoubleConfigWidget(
-                  title: 'Batterieladegerät Endspannung',
+                  title: Texts.labelVbatChargeThreshold(),
                   icon: Icons.battery_charging_full,
                   min: 12,
                   max: 30,
@@ -133,7 +134,7 @@ class DeviceConfigWidget extends StatelessWidget {
                   currentReading: _currentVbatReading(),
                 ),
                 DoubleConfigWidget(
-                  title: 'Batterieladegerät Geschwindigkeit',
+                  title: Texts.labelVbatDeltaThreshold(),
                   icon: Icons.battery_charging_full,
                   min: 0.001,
                   max: 1,
@@ -147,7 +148,7 @@ class DeviceConfigWidget extends StatelessWidget {
                   currentReading: _currentVbatDeltaReading(),
                 ),
                 DoubleConfigWidget(
-                  title: 'Batteriespannung Feinjustierung',
+                  title: Texts.labelVbatTuneFactor(),
                   icon: Icons.show_chart,
                   min: 0.5,
                   max: 1.5,
@@ -160,7 +161,7 @@ class DeviceConfigWidget extends StatelessWidget {
                   ),
                 ),
                 DoubleConfigWidget(
-                  title: 'Batteriespannung Tiefpass Faktor',
+                  title: Texts.labelVbatLpF(),
                   icon: Icons.battery_4_bar,
                   min: 0.5,
                   max: 0.9999,
@@ -173,9 +174,9 @@ class DeviceConfigWidget extends StatelessWidget {
                   ),
                 ),
                 const Divider(),
-                const ListTile(
-                  title: Text('Akkustische Benachrichtigung bei:'),
-                  leading: Icon(Icons.volume_up),
+                ListTile(
+                  title: Text(Texts.labelBuzzerAlerts()),
+                  leading: const Icon(Icons.volume_up),
                 ),
                 ..._buzzerWidgets(
                   values: config.data?.buzzerAlerts,
@@ -208,31 +209,31 @@ List<Widget> _buzzerWidgets({
 }) {
   return [
     _buzzerConfigWidget(
-      title: 'Garage betreten oder verlassen',
+      title: Texts.labelBuzzerGarage(),
       key: BuzzerAlerts.garage,
       values: values,
       onChanged: onChanged,
     ),
     _buzzerConfigWidget(
-      title: 'Batterieladegerät angeschlossen',
+      title: Texts.labelBuzzerCharging(),
       key: BuzzerAlerts.charging,
       values: values,
       onChanged: onChanged,
     ),
     _buzzerConfigWidget(
-      title: 'Begrüßung',
+      title: Texts.labelBuzzerHello(),
       key: BuzzerAlerts.hello,
       values: values,
       onChanged: onChanged,
     ),
     _buzzerConfigWidget(
-      title: 'Knopf am Gerät',
+      title: Texts.labelBuzzerButton(),
       key: BuzzerAlerts.button,
       values: values,
       onChanged: onChanged,
     ),
     _buzzerConfigWidget(
-      title: 'Bluetooth Aktivität',
+      title: Texts.labelBuzzerBluetooth(),
       key: BuzzerAlerts.bluetooth,
       values: values,
       onChanged: onChanged,

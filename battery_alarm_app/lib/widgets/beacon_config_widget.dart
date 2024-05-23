@@ -1,3 +1,4 @@
+import 'package:battery_alarm_app/text.dart';
 import 'package:battery_alarm_app/util/beacon.dart';
 import 'package:battery_alarm_app/widgets/beacon_scan_widget.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class BeaconConfigWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListTile(
-        title: const Text('Basisstation'),
+        title: Text(Texts.labelBeacon()),
         subtitle: Text(formatBeaconAddress(value)),
         leading: const Icon(Icons.settings_input_antenna),
         onTap: () => _openScanner(context),

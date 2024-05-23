@@ -1,3 +1,4 @@
+import 'package:battery_alarm_app/text.dart';
 import 'package:battery_alarm_app/util/duration.dart';
 import 'package:battery_alarm_app/widgets/duration_slider.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +57,7 @@ class _DurationEditDialogState extends State<DurationEditDialog> {
       ),
       Center(child: Text(_valueString())),
       SimpleDialogOption(
-        child: const Text('OK'),
+        child: Text(Texts.buttonOk()),
         onPressed: () {
           widget.onChange(_currentValue);
           Navigator.pop(context);

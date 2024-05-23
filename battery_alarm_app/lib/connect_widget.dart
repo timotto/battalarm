@@ -11,7 +11,7 @@ class ConnectWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: const Text(Texts.appTitle),
+          title: Text(Texts.appTitle()),
         ),
         body: Center(
           child: StreamBuilder(
@@ -34,7 +34,7 @@ class _ConnectionStatusWidget extends StatelessWidget {
     if (update.hasData) {
       if (update.requireData.failure != null) {
         return Text(
-            update.requireData.failure?.message ?? 'Verbindung Fehlgeschlagen');
+            update.requireData.failure?.message ?? Texts.connectionFailed());
       }
 
       state = update.requireData.connectionState;
@@ -54,16 +54,16 @@ String _connectionStateAsText(DeviceConnectionState? state) {
   switch (state) {
     case null:
     case DeviceConnectionState.connecting:
-      return 'Verbinde...';
+      return Texts.connecting();
 
     case DeviceConnectionState.connected:
-      return 'Verbunden';
+      return Texts.connected();
 
     case DeviceConnectionState.disconnecting:
-      return 'Trennen...';
+      return Texts.disconnecting();
 
     case DeviceConnectionState.disconnected:
-      return 'Getrennt';
+      return Texts.disconnected();
   }
 }
 

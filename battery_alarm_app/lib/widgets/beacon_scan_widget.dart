@@ -79,7 +79,7 @@ class _BeaconScanWidgetState extends State<BeaconScanWidget> {
         initialData: _scanner.stateSnapshot,
         builder: (context, scannerStateSnapshot) => Scaffold(
           appBar: AppBar(
-            title: const Text(Texts.beaconScanTitle),
+            title: Text(Texts.beaconScanTitle()),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () => _onCancel(context),
