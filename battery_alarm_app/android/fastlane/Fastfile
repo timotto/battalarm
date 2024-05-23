@@ -53,7 +53,7 @@ platform :android do
       skip_upload_screenshots: true,
       skip_upload_changelogs: true,
       track: "internal",
-      track_promote_to: "closed",
+      track_promote_to: "alpha",
     )
   end
 
@@ -63,8 +63,8 @@ platform :android do
       skip_upload_images: true,
       skip_upload_screenshots: true,
       skip_upload_changelogs: true,
-      track: "closed",
-      track_promote_to: "open",
+      track: "alpha",
+      track_promote_to: "beta",
     )
   end
 
@@ -74,7 +74,7 @@ platform :android do
       skip_upload_images: true,
       skip_upload_screenshots: true,
       skip_upload_changelogs: true,
-      track: "open",
+      track: "beta",
       track_promote_to: "production",
     )
   end
