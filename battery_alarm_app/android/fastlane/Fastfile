@@ -27,7 +27,7 @@ platform :android do
       aab: "../build/app/outputs/bundle/release/app-release.aab",
       skip_upload_images: true,
       skip_upload_screenshots: true,
-      track: "internal-testing"
+      track: "internal"
     )
   end
 
@@ -52,8 +52,8 @@ platform :android do
       skip_upload_images: true,
       skip_upload_screenshots: true,
       skip_upload_changelogs: true,
-      track: "internal-testing",
-      track_promote_to: "closed-testing",
+      track: "internal",
+      track_promote_to: "closed",
     )
   end
 
@@ -63,8 +63,8 @@ platform :android do
       skip_upload_images: true,
       skip_upload_screenshots: true,
       skip_upload_changelogs: true,
-      track: "closed-testing",
-      track_promote_to: "open-testing",
+      track: "closed",
+      track_promote_to: "open",
     )
   end
 
@@ -74,7 +74,7 @@ platform :android do
       skip_upload_images: true,
       skip_upload_screenshots: true,
       skip_upload_changelogs: true,
-      track: "open-testing",
+      track: "open",
       track_promote_to: "production",
     )
   end
