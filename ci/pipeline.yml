@@ -434,6 +434,7 @@ jobs:
 # region app
 
 - name: app
+  serial_groups: [app-version]
   plan:
   - in_parallel:
     - get: app-source
@@ -525,5 +526,35 @@ jobs:
     params:
       FASTLANE_TARGET: promote_open_to_prod
       SERVICE_ACCOUNT_JSON: ((android.service_account_json))
+
+- name: bump-app-version-patch
+  serial_groups: [app-version]
+  serial: true
+  plan:
+  - in_parallel:
+    - get: android-artifact
+      passed: [promote-android-open-to-prod]
+      trigger: true
+    - put: app-version
+      params:
+        bump: patch
+
+- name: bump-app-version-minor
+  serial_groups: [app-version]
+  serial: true
+  plan:
+  - in_parallel:
+    - put: app-version
+      params:
+        bump: minor
+
+- name: bump-app-version-major
+  serial_groups: [app-version]
+  serial: true
+  plan:
+  - in_parallel:
+    - put: app-version
+      params:
+        bump: minor
 
 # endregion
