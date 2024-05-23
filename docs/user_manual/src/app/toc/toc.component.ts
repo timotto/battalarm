@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
-import {MatListItem, MatNavList} from "@angular/material/list";
-import {ActivatedRoute, RouterLink, RouterLinkActive, UrlSegment} from "@angular/router";
+import {MatListItem, MatListItemIcon, MatListItemTitle, MatNavList} from "@angular/material/list";
+import {RouterLink, RouterLinkActive} from "@angular/router";
+import {MatIcon} from "@angular/material/icon";
 
 @Component({
   selector: 'app-toc',
@@ -10,41 +11,41 @@ import {ActivatedRoute, RouterLink, RouterLinkActive, UrlSegment} from "@angular
     MatNavList,
     RouterLink,
     RouterLinkActive,
+    MatIcon,
+    MatListItemTitle,
+    MatListItemIcon,
   ],
   templateUrl: './toc.component.html',
   styleUrl: './toc.component.scss'
 })
 export class TocComponent {
-  constructor(route: ActivatedRoute) {
-    route.url.subscribe(urlSegment => this.onRouteChange(urlSegment))
-  }
-
   protected readonly routes: TocRoute[] = [
     {
       title: $localize `Introduction`,
       link: '/introduction',
+      icon: 'waving_hand',
     },
     {
       title: $localize `Operation`,
       link: '/operation',
+      icon: 'sports_esports',
     },
     {
       title: $localize `Installation`,
       link: '/installation',
+      icon: 'construction',
     },
     {
       title: $localize `Configuration`,
       link: '/configuration',
+      icon: 'settings',
     },
   ]
-
-  private onRouteChange(urlSegment: UrlSegment[]) {
-    console.log('on route change', urlSegment)
-  }
 }
 
 interface TocRoute {
   title: string
   link: string
+  icon: string
   active?: boolean
 }

@@ -3,6 +3,10 @@
     <a mat-list-item
        [href]="route.link"
        [routerLink]="route.link"
-       routerLinkActive="mdc-list-item--activated">{{ route.title }}</a>
+       routerLinkActive="mdc-list-item--activated"
+    >
+      <mat-icon matListItemIcon>{{route.icon}}</mat-icon>
+      <div matListItemTitle>{{ route.title }}</div>
+    </a>
   }
 </mat-nav-list>
