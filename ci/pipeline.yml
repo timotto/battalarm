@@ -487,6 +487,7 @@ jobs:
   plan:
   - in_parallel:
     - get: android-artifact
+      trigger: true
       passed: [publish-android-internal]
     - get: ci
 
