@@ -100,5 +100,11 @@
         "placeholders": {
             "max": {}
         }
-    }
+    },
+    "labelInGarageTile": "The vehicle is",
+    "labelInGarageTileInGarage": "in the garage",
+    "labelInGarageTileNotInGarage": "not in the garage",
+    "labelRssiTile": "Base station signal strength",
+    "labelVbatDeltaTile": "Charging speed",
+    "labelVbatTile": "Battery voltage"
 }
