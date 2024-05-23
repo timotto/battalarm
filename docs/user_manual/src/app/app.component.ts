@@ -6,6 +6,7 @@ import {MatButton, MatIconButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
 import {TocComponent} from "./toc/toc.component";
 import {MediaMatcher} from "@angular/cdk/layout";
+import {Title} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-root',
@@ -22,10 +23,14 @@ export class AppComponent implements OnDestroy {
   @ViewChild('sidenav')
   sideNav?: MatSidenav
 
-  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+  constructor(changeDetectorRef: ChangeDetectorRef,
+              media: MediaMatcher,
+              title: Title) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addEventListener('change', this._mobileQueryListener);
+
+    title.setTitle($localize `Battery Alarm User's Guide`)
   }
 
   ngOnDestroy(): void {
