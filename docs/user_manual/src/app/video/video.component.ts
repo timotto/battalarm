@@ -29,4 +29,8 @@ export class VideoComponent implements OnDestroy {
   protected get videoClass(): string {
     return this.mobileQuery.matches ? 'video-mobile' : 'video'
   }
+
+  protected get posterUrl(): string | undefined {
+    return this.src?.replaceAll(".mp4", ".jpg")
+  }
 }
