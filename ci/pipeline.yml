@@ -289,8 +289,7 @@ jobs:
           args:
           - -exc
           - |
-            # TODO remove --force when primeng is ready for angular 18
-            npm i --no-progress --force < /dev/null
+            npm i --no-progress < /dev/null
             npm run build < /dev/null
             cp -v nginx.conf Dockerfile dist/battery_alarm_user_manual
 

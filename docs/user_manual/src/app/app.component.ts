@@ -7,11 +7,12 @@ import {MatIcon} from "@angular/material/icon";
 import {TocComponent} from "./toc/toc.component";
 import {MediaMatcher} from "@angular/cdk/layout";
 import {Title} from "@angular/platform-browser";
+import {ImageOutletComponent} from "./image-viewer/image-outlet/image-outlet.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, MatToolbar, MatIconButton, MatIcon, MatButton, TocComponent, MatSidenavModule],
+  imports: [RouterOutlet, MatToolbar, MatIconButton, MatIcon, MatButton, TocComponent, MatSidenavModule, ImageOutletComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

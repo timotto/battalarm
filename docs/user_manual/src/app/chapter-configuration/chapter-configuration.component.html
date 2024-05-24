@@ -1,22 +1,16 @@
 <h1 i18n>Configuration</h1>
 <p i18n>There's a smartphone app to configure the adapter.</p>
 <div [class]="screenshotContainerClass">
-  <p-image
-    src="assets/app_status_240.png"
-    previewImageSrc="assets/app_status.png"
-    alt="screenshot of the app's adapter status view" i18n-alt
-    [preview]="true"
-    [width]="imageWidth"
-    class="screenshot"
-  />
-  <p-image
-    src="assets/app_settings_240.png"
-    previewImageSrc="assets/app_settings.png"
-    alt="screenshot of the app's adapter configuration view" i18n-alt
-    [preview]="true"
-    [width]="imageWidth"
-    class="screenshot"
-  />
+  <app-image-thumbnail src="assets/app_status.png"
+                       srcThumb="assets/app_status_240.png"
+                       alt="screenshot of the app's adapter status view" i18n-alt
+                       [class]="imageClass"
+  ></app-image-thumbnail>
+  <app-image-thumbnail src="assets/app_settings.png"
+                       srcThumb="assets/app_settings_240.png"
+                       alt="screenshot of the app's adapter configuration view" i18n-alt
+                       [class]="imageClass"
+  ></app-image-thumbnail>
 </div>
 <p i18n>With the app you can configure a bunch of parameters, like the duration until the adapter sounds the warning or the alert tone, the voltage of your battery charger, or the signal strength of the base station when the vehicle is in the garage.</p>
 <p i18n>Usually configuration is a one time job, or at least it's just necessary for a few times after installing the adapter and the base station.</p>

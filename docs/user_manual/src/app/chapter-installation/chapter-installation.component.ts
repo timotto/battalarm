@@ -1,12 +1,12 @@
 import {ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
-import { ImageModule } from 'primeng/image';
 import {MediaMatcher} from "@angular/cdk/layout";
+import {ImageThumbnailComponent} from "../image-viewer/image-thumbnail/image-thumbnail.component";
 
 @Component({
   selector: 'app-chapter-installation',
   standalone: true,
   imports: [
-    ImageModule,
+    ImageThumbnailComponent,
   ],
   templateUrl: './chapter-installation.component.html',
   styleUrl: './chapter-installation.component.scss'

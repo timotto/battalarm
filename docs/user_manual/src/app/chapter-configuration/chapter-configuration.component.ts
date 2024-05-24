@@ -1,13 +1,13 @@
 import {ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
-import {ImageModule} from "primeng/image";
 import {MediaMatcher} from "@angular/cdk/layout";
+import {ImageThumbnailComponent} from "../image-viewer/image-thumbnail/image-thumbnail.component";
 
 @Component({
   selector: 'app-chapter-configuration',
   standalone: true,
-    imports: [
-        ImageModule
-    ],
+  imports: [
+    ImageThumbnailComponent
+  ],
   templateUrl: './chapter-configuration.component.html',
   styleUrl: './chapter-configuration.component.scss'
 })
@@ -26,8 +26,8 @@ export class ChapterConfigurationComponent implements OnDestroy {
     return this.mobileQuery.matches ? 'screenshots-container-mobile' : 'screenshots-container';
   }
 
-  protected get imageWidth(): string {
-    return this.mobileQuery.matches ? '120' : '240'
+  protected get imageClass(): string {
+    return this.mobileQuery.matches ? 'thumbnail-mobile' : 'thumbnail'
   }
 
   ngOnDestroy(): void {
