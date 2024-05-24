@@ -1,15 +1,13 @@
 import {Component} from '@angular/core';
 import {ImageViewerService} from "../image-viewer.service";
 import {Image} from "../model";
-import {MatIconButton} from "@angular/material/button";
-import {MatIcon} from "@angular/material/icon";
+import {ImageFullscreenComponent} from "../image-fullscreen/image-fullscreen.component";
 
 @Component({
   selector: 'app-image-outlet',
   standalone: true,
   imports: [
-    MatIconButton,
-    MatIcon
+    ImageFullscreenComponent
   ],
   templateUrl: './image-outlet.component.html',
   styleUrl: './image-outlet.component.scss'

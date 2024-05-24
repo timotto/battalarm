@@ -1,0 +1,10 @@
+<div class="actions-container">
+  <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
+</div>
+<div class="image-container" (click)="close()">
+  @if (image) {
+    <img [src]="image.src"
+         [alt]="image.alt"
+         class="image">
+  }
+</div>
