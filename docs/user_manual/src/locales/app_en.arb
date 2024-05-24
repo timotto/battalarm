@@ -40,8 +40,8 @@
       },
       {
         "file": "src/app/toc/toc.component.ts",
-        "start": { "line": "35", "column": "22" },
-        "end": { "line": "35", "column": "37" }
+        "start": { "line": "38", "column": "22" },
+        "end": { "line": "38", "column": "37" }
       }
     ]
   },
@@ -140,8 +140,8 @@
       },
       {
         "file": "src/app/toc/toc.component.ts",
-        "start": { "line": "31", "column": "22" },
-        "end": { "line": "31", "column": "36" }
+        "start": { "line": "33", "column": "22" },
+        "end": { "line": "33", "column": "36" }
       }
     ]
   },
@@ -305,8 +305,18 @@
       },
       {
         "file": "src/app/toc/toc.component.ts",
-        "start": { "line": "27", "column": "22" },
-        "end": { "line": "27", "column": "33" }
+        "start": { "line": "28", "column": "22" },
+        "end": { "line": "28", "column": "33" }
+      }
+    ]
+  },
+  "1453013283170989580": "3D rendering of the adapter",
+  "@1453013283170989580": {
+    "x-locations": [
+      {
+        "file": "src/app/chapter-introduction/chapter-introduction.component.html",
+        "start": { "line": "13", "column": "21" },
+        "end": { "line": "14", "column": "9" }
       }
     ]
   },

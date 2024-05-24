@@ -13,6 +13,7 @@ tasks:
 
   translate:
     cmds:
+    - node util/missing_translation_keys.js
     - flutter pub global run lyrebird
 
   build-docker:
