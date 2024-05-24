@@ -544,6 +544,8 @@ jobs:
   serial: true
   plan:
   - in_parallel:
+    - get: android-artifact
+      passed: [promote-android-open-to-prod]
     - put: app-version
       params:
         bump: minor
@@ -553,6 +555,8 @@ jobs:
   serial: true
   plan:
   - in_parallel:
+    - get: android-artifact
+      passed: [promote-android-open-to-prod]
     - put: app-version
       params:
         bump: minor
