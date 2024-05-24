@@ -26,11 +26,6 @@ export class TocComponent {
       icon: 'waving_hand',
     },
     {
-      title: $localize `Operation`,
-      link: '/operation',
-      icon: 'sports_esports',
-    },
-    {
       title: $localize `Installation`,
       link: '/installation',
       icon: 'construction',
@@ -39,6 +34,11 @@ export class TocComponent {
       title: $localize `Configuration`,
       link: '/configuration',
       icon: 'settings',
+    },
+    {
+      title: $localize `Operation`,
+      link: '/operation',
+      icon: 'sports_esports',
     },
   ]
 }
