@@ -1,4 +1,5 @@
 #include "config.h"
+#include "version.h"
 
 String _console_buffer = "";
 

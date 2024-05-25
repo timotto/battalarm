@@ -1,7 +1,5 @@
 #pragma once
 
-#define VERSION "1.0.0"
-
 #define BUZZER_ALERT_GARAGE 1
 #define BUZZER_ALERT_CHARGING 2
 #define BUZZER_ALERT_HELLO 4

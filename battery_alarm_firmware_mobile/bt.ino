@@ -180,6 +180,8 @@ class BtScanCallbacks : public BLEAdvertisedDeviceCallbacks {
   }
 };
 
+void _bt_setup_ota(BLEServer *pServer);
+
 void setup_bt() {
   BLEDevice::init("Battalarm");
 
@@ -188,6 +190,7 @@ void setup_bt() {
 
   _bt_setup_service();
   _bt_setup_scan();
+  _bt_setup_ota(pServer);
 }
 
 void _bt_setup_chr_status(BLEServer *pServer);
@@ -223,6 +226,7 @@ void loop_bt(const uint32_t now) {
   _bt_loop_chr(now);
   _bt_loop_toggle(now);
   _bt_loop_debug(now);
+  _bt_loop_ota(now);
 }
 
 void _bt_loop_scan(const uint32_t now) {
