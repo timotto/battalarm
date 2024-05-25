@@ -55,6 +55,7 @@ class DoubleConfigWidget extends StatelessWidget {
         title: Text(title),
         leading: Icon(icon),
         subtitle: Text(_value()),
-        onTap: () => _onTap(context),
+        enabled: value != null,
+        onTap: value == null ? null : () => _onTap(context),
       );
 }

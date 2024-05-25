@@ -27,20 +27,21 @@ class DurationConfigWidget extends StatelessWidget {
     await showDialog<Duration>(
         context: context,
         builder: (_) => DurationEditDialog(
-          title: title,
-          icon: icon,
-          min: min,
-          max: max,
-          value: value,
-          onChange: onChange,
-        ));
+              title: title,
+              icon: icon,
+              min: min,
+              max: max,
+              value: value,
+              onChange: onChange,
+            ));
   }
 
   @override
   Widget build(BuildContext context) => ListTile(
-    title: Text(title),
-    leading: Icon(icon),
-    subtitle: Text(_value()),
-    onTap: () => _onTap(context),
-  );
+        title: Text(title),
+        leading: Icon(icon),
+        subtitle: Text(_value()),
+        enabled: value != null,
+        onTap: value == null ? null : () => _onTap(context),
+      );
 }

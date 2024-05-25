@@ -16,9 +16,10 @@ class BoolConfigWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => CheckboxListTile(
-    title: Text(title),
-    secondary: icon != null ? Icon(icon) : null,
-    value: value ?? false,
-    onChanged: onChanged,
-  );
+        title: Text(title),
+        secondary: icon != null ? Icon(icon) : null,
+        value: value ?? false,
+        enabled: value != null,
+        onChanged: value == null ? null : onChanged,
+      );
 }

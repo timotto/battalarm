@@ -29,6 +29,7 @@ class BeaconConfigWidget extends StatelessWidget {
         title: Text(Texts.labelBeacon()),
         subtitle: Text(formatBeaconAddress(value)),
         leading: const Icon(Icons.settings_input_antenna),
-        onTap: () => _openScanner(context),
+        enabled: value != null,
+        onTap: value == null ? null : () => _openScanner(context),
       );
 }
