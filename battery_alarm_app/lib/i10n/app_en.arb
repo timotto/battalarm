@@ -106,5 +106,6 @@
     "labelInGarageTileNotInGarage": "not in the garage",
     "labelRssiTile": "Base station signal strength",
     "labelVbatDeltaTile": "Charging speed",
-    "labelVbatTile": "Battery voltage"
+    "labelVbatTile": "Battery voltage",
+    "labelVbatAlternatorThreshold": "Battery voltage with running engine"
 }

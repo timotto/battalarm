@@ -1,6 +1,6 @@
 {
   "@@locale": "de",
-  "@@last_modified": "2024-05-23T18:08:37.123095",
+  "@@last_modified": "2024-05-25T08:36:22.761332",
   "appTitle": "Batterie Alarm",
   "@appTitle": {
     "type": "text",
@@ -90,6 +90,12 @@
   "labelVbatChargeThreshold": "Batterieladegerät Endspannung",
   "@labelVbatChargeThreshold": {
     "description": "Label for the property \"vbat threshold indicating active charging\"",
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelVbatAlternatorThreshold": "Batteriespannung bei laufendem Motor",
+  "@labelVbatAlternatorThreshold": {
+    "description": "Label for the property \"vbat alternator threshold indicating running engine\"",
     "type": "text",
     "placeholders": {}
   },

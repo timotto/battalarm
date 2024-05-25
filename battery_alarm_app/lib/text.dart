@@ -107,6 +107,13 @@ class Texts {
             'Label for the property "vbat threshold indicating active charging"',
       );
 
+  static String labelVbatAlternatorThreshold() => Intl.message(
+        'Batteriespannung bei laufendem Motor',
+        name: 'labelVbatAlternatorThreshold',
+        desc:
+            'Label for the property "vbat alternator threshold indicating running engine"',
+      );
+
   static String labelVbatDeltaThreshold() => Intl.message(
         'Batterieladegerät Geschwindigkeit',
         name: 'labelVbatDeltaThreshold',

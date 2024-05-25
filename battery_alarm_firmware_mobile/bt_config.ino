@@ -11,6 +11,7 @@
 #define BT_CHARACTERISTIC_CONFIG_UUID_VBAT_CHARGE_T "106145DE-E2DA-435D-A093-C8C5CA870212"
 #define BT_CHARACTERISTIC_CONFIG_UUID_VBAT_DELTA_T "106145DE-E2DA-435D-A093-C8C5CA870213"
 #define BT_CHARACTERISTIC_CONFIG_UUID_VBAT_TUNE_F "106145DE-E2DA-435D-A093-C8C5CA870214"
+#define BT_CHARACTERISTIC_CONFIG_UUID_VBAT_ALTERNATOR_T "106145DE-E2DA-435D-A093-C8C5CA870215"
 #define BT_CHARACTERISTIC_CONFIG_UUID_BT_BEACON "106145DE-E2DA-435D-A093-C8C5CA870221"
 #define BT_CHARACTERISTIC_CONFIG_UUID_BT_RSSI_T "106145DE-E2DA-435D-A093-C8C5CA870222"
 #define BT_CHARACTERISTIC_CONFIG_UUID_BT_RSSI_AUTO_TUNE "106145DE-E2DA-435D-A093-C8C5CA870223"
@@ -21,13 +22,14 @@ BLECharacteristic *_bt_chr_config_delayAlarm;
 BLECharacteristic *_bt_chr_config_delaySnooze;
 BLECharacteristic *_bt_chr_config_vbatLpF;
 BLECharacteristic *_bt_chr_config_vbatChargeT;
+BLECharacteristic *_bt_chr_config_vbatAlternatorT;
 BLECharacteristic *_bt_chr_config_vbatDeltaT;
 BLECharacteristic *_bt_chr_config_vbatTuneF;
 BLECharacteristic *_bt_chr_config_btBeacon;
 BLECharacteristic *_bt_chr_config_btRssiT;
 BLECharacteristic *_bt_chr_config_btRssiAutoTune;
 BLECharacteristic *_bt_chr_config_buzzerAlerts;
-#define BT_CONFIG_COUNT 11
+#define BT_CONFIG_COUNT 12
 
 #define BT_CREATE_CFG_CHR_RDWR(p, cb, c, u) \
   { \
@@ -65,6 +67,8 @@ class BtConfigCharacteristic : public BLECharacteristicCallbacks {
       configVbatLpF = floatVal;
     } else if (pChr == _bt_chr_config_vbatChargeT && _bt_parse_chr_float(pChr, &floatVal, CONFIG_VBAT_CHARGE_T_MIN, CONFIG_VBAT_CHARGE_T_MAX)) {
       configVbatChargeVoltage = floatVal;
+    } else if (pChr == _bt_chr_config_vbatAlternatorT && _bt_parse_chr_float(pChr, &floatVal, CONFIG_VBAT_ALTERNATOR_T_MIN, CONFIG_VBAT_ALTERNATOR_T_MAX)) {
+      configVbatAlternatorVoltage = floatVal;
     } else if (pChr == _bt_chr_config_vbatDeltaT && _bt_parse_chr_float(pChr, &floatVal, CONFIG_VBAT_DELTA_T_MIN, CONFIG_VBAT_DELTA_T_MAX)) {
       configVbatChargeDeltaThreshold = floatVal;
     } else if (pChr == _bt_chr_config_vbatTuneF && _bt_parse_chr_float(pChr, &floatVal, CONFIG_VBAT_TUNE_F_MIN, CONFIG_VBAT_TUNE_F_MAX)) {
@@ -95,6 +99,7 @@ void _bt_setup_chr_config(BLEServer *pServer) {
 
   BT_CREATE_CFG_CHR_RDWR(pService, pCb, _bt_chr_config_vbatLpF, BT_CHARACTERISTIC_CONFIG_UUID_VBAT_LP_F);
   BT_CREATE_CFG_CHR_RDWR(pService, pCb, _bt_chr_config_vbatChargeT, BT_CHARACTERISTIC_CONFIG_UUID_VBAT_CHARGE_T);
+  BT_CREATE_CFG_CHR_RDWR(pService, pCb, _bt_chr_config_vbatAlternatorT, BT_CHARACTERISTIC_CONFIG_UUID_VBAT_ALTERNATOR_T);
   BT_CREATE_CFG_CHR_RDWR(pService, pCb, _bt_chr_config_vbatDeltaT, BT_CHARACTERISTIC_CONFIG_UUID_VBAT_DELTA_T);
   BT_CREATE_CFG_CHR_RDWR(pService, pCb, _bt_chr_config_vbatTuneF, BT_CHARACTERISTIC_CONFIG_UUID_VBAT_TUNE_F);
 
@@ -121,6 +126,7 @@ void _bt_loop_chr_config(const uint32_t now, bool deviceConnected) {
   static uint32_t delaySnooze = 0xffffffff;
   static float vbatLpF = -1;
   static float vbatChargeT = -1;
+  static float vbatAlternatorT = -1;
   static float vbatDeltaT = -1;
   static float vbatTuneF = -1;
   static String btBeacon = "";
@@ -134,6 +140,7 @@ void _bt_loop_chr_config(const uint32_t now, bool deviceConnected) {
 
   _bt_loop_chr_cfg_setFloat(_bt_chr_config_vbatLpF, false, &vbatLpF, configVbatLpF, 3);
   _bt_loop_chr_cfg_setFloat(_bt_chr_config_vbatChargeT, false, &vbatChargeT, configVbatChargeVoltage, 1);
+  _bt_loop_chr_cfg_setFloat(_bt_chr_config_vbatAlternatorT, false, &vbatAlternatorT, configVbatAlternatorVoltage, 1);
   _bt_loop_chr_cfg_setFloat(_bt_chr_config_vbatDeltaT, false, &vbatDeltaT, configVbatChargeDeltaThreshold, 2);
   _bt_loop_chr_cfg_setFloat(_bt_chr_config_vbatTuneF, false, &vbatTuneF, configVbatTuneF, 2);
 

@@ -5,6 +5,7 @@ class DeviceConfig {
     this.snoozeTime,
     this.vbatLpF,
     this.vbatChargeThreshold,
+    this.vbatAlternatorThreshold,
     this.vbatDeltaThreshold,
     this.vbatTuneFactor,
     this.btBeaconAddress,
@@ -19,6 +20,7 @@ class DeviceConfig {
         snoozeTime: snoozeTime,
         vbatLpF: vbatLpF,
         vbatChargeThreshold: vbatChargeThreshold,
+        vbatAlternatorThreshold: vbatAlternatorThreshold,
         vbatDeltaThreshold: vbatDeltaThreshold,
         vbatTuneFactor: vbatTuneFactor,
         btBeaconAddress: btBeaconAddress,
@@ -33,6 +35,7 @@ class DeviceConfig {
 
   double? vbatLpF;
   double? vbatChargeThreshold;
+  double? vbatAlternatorThreshold;
   double? vbatDeltaThreshold;
   double? vbatTuneFactor;
 

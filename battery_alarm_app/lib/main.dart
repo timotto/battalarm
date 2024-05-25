@@ -26,7 +26,7 @@ class _AppState extends State<App> {
     return MaterialApp(
       title: Texts.appTitle(),
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xffff5540)),
         useMaterial3: true,
       ),
       home: BluetoothGuardWidget(

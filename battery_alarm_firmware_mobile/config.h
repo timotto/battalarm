@@ -28,6 +28,7 @@ String configBtBeaconAddr = "";
 float configBtBeaconRssiInGarage = 0;
 bool configBtBeaconRssiAutoTune = true;
 float configVbatChargeVoltage = 26;
+float configVbatAlternatorVoltage = 27;
 float configVbatChargeDeltaThreshold = 0.1;
 uint32_t configBuzzerAlerts = BUZZER_ALERTS_MAX;
 
@@ -45,7 +46,7 @@ uint32_t configBuzzerAlerts = BUZZER_ALERTS_MAX;
 #define CONFIG_DELAY_ALERT_MAX   3600000
 #define CONFIG_DELAY_SNOOZE_MIN   1000
 #define CONFIG_DELAY_SNOOZE_MAX   3600000
-#define CONFIG_RSSI_T_MIN -80
+#define CONFIG_RSSI_T_MIN -85
 #define CONFIG_RSSI_T_MAX 0
 #define CONFIG_VBAT_LPF_MIN 0.5
 #define CONFIG_VBAT_LPF_MAX 0.9999
@@ -55,3 +56,5 @@ uint32_t configBuzzerAlerts = BUZZER_ALERTS_MAX;
 #define CONFIG_VBAT_DELTA_T_MAX 1
 #define CONFIG_VBAT_CHARGE_T_MIN 12
 #define CONFIG_VBAT_CHARGE_T_MAX 30
+#define CONFIG_VBAT_ALTERNATOR_T_MIN 12
+#define CONFIG_VBAT_ALTERNATOR_T_MAX 30

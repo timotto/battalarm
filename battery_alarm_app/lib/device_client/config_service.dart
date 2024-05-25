@@ -19,6 +19,8 @@ final Uuid _uuidChrVbatDeltaT =
     Uuid.parse('106145DE-E2DA-435D-A093-C8C5CA870213');
 final Uuid _uuidChrVbatTuneF =
     Uuid.parse('106145DE-E2DA-435D-A093-C8C5CA870214');
+final Uuid _uuidChrVbatAlternatorT =
+    Uuid.parse('106145DE-E2DA-435D-A093-C8C5CA870215');
 final Uuid _uuidChrBtBeaconAddr =
     Uuid.parse('106145DE-E2DA-435D-A093-C8C5CA870221');
 final Uuid _uuidChrBtRssiT = Uuid.parse('106145DE-E2DA-435D-A093-C8C5CA870222');
@@ -47,6 +49,7 @@ class ConfigService {
 
   DoubleCharacteristic? _chrVbatLpF;
   DoubleCharacteristic? _chrVbatChargeT;
+  DoubleCharacteristic? _chrVbatAlternatorT;
   DoubleCharacteristic? _chrVbatDeltaT;
   DoubleCharacteristic? _chrVbatTuneF;
 
@@ -84,6 +87,13 @@ class ConfigService {
 
     _chrVbatChargeT = DoubleCharacteristic(
       characteristicId: _uuidChrVbatChargeT,
+      serviceId: uuidConfigService,
+      deviceId: deviceId,
+      digits: 1,
+    );
+
+    _chrVbatAlternatorT = DoubleCharacteristic(
+      characteristicId: _uuidChrVbatAlternatorT,
       serviceId: uuidConfigService,
       deviceId: deviceId,
       digits: 1,
@@ -166,6 +176,11 @@ class ConfigService {
         update.vbatChargeThreshold,
       );
       await _writeIfChanged(
+        _chrVbatAlternatorT,
+        _state.vbatAlternatorThreshold,
+        update.vbatAlternatorThreshold,
+      );
+      await _writeIfChanged(
         _chrVbatDeltaT,
         _state.vbatDeltaThreshold,
         update.vbatDeltaThreshold,
@@ -210,6 +225,7 @@ class ConfigService {
         snoozeTime: await _chrSnoozeTime?.read(),
         vbatLpF: await _chrVbatLpF?.read(),
         vbatChargeThreshold: await _chrVbatChargeT?.read(),
+        vbatAlternatorThreshold: await _chrVbatAlternatorT?.read(),
         vbatDeltaThreshold: await _chrVbatDeltaT?.read(),
         vbatTuneFactor: await _chrVbatTuneF?.read(),
         btBeaconAddress: await _chrBtBeaconAddr?.read(),

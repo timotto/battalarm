@@ -134,6 +134,20 @@ class DeviceConfigWidget extends StatelessWidget {
                   currentReading: _currentVbatReading(),
                 ),
                 DoubleConfigWidget(
+                  title: Texts.labelVbatAlternatorThreshold(),
+                  icon: Icons.drive_eta,
+                  min: 12,
+                  max: 30,
+                  value: config.data?.vbatAlternatorThreshold,
+                  digits: 1,
+                  unit: 'V',
+                  onChange: _onChanged(
+                    config.data,
+                    (config, value) => config.vbatAlternatorThreshold = value,
+                  ),
+                  currentReading: _currentVbatReading(),
+                ),
+                DoubleConfigWidget(
                   title: Texts.labelVbatDeltaThreshold(),
                   icon: Icons.battery_charging_full,
                   min: 0.001,
