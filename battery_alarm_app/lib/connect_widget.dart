@@ -97,8 +97,12 @@ class _ProgressSpinnerState extends State<_ProgressSpinnerWidget>
   }
 
   @override
-  Widget build(BuildContext context) => CircularProgressIndicator(
-        value: controller.value,
-        semanticsLabel: 'Animation indicating activity',
-      );
+  Widget build(BuildContext context) => SizedBox(
+    width: 192,
+    height: 192,
+    child: CircularProgressIndicator(
+      value: controller.value,
+      semanticsLabel: 'Animation indicating activity',
+    ),
+  );
 }
