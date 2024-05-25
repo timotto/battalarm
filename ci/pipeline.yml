@@ -36,6 +36,25 @@ temp:
       secret_access_key: ((s3.secret_access_key))
       initial_version: 0.0.1
 
+    ci_artifact: &ci_artifact
+      type: s3
+      icon: floppy
+    ci_artifact_source: &ci_artifact_source
+      access_key_id: ((s3.access_key_id))
+      endpoint: ((s3.endpoint))
+      bucket: ((s3.artifacts_bucket))
+      region_name: ((s3.region_name))
+      secret_access_key: ((minio.secret_access_key))
+
+    pub_artifact: &pub_artifact
+      type: s3
+      icon: floppy
+    pub_artifact_source: &pub_artifact_source
+      access_key_id: ((pub_s3.access_key_id))
+      bucket: ((pub_s3.pub_bucket))
+      region_name: ((pub_s3.region_name))
+      secret_access_key: ((pub_s3.secret_access_key))
+
   tasks:
     slack_alert: &slack_alert
       on_failure:
@@ -181,14 +200,10 @@ resources:
     - battery_alarm_app/android/Gemfile.lock
 
 - name: android-artifact
-  type: s3
+  <<: *ci_artifact
   source:
-    access_key_id: ((s3.access_key_id))
-    bucket: ((s3.artifacts_bucket))
-    endpoint: ((s3.endpoint))
+    <<: *ci_artifact_source
     regexp: battalarm/app/app-(.*).aab
-    region_name: ((s3.region_name))
-    secret_access_key: ((s3.secret_access_key))
 
 - name: app-version
   <<: *semver
@@ -201,6 +216,51 @@ resources:
   source:
     <<: *semver_source
     key: battalarm/app/apk-number
+
+# endregion
+
+# region firmware
+
+- name: firmware-source
+  <<: *repo
+  source:
+    <<: *repo_source
+    paths:
+    - battery_alarm_firmware_mobile
+
+- name: firmware-version
+  <<: *semver
+  source:
+    <<: *semver_source
+    key: battalarm/firmware
+
+- name: firmware-beta-artifact
+  <<: *pub_artifact
+  source:
+    <<: *pub_artifact_source
+    initial_version: 0.0.0
+    versioned_file: battalarm/firmware-beta.bin
+
+- name: firmware-beta-artifact-version
+  <<: *pub_artifact
+  source:
+    <<: *pub_artifact_source
+    initial_version: 0.0.0
+    versioned_file: battalarm/firmware-beta-version.txt
+
+- name: firmware-artifact
+  <<: *pub_artifact
+  source:
+    <<: *pub_artifact_source
+    initial_version: 0.0.0
+    versioned_file: battalarm/firmware.bin
+
+- name: firmware-artifact-version
+  <<: *pub_artifact
+  source:
+    <<: *pub_artifact_source
+    initial_version: 0.0.0
+    versioned_file: battalarm/firmware-version.txt
 
 # endregion
 
@@ -544,7 +604,6 @@ jobs:
   plan:
   - in_parallel:
     - get: android-artifact
-      passed: [promote-android-open-to-prod]
     - put: app-version
       params:
         bump: minor
@@ -555,9 +614,151 @@ jobs:
   plan:
   - in_parallel:
     - get: android-artifact
-      passed: [promote-android-open-to-prod]
     - put: app-version
+      params:
+        bump: major
+
+# endregion
+
+# region firmware
+
+- name: firmware
+  serial: true
+  serial_groups: [firmware-version]
+  plan:
+  - <<: *slack_alert
+    do:
+    - in_parallel:
+      - get: firmware-source
+        trigger: true
+      - put: firmware-version
+        params:
+          pre: build
+    - task: build
+      config:
+        platform: linux
+        image_resource:
+          type: registry-image
+          source: {repository: arduinoci/ci-arduino-esp32, tag: v2.0.16}
+        inputs:
+        - name: firmware-source
+        - name: firmware-version
+        outputs:
+        - name: artifact
+        caches:
+        - path: cache/arduino-cli
+        run:
+          path: bash
+          args:
+          - -ec
+          - |
+            FIRMWARE_VERSION=$(cat firmware-version/version)
+            OUTPUT=$PWD/artifact
+            CACHE_ARDUINOCLI=$PWD/cache/arduino-cli
+            
+            cd firmware-source/battery_alarm_firmware_mobile
+            
+            while read lib
+            do
+              arduino-cli lib install "$lib"
+            done < .libraries
+            
+            cat > version.h <<EOT
+            #pragma once
+            
+            #define VERSION "${FIRMWARE_VERSION}"
+            EOT
+            
+            arduino-cli compile \
+              battery_alarm_firmware_mobile.ino \
+              --fqbn "$(cat .fqbn)" \
+              --output-dir "$OUTPUT" \
+              --build-path "$CACHE_ARDUINOCLI"/build \
+              --build-cache-path "$CACHE_ARDUINOCLI"/build-cache
+
+    - in_parallel:
+      - put: firmware-beta-artifact
+        params:
+          file: artifact/battery_alarm_firmware_mobile.ino.bin
+
+      - put: firmware-beta-artifact-version
+        params:
+          file: firmware-version/version
+
+- name: release-firmware
+  plan:
+  - <<: *slack_alert
+    do:
+    - in_parallel:
+      - get: firmware-beta-artifact
+        passed: [firmware]
+      - get: firmware-version
+        passed: [firmware]
+
+    - in_parallel:
+      - put: firmware-artifact
+        params:
+          file: firmware-beta-artifact/firmware-beta.bin
+      - put: firmware-artifact-version
+        params:
+          file: firmware-version/version
+
+- name: bump-firmware-version-patch
+  serial_groups: [firmware-version]
+  serial: true
+  plan:
+  - in_parallel:
+    - get: firmware-artifact
+      passed: [release-firmware]
+      trigger: true
+    - put: firmware-version
+      params:
+        bump: patch
+
+- name: bump-firmware-version-minor
+  serial_groups: [firmware-version]
+  serial: true
+  plan:
+  - in_parallel:
+    - get: firmware-artifact
+      passed: [release-firmware]
+    - put: firmware-version
       params:
         bump: minor
 
+- name: bump-firmware-version-major
+  serial_groups: [firmware-version]
+  serial: true
+  plan:
+  - in_parallel:
+    - get: firmware-artifact
+      passed: [release-firmware]
+    - put: firmware-version
+      params:
+        bump: major
+
 # endregion
+
+groups:
+- name: dev
+  jobs:
+  - pipeline
+  - docs
+  - chart
+  - deploy
+  - app
+  - publish-android-internal
+  - promote-android-internal-to-closed
+  - promote-android-closed-to-open
+  - promote-android-open-to-prod
+  - firmware
+  - release-firmware
+
+- name: bump
+  jobs:
+  - bump-app-version-patch
+  - bump-app-version-minor
+  - bump-app-version-major
+  - bump-firmware-version-patch
+  - bump-firmware-version-minor
+  - bump-firmware-version-major
