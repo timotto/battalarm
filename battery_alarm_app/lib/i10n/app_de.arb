@@ -1,6 +1,6 @@
 {
   "@@locale": "de",
-  "@@last_modified": "2024-05-25T08:36:22.761332",
+  "@@last_modified": "2024-05-25T08:57:26.966545",
   "appTitle": "Batterie Alarm",
   "@appTitle": {
     "type": "text",
@@ -269,6 +269,28 @@
   },
   "labelVbatTile": "Batteriespannung",
   "@labelVbatTile": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "beaconChangeDialogTitle": "Basisstation wechseln",
+  "@beaconChangeDialogTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "beaconChangeDialogText": "Möchtest du {name} als Basisstation verwenden?",
+  "@beaconChangeDialogText": {
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "beaconChangeDialogButtonYes": "Ja",
+  "@beaconChangeDialogButtonYes": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "beaconChangeDialogButtonNo": "Nein",
+  "@beaconChangeDialogButtonNo": {
     "type": "text",
     "placeholders": {}
   }

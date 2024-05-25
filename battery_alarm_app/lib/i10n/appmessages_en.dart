@@ -21,9 +21,11 @@ class MessageLookup extends MessageLookupByLibrary {
   @override
   String get localeName => 'en';
 
-  static m0(max) => "This value is too high, at most ${max}.";
+  static m0(name) => "Do you want to use ${name} as base station?";
 
-  static m1(min) => "This value is too low, at least ${min}.";
+  static m1(max) => "This value is too high, at most ${max}.";
+
+  static m2(min) => "This value is too low, at least ${min}.";
 
   @override
   final Map<String, dynamic> messages = _notInlinedMessages(_notInlinedMessages);
@@ -32,6 +34,10 @@ class MessageLookup extends MessageLookupByLibrary {
       'aboutAppLegalese': MessageLookupByLibrary.simpleMessage('With this app you can configure the vehicle-is-in-the-garage-but-the-battery-is-not-getting-charged adapter.'),
     'aboutAppMenuItemTitle': MessageLookupByLibrary.simpleMessage('About this app'),
     'appTitle': MessageLookupByLibrary.simpleMessage('Battery alarm'),
+    'beaconChangeDialogButtonNo': MessageLookupByLibrary.simpleMessage('No'),
+    'beaconChangeDialogButtonYes': MessageLookupByLibrary.simpleMessage('Yes'),
+    'beaconChangeDialogText': m0,
+    'beaconChangeDialogTitle': MessageLookupByLibrary.simpleMessage('Change base station'),
     'beaconScanTitle': MessageLookupByLibrary.simpleMessage('Choose base station'),
     'buttonApplyValue': MessageLookupByLibrary.simpleMessage('Apply value'),
     'buttonOk': MessageLookupByLibrary.simpleMessage('OK'),
@@ -45,8 +51,8 @@ class MessageLookup extends MessageLookupByLibrary {
     'disconnected': MessageLookupByLibrary.simpleMessage('Disconnected'),
     'disconnecting': MessageLookupByLibrary.simpleMessage('Disconnecting...'),
     'doubleEditDialogNotANumber': MessageLookupByLibrary.simpleMessage('This is not a number'),
-    'doubleEditDialogToHigh': m0,
-    'doubleEditDialogToLow': m1,
+    'doubleEditDialogToHigh': m1,
+    'doubleEditDialogToLow': m2,
     'labelAutoTuneRssi': MessageLookupByLibrary.simpleMessage('Auto tune signal strength'),
     'labelBeacon': MessageLookupByLibrary.simpleMessage('Base station'),
     'labelBuzzerAlerts': MessageLookupByLibrary.simpleMessage('Acoustic notification for:'),

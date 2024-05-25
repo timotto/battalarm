@@ -52,16 +52,16 @@ class _BeaconScanWidgetState extends State<BeaconScanWidget> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Basisstation wechseln'),
-        content: Text('Möchtest du $name als Basisstation verwenden?'),
+        title: Text(Texts.beaconChangeDialogTitle()),
+        content: Text(Texts.beaconChangeDialogText(name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Ja'),
+            child: Text(Texts.beaconChangeDialogButtonYes()),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Nein'),
+            child: Text(Texts.beaconChangeDialogButtonNo()),
           ),
         ],
       ),
@@ -100,7 +100,6 @@ class _BeaconScanWidgetState extends State<BeaconScanWidget> {
         ),
       );
 }
-
 
 bool _notABattalarmDevice(DiscoveredDevice device) {
   final isAdapter = [uuidConfigService, uuidStatusService]

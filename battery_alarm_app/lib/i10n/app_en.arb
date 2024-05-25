@@ -107,5 +107,27 @@
     "labelRssiTile": "Base station signal strength",
     "labelVbatDeltaTile": "Charging speed",
     "labelVbatTile": "Battery voltage",
-    "labelVbatAlternatorThreshold": "Battery voltage with running engine"
+    "labelVbatAlternatorThreshold": "Battery voltage with running engine",
+    "beaconChangeDialogTitle": "Change base station",
+    "@beaconChangeDialogTitle": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "beaconChangeDialogText": "Do you want to use {name} as base station?",
+    "@beaconChangeDialogText": {
+        "type": "text",
+        "placeholders": {
+            "name": {}
+        }
+    },
+    "beaconChangeDialogButtonYes": "Yes",
+    "@beaconChangeDialogButtonYes": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "beaconChangeDialogButtonNo": "No",
+    "@beaconChangeDialogButtonNo": {
+        "type": "text",
+        "placeholders": {}
+    }
 }

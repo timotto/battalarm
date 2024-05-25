@@ -285,4 +285,25 @@ class Texts {
         'Batteriespannung',
         name: 'labelVbatTile',
       );
+
+  static String beaconChangeDialogTitle() => Intl.message(
+        'Basisstation wechseln',
+        name: 'beaconChangeDialogTitle',
+      );
+
+  static String beaconChangeDialogText(String name) => Intl.message(
+        'Möchtest du $name als Basisstation verwenden?',
+        name: 'beaconChangeDialogText',
+        args: [name],
+      );
+
+  static String beaconChangeDialogButtonYes() => Intl.message(
+        'Ja',
+        name: 'beaconChangeDialogButtonYes',
+      );
+
+  static String beaconChangeDialogButtonNo() => Intl.message(
+        'Nein',
+        name: 'beaconChangeDialogButtonNo',
+      );
 }
