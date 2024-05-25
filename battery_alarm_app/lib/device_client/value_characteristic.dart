@@ -21,17 +21,37 @@ class ValueCharacteristic<T> {
   final CharacteristicReadFunction<T> _readFn;
   final CharacteristicWriteFunction<T> _writeFn;
 
-  Future<T?> read() async =>
-      _readFn(await _ble.readCharacteristic(_characteristic));
+  Future<T?> read() async {
+    try {
+      return _readFn(await _ble.readCharacteristic(_characteristic));
+    } catch (_) {
+      return null;
+    }
+  }
 
-  Future<void> write(T value) async => await _ble
-      .writeCharacteristicWithResponse(_characteristic, value: _writeFn(value));
+  Future<bool> write(T value) async {
+    try {
+      await _ble.writeCharacteristicWithResponse(
+        _characteristic,
+        value: _writeFn(value),
+      );
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
 
-  void subscribe(void Function(T?) listener) =>
+  bool subscribe(void Function(T?) listener) {
+    try {
       _ble.subscribeToCharacteristic(_characteristic).listen(
-            (event) => listener(_readFn(event)),
-            cancelOnError: true,
-          );
+                  (event) => listener(_readFn(event)),
+                  cancelOnError: true,
+                );
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
 }
 
 class DurationCharacteristic extends ValueCharacteristic<Duration> {
