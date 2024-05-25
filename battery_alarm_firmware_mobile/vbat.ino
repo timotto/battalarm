@@ -109,7 +109,8 @@ void _vbat_loop_delta(const uint32_t now) {
 void _vbat_loop_compute(const uint32_t now) {
   static bool last_state = false;
   static uint32_t last_state_change = 0;
-  const bool state = (_vbat_voltLp >= configVbatChargeVoltage) || (_vbat_voltDelta >= configVbatChargeDeltaThreshold);
+
+  const bool state = _vbat_compute_charging_state();
 
   if (state != last_state) {
     last_state = state;
@@ -134,3 +135,33 @@ void _vbat_loop_debug(const uint32_t now) {
   Serial.printf("vbat: volt=%.1f voltLp=%.1f delta=%.1f\n", _vbat_volt, _vbat_voltLp, _vbat_voltDelta);
 }
 
+bool _vbat_compute_charging_state() {
+  // compute "is vehicle charging state"
+  // compare the measured battery voltage with the configured thresholds for
+  // - configVbatChargeDeltaThreshold
+  // - configVbatAlternatorVoltage
+  // a) the configured alternator voltage is higher than the charger voltage
+  // b) the configured charger voltate is higher than the alternator voltage
+
+  if (configVbatAlternatorVoltage > configVbatChargeDeltaThreshold) {
+    // a)
+    return
+      (_vbat_voltLp < configVbatAlternatorVoltage)
+      &&
+      (
+        (_vbat_voltLp >= configVbatChargeVoltage)
+        ||
+        (_vbat_voltDelta >= configVbatChargeDeltaThreshold)
+      );
+  } else {
+    // b)
+    return
+      (_vbat_voltLp > configVbatAlternatorVoltage)
+      &&
+      (
+        (_vbat_voltLp >= configVbatChargeVoltage)
+        ||
+        (_vbat_voltDelta >= configVbatChargeDeltaThreshold)
+      );
+  }
+}
