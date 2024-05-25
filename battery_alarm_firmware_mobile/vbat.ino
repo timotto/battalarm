@@ -7,8 +7,8 @@ bool _vbat_voltFirst = true;
 bool _vbat_charging = false;
 
 bool _vbat_debug = false;
-bool _vbat_fakeChargingValue = false;
-bool _vbat_fakeChargingEnabled = false;
+float _vbat_fakeVoltageValue = 1;
+bool _vbat_fakeVoltageEnabled = false;
 
 void vbat_status() {
   Serial.printf(
@@ -22,20 +22,16 @@ void vbat_status() {
 }
 
 bool vbat_isCharging() {
-  if (_vbat_fakeChargingEnabled) {
-    return _vbat_fakeChargingValue;
-  }
-
   return _vbat_charging;
 }
 
-void vbat_fake_charging(bool value) {
-  _vbat_fakeChargingValue = value;
-  _vbat_fakeChargingEnabled = true;
+void vbat_fake_voltage(float value) {
+  _vbat_fakeVoltageValue = value;
+  _vbat_fakeVoltageEnabled = true;
 }
 
-void vbat_fake_chargingOff() {
-  _vbat_fakeChargingEnabled = false;
+void vbat_fake_voltageOff() {
+  _vbat_fakeVoltageEnabled = false;
 }
 
 float vbat_volt() {
@@ -76,6 +72,13 @@ void _vbat_loop_read(const uint32_t now) {
   const uint32_t dt = now - last_time;
   if (dt < 20) return;
   last_time = now;
+
+  if (_vbat_fakeVoltageEnabled) {
+    _vbat_volt = _vbat_fakeVoltageValue;
+    _vbat_voltLp = _vbat_fakeVoltageValue;
+    _vbat_delta_ref = _vbat_fakeVoltageValue;
+    return;
+  }
 
   const uint16_t val = analogRead(PIN_VBAT);
   _vbat_volt = (float)val * VBAT_F * configVbatTuneF;

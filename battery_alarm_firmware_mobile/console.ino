@@ -217,12 +217,11 @@ bool _console_processFake(String buffer) {
     bt_fake_isInGarage(false);
   } else if (buffer.equals("fake in garage off")) {
     bt_fake_isInGarageOff();
-  } else if (buffer.equals("fake charging true")) {
-    vbat_fake_charging(true);
-  } else if (buffer.equals("fake charging false")) {
-    vbat_fake_charging(false);
-  } else if (buffer.equals("fake charging off")) {
-    vbat_fake_chargingOff();
+  } else if (buffer.equals("fake vbat off")) {
+    vbat_fake_voltageOff();
+  } else if (buffer.startsWith("fake vbat ")) {
+    float val = buffer.substring(10).toFloat();
+    vbat_fake_voltage(val);
   } else {
     Serial.println("UNKNOWN COMMAND");
     return false;
