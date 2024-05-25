@@ -29,6 +29,10 @@ u2d packet types:
     [1..n]: data
 
 d2u packet types:
+  IDLE:
+    length: 1
+    [0]: STATUS_IDLE
+
   ERROR:
     length: 1 + 1
     [0]: STATUS_ERROR
@@ -83,13 +87,16 @@ void _bt_setup_ota(BLEServer *pServer) {
 #define BT_OTA_STATE_ERROR 1
 #define BT_OTA_STATE_EXPECTING 2
 #define BT_OTA_STATE_COMPLETE 3
-#define BT_OTA_ERROR_NONE 0
-#define BT_OTA_ERROR_BAD_STATE 1
-#define BT_OTA_ERROR_BAD_COMMAND 2
-#define BT_OTA_ERROR_BEGIN_UPDATE 3
-#define BT_OTA_ERROR_SIZE 4
-#define BT_OTA_ERROR_CHECKSUM 5
-#define BT_OTA_ERROR_UPDATE_END 6
+
+#define BT_OTA_ERROR_NONE 0x00
+#define BT_OTA_ERROR_BAD_STATE 0x01
+#define BT_OTA_ERROR_BAD_ARGUMENTS 0x02
+#define BT_OTA_ERROR_BAD_COMMAND 0x03
+#define BT_OTA_ERROR_BEGIN_UPDATE 0x04
+#define BT_OTA_ERROR_SIZE 0x05
+#define BT_OTA_ERROR_CHECKSUM 0x06
+#define BT_OTA_ERROR_UPDATE_END 0x07
+#define BT_OTA_ERROR_SEND_TIMEOUT 0x08
 
 #define BT_OTA_COMMAND_BEGIN   0x01
 #define BT_OTA_COMMAND_ABORT   0x02
@@ -100,7 +107,9 @@ void _bt_setup_ota(BLEServer *pServer) {
 #define BT_OTA_STATUS_EXPECT   0x13
 #define BT_OTA_STATUS_COMPLETE 0x14
 
+uint32_t _bt_ota_loop_millis = 0;
 int _bt_ota_state = BT_OTA_STATE_IDLE;
+uint32_t _bt_ota_state_since = 0;
 bool _bt_ota_state_dirty = true;
 int _bt_ota_error = BT_OTA_ERROR_NONE;
 uint32_t _bt_ota_expected_size = 0;
@@ -111,6 +120,8 @@ bool _bt_ota_abort = false;
 mbedtls_md_context_t _bt_ota_abort_sha_ctx;
 
 void _bt_loop_ota(const uint32_t now) {
+  _bt_ota_loop_millis = now;
+
   if (_bt_ota_begin) {
     _bt_ota_begin = false;
     _bt_ota_begin_update();
@@ -125,20 +136,25 @@ void _bt_loop_ota(const uint32_t now) {
     _bt_ota_state_dirty = false;
     _bt_ota_set_d2u();
   }
+
+  if (_bt_ota_state == BT_OTA_STATE_EXPECTING && (now - _bt_ota_state_since > 10000)) {
+    _bt_ota_error = BT_OTA_ERROR_SEND_TIMEOUT;
+    _bt_ota_set_state(BT_OTA_STATUS_ERROR);
+  }
 }
 
 void _bt_ota_on_u2d(uint8_t *data, const size_t len) {
   if (len < 1) return;
   switch(data[0]) {
     case BT_OTA_COMMAND_BEGIN:
-      if (_bt_ota_state != BT_OTA_STATE_IDLE) {
+      if ((_bt_ota_state != BT_OTA_STATE_IDLE) || (_bt_ota_state != BT_OTA_STATE_ERROR)) {
         _bt_ota_error = BT_OTA_ERROR_BAD_STATE;
         _bt_ota_set_state(BT_OTA_STATUS_ERROR);
         return;
       }
 
       if (len != 37) {
-        _bt_ota_error = BT_OTA_ERROR_BAD_COMMAND;
+        _bt_ota_error = BT_OTA_ERROR_BAD_ARGUMENTS;
         _bt_ota_set_state(BT_OTA_STATUS_ERROR);
         return;
       }
@@ -157,10 +173,16 @@ void _bt_ota_on_u2d(uint8_t *data, const size_t len) {
     case BT_OTA_COMMAND_SEND:
       _bt_ota_on_data(&data[1], len - 1);
       return;
+    
+    default:
+      _bt_ota_error = BT_OTA_ERROR_BAD_COMMAND;
+      _bt_ota_set_state(BT_OTA_STATUS_ERROR);
+      return;
   }
 }
 
 void _bt_ota_set_state(int value) {
+  _bt_ota_state_since = _bt_ota_loop_millis;
   _bt_ota_state_dirty = true;
   _bt_ota_state = value;
 }
@@ -228,6 +250,8 @@ void _bt_ota_on_data(uint8_t *data, size_t len) {
   }
 
   _bt_ota_set_state(BT_OTA_STATE_COMPLETE);
+
+  // TODO reboot
 }
 
 void _bt_ota_begin_update() {
@@ -245,10 +269,13 @@ void _bt_ota_begin_update() {
 
 void _bt_ota_abort_update() {
   if (_bt_ota_state != BT_OTA_STATE_EXPECTING) {
+    _bt_ota_set_state(BT_OTA_STATUS_IDLE);
     return;
   }
 
   Update.abort();
 
   mbedtls_md_free(&_bt_ota_abort_sha_ctx);
+
+  _bt_ota_set_state(BT_OTA_STATUS_IDLE);
 }
