@@ -75,6 +75,7 @@ void _bt_setup_ota(BLEServer *pServer) {
   _bt_chr_ota_u2d->addDescriptor(new BLE2902());
   _bt_chr_ota_u2d->setCallbacks(pCb);
 
+  pService->start();
   _bt_chr_ota_version->setValue((uint8_t *)VERSION, strlen(VERSION));
 }
 
