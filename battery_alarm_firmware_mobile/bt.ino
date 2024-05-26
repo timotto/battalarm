@@ -218,15 +218,19 @@ void _bt_setup_scan() {
 }
 
 void _bt_onScanResults(BLEScanResults results);
+bool bt_ota_active();
 
 void loop_bt(const uint32_t now) {
   _bt_loop_millis = now;
+
+  _bt_loop_ota(now);
+  if (bt_ota_active()) return;
+
   _bt_loop_scan(now);
   _bt_loop_compute(now);
   _bt_loop_chr(now);
   _bt_loop_toggle(now);
   _bt_loop_debug(now);
-  _bt_loop_ota(now);
 }
 
 void _bt_loop_scan(const uint32_t now) {

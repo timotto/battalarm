@@ -116,6 +116,10 @@ mbedtls_md_context_t _bt_ota_abort_sha_ctx;
  bool _bt_ota_sha_started = false;
 bool _bt_ota_update_started = false;
 
+bool bt_ota_active() {
+  return _bt_ota_state == BT_OTA_STATUS_EXPECT;
+}
+
 void _bt_loop_ota(const uint32_t now) {
   _bt_ota_loop_millis = now;
 
