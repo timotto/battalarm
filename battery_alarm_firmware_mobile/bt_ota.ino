@@ -118,6 +118,8 @@ uint32_t _bt_ota_receive_size = 0;
 bool _bt_ota_begin = false;
 bool _bt_ota_abort = false;
 mbedtls_md_context_t _bt_ota_abort_sha_ctx;
+ bool _bt_ota_sha_started = false;
+bool _bt_ota_update_started = false;
 
 void _bt_loop_ota(const uint32_t now) {
   _bt_ota_loop_millis = now;
@@ -137,9 +139,21 @@ void _bt_loop_ota(const uint32_t now) {
     _bt_ota_set_d2u();
   }
 
+  static bool was_error = false;
+  if (_bt_ota_state == BT_OTA_STATE_ERROR) {
+    was_error = true;
+    _bt_ota_cleanup();
+  } else if (was_error) {
+    was_error = false;
+  }
+
   if (_bt_ota_state == BT_OTA_STATE_EXPECTING && (now - _bt_ota_state_since > 10000)) {
-    _bt_ota_error = BT_OTA_ERROR_SEND_TIMEOUT;
-    _bt_ota_set_state(BT_OTA_STATUS_ERROR);
+    _bt_ota_set_error(BT_OTA_ERROR_SEND_TIMEOUT);
+  }
+
+  if (_bt_ota_state == BT_OTA_STATE_COMPLETE && (now - _bt_ota_state_since > 2000)) {
+    ESP.restart();
+    while(true);
   }
 }
 
@@ -148,14 +162,12 @@ void _bt_ota_on_u2d(uint8_t *data, const size_t len) {
   switch(data[0]) {
     case BT_OTA_COMMAND_BEGIN:
       if ((_bt_ota_state != BT_OTA_STATE_IDLE) || (_bt_ota_state != BT_OTA_STATE_ERROR)) {
-        _bt_ota_error = BT_OTA_ERROR_BAD_STATE;
-        _bt_ota_set_state(BT_OTA_STATUS_ERROR);
+        _bt_ota_set_error(BT_OTA_ERROR_BAD_STATE);
         return;
       }
 
       if (len != 37) {
-        _bt_ota_error = BT_OTA_ERROR_BAD_ARGUMENTS;
-        _bt_ota_set_state(BT_OTA_STATUS_ERROR);
+        _bt_ota_set_error(BT_OTA_ERROR_BAD_ARGUMENTS);
         return;
       }
 
@@ -171,12 +183,16 @@ void _bt_ota_on_u2d(uint8_t *data, const size_t len) {
       return;
 
     case BT_OTA_COMMAND_SEND:
+      if (len < 2) {
+        _bt_ota_set_error(BT_OTA_ERROR_BAD_ARGUMENTS);
+        return;
+      }
+
       _bt_ota_on_data(&data[1], len - 1);
       return;
     
     default:
-      _bt_ota_error = BT_OTA_ERROR_BAD_COMMAND;
-      _bt_ota_set_state(BT_OTA_STATUS_ERROR);
+      _bt_ota_set_error(BT_OTA_ERROR_BAD_COMMAND);
       return;
   }
 }
@@ -185,6 +201,11 @@ void _bt_ota_set_state(int value) {
   _bt_ota_state_since = _bt_ota_loop_millis;
   _bt_ota_state_dirty = true;
   _bt_ota_state = value;
+}
+
+void _bt_ota_set_error(int value) {
+  _bt_ota_error = value;
+  _bt_ota_set_state(BT_OTA_STATUS_ERROR);
 }
 
 void _bt_ota_set_d2u() {
@@ -197,6 +218,12 @@ void _bt_ota_set_d2u() {
       len = 1;
       break;
 
+    case BT_OTA_STATE_ERROR:
+      buffer[0] = BT_OTA_STATUS_ERROR;
+      buffer[1] = _bt_ota_error;
+      len = 2;
+      break;
+
     case BT_OTA_STATE_EXPECTING:
       buffer[1] = BT_OTA_STATUS_EXPECT;
       buffer[2] = (_bt_ota_receive_size & 0xff);
@@ -204,6 +231,11 @@ void _bt_ota_set_d2u() {
       buffer[4] = ((_bt_ota_receive_size >> 16) & 0xff);
       buffer[5] = ((_bt_ota_receive_size >> 24) & 0xff);
       len = 5;
+      break;
+
+    case BT_OTA_STATE_COMPLETE:
+      buffer[0] = BT_OTA_STATUS_COMPLETE;
+      len = 1;
       break;
 
     default:
@@ -226,9 +258,7 @@ void _bt_ota_on_data(uint8_t *data, size_t len) {
   }
 
   if (_bt_ota_receive_size > _bt_ota_expected_size) {
-    Update.abort();
-    _bt_ota_error = BT_OTA_ERROR_SIZE;
-    _bt_ota_set_state(BT_OTA_STATUS_ERROR);
+    _bt_ota_set_error(BT_OTA_ERROR_SIZE);
     return;
   }
 
@@ -236,35 +266,36 @@ void _bt_ota_on_data(uint8_t *data, size_t len) {
   mbedtls_md_finish(&_bt_ota_abort_sha_ctx, shaResult);
   mbedtls_md_free(&_bt_ota_abort_sha_ctx);
 
+  _bt_ota_sha_started = false;
+
   if (memcmp(_bt_ota_expected_sha256, shaResult, 32) != 0) {
-    Update.abort();
-    _bt_ota_error = BT_OTA_ERROR_CHECKSUM;
-    _bt_ota_set_state(BT_OTA_STATUS_ERROR);
+    _bt_ota_set_error(BT_OTA_ERROR_CHECKSUM);
     return;
   }
 
   if (!Update.end()) {
-    _bt_ota_error = BT_OTA_ERROR_UPDATE_END;
-    _bt_ota_set_state(BT_OTA_STATUS_ERROR);
+    _bt_ota_set_error(BT_OTA_ERROR_UPDATE_END);
     return;
   }
 
-  _bt_ota_set_state(BT_OTA_STATE_COMPLETE);
+  _bt_ota_update_started = false;
 
-  // TODO reboot
+  _bt_ota_set_state(BT_OTA_STATE_COMPLETE);
 }
 
 void _bt_ota_begin_update() {
   if (!Update.begin(_bt_ota_expected_size)) {
-    _bt_ota_error = BT_OTA_ERROR_BEGIN_UPDATE;
-    _bt_ota_set_state(BT_OTA_STATUS_ERROR);
+    _bt_ota_set_error(BT_OTA_ERROR_BEGIN_UPDATE);
     return;
   }
+  _bt_ota_update_started = true;
 
   mbedtls_md_type_t md_type = MBEDTLS_MD_SHA256;
   mbedtls_md_init(&_bt_ota_abort_sha_ctx);
   mbedtls_md_setup(&_bt_ota_abort_sha_ctx, mbedtls_md_info_from_type(md_type), 0);
   mbedtls_md_starts(&_bt_ota_abort_sha_ctx);
+
+  _bt_ota_sha_started = true;
 }
 
 void _bt_ota_abort_update() {
@@ -273,9 +304,19 @@ void _bt_ota_abort_update() {
     return;
   }
 
-  Update.abort();
-
-  mbedtls_md_free(&_bt_ota_abort_sha_ctx);
+  _bt_ota_cleanup();
 
   _bt_ota_set_state(BT_OTA_STATUS_IDLE);
+}
+
+void _bt_ota_cleanup() {
+  if (_bt_ota_update_started) {
+    _bt_ota_update_started = false;
+    Update.abort();
+  }
+
+  if (_bt_ota_sha_started) {
+    _bt_ota_sha_started = false;
+    mbedtls_md_free(&_bt_ota_abort_sha_ctx);
+  }
 }
