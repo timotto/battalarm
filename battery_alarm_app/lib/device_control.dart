@@ -2,6 +2,7 @@ import 'package:battery_alarm_app/about_widget.dart';
 import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:battery_alarm_app/device_config_widget.dart';
 import 'package:battery_alarm_app/device_status_widget.dart';
+import 'package:battery_alarm_app/ota/ota_widget.dart';
 import 'package:battery_alarm_app/text.dart';
 import 'package:battery_alarm_app/widgets/app_menu_widget.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,9 @@ class _DeviceControlWidgetState extends State<DeviceControlWidget> {
     });
   }
 
+  void _onUpdate(BuildContext context) => Navigator.of(context)
+      .push(MaterialPageRoute(builder: (_) => OtaWidget()));
+
   @override
   Widget build(BuildContext context) => DefaultTabController(
         length: 3,
@@ -37,6 +41,14 @@ class _DeviceControlWidgetState extends State<DeviceControlWidget> {
                     value: _expert,
                     onChanged: _toggleExpertMode,
                     child: Text(Texts.menuItemExpertView()),
+                  ),
+                  StreamBuilder(
+                    stream: widget._deviceClient.otaService.versionStream,
+                    initialData: widget._deviceClient.otaService.version,
+                    builder: (_, version) => MenuItemButton(
+                      onPressed: version.data == null ? null : () => _onUpdate(context),
+                      child: const Text('Update adapter firmware'),
+                    ),
                   ),
                 ],
               )

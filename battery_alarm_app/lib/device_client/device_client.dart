@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:battery_alarm_app/device_client/ota_service.dart';
 import 'package:battery_alarm_app/util/busy.dart';
 import 'package:battery_alarm_app/device_client/config_service.dart';
 import 'package:battery_alarm_app/device_client/status_service.dart';
@@ -16,6 +17,7 @@ class DeviceClient {
   final _ble = FlutterReactiveBle();
   late StatusService statusService = StatusService(_busy);
   late ConfigService configService = ConfigService(_busy);
+  late OtaService otaService = OtaService(_busy);
 
   final StreamController<ConnectionStateUpdate> _connectionStatusUpdate =
       StreamController.broadcast();
@@ -38,6 +40,7 @@ class DeviceClient {
     await _connection?.cancel();
     statusService.onDeviceDisconnected();
     configService.onDeviceDisconnected();
+    otaService.onDeviceDisconnected();
   }
 
   void _onConnectionStatusUpdate(ConnectionStateUpdate update) {
@@ -57,5 +60,6 @@ class DeviceClient {
   void _onConnection(String deviceId) async {
     await statusService.onDeviceConnected(deviceId);
     await configService.onDeviceConnected(deviceId);
+    await otaService.onDeviceConnected(deviceId);
   }
 }
