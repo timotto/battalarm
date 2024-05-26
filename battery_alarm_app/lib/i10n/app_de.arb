@@ -1,6 +1,6 @@
 {
   "@@locale": "de",
-  "@@last_modified": "2024-05-26T14:37:30.797232",
+  "@@last_modified": "2024-05-26T18:45:08.435997",
   "appTitle": "Batterie Alarm",
   "@appTitle": {
     "type": "text",
@@ -374,6 +374,11 @@
   },
   "labelUpdateFailed": "Es gab ein Problem beim aktualisieren des Adapters. Trenne ihn bitte vom Strom, warte einen Moment, stecke ihn dann wieder ein und probiere es noch einmal.",
   "@labelUpdateFailed": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "menuItemUpdateAdapterFirmware": "Adapter Update",
+  "@menuItemUpdateAdapterFirmware": {
     "type": "text",
     "placeholders": {}
   }

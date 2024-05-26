@@ -104,6 +104,7 @@ class MessageLookup extends MessageLookupByLibrary {
     'labelVbatTuneFactor': MessageLookupByLibrary.simpleMessage('Batteriespannung Feinjustierung'),
     'labelWritingUpdate': MessageLookupByLibrary.simpleMessage('Sende das Update an den Adapter...'),
     'menuItemExpertView': MessageLookupByLibrary.simpleMessage('Experten Ansicht'),
+    'menuItemUpdateAdapterFirmware': MessageLookupByLibrary.simpleMessage('Adapter Update'),
     'otaDialogTitle': MessageLookupByLibrary.simpleMessage('Firmware Update'),
     'tabLabelHelp': MessageLookupByLibrary.simpleMessage('Hilfe'),
     'tabLabelSettings': MessageLookupByLibrary.simpleMessage('Einstellungen'),

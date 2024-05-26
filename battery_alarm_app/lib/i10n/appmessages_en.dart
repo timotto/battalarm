@@ -104,6 +104,7 @@ class MessageLookup extends MessageLookupByLibrary {
     'labelVbatTuneFactor': MessageLookupByLibrary.simpleMessage('Battery voltage fine tuning'),
     'labelWritingUpdate': MessageLookupByLibrary.simpleMessage('Writing update to Adapter...'),
     'menuItemExpertView': MessageLookupByLibrary.simpleMessage('Expert view'),
+    'menuItemUpdateAdapterFirmware': MessageLookupByLibrary.simpleMessage('Update adapter'),
     'otaDialogTitle': MessageLookupByLibrary.simpleMessage('Firmware update'),
     'tabLabelHelp': MessageLookupByLibrary.simpleMessage('Help'),
     'tabLabelSettings': MessageLookupByLibrary.simpleMessage('Settings'),

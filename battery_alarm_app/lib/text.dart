@@ -385,4 +385,9 @@ class Texts {
         'Es gab ein Problem beim aktualisieren des Adapters. Trenne ihn bitte vom Strom, warte einen Moment, stecke ihn dann wieder ein und probiere es noch einmal.',
         name: 'labelUpdateFailed',
       );
+
+  static String menuItemUpdateAdapterFirmware() => Intl.message(
+        'Adapter Update',
+        name: 'menuItemUpdateAdapterFirmware',
+      );
 }

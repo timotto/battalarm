@@ -41,14 +41,17 @@ class _DeviceControlWidgetState extends State<DeviceControlWidget> {
                     onChanged: _toggleExpertMode,
                     child: Text(Texts.menuItemExpertView()),
                   ),
-                  StreamBuilder(
-                    stream: widget._deviceClient.otaService.versionStream,
-                    initialData: widget._deviceClient.otaService.version,
-                    builder: (_, version) => MenuItemButton(
-                      onPressed: version.data == null ? null : () => _onUpdate(context),
-                      child: const Text('Update adapter firmware'),
+                  if (_expert)
+                    StreamBuilder(
+                      stream: widget._deviceClient.otaService.versionStream,
+                      initialData: widget._deviceClient.otaService.version,
+                      builder: (_, version) => MenuItemButton(
+                        onPressed: version.data == null
+                            ? null
+                            : () => _onUpdate(context),
+                        child: Text(Texts.menuItemUpdateAdapterFirmware()),
+                      ),
                     ),
-                  ),
                 ],
               )
             ],

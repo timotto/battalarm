@@ -212,5 +212,10 @@
     "@labelUpdateFailed": {
         "type": "text",
         "placeholders": {}
+    },
+    "menuItemUpdateAdapterFirmware": "Update adapter",
+    "@menuItemUpdateAdapterFirmware": {
+        "type": "text",
+        "placeholders": {}
     }
 }
