@@ -11,5 +11,5 @@ class EtaWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      Text('Time remaining: ${formatDuration(value)}');
+      Text(formatDuration(value));
 }

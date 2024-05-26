@@ -1,3 +1,4 @@
+import 'package:battery_alarm_app/dev.dart';
 import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:battery_alarm_app/device_client/ota_service.dart';
 import 'package:battery_alarm_app/ota/download_progress_widget.dart';
@@ -8,92 +9,37 @@ import 'package:battery_alarm_app/ota/writer_progress_widget.dart';
 import 'package:battery_alarm_app/ota/writer_service.dart';
 import 'package:flutter/material.dart';
 
-class OtaWidget extends StatefulWidget {
-  OtaWidget({super.key});
-
-  final deviceClient = DeviceClient();
-  final otaRepo = OtaRepo();
-
-  @override
-  State<StatefulWidget> createState() => _OtaWidgetState();
+enum _OtaDialogStep {
+  chooser,
+  download,
+  update,
 }
 
-class _OtaWidgetState extends State<OtaWidget> {
-  int _tapCount = 0;
-  bool _beta = false;
+class OtaDialog extends StatefulWidget {
+  OtaDialog({super.key});
 
-  void _runUpdate(BuildContext context) async {
-    await showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => _OtaDialog(
-        otaService: widget.deviceClient.otaService,
-        otaRepo: widget.otaRepo,
-        beta: _beta,
-      ),
-    );
-
-    if (!context.mounted) return;
-    Navigator.of(context).pop();
-  }
-
-  void _onDeviceVersionTap() {
-    _tapCount++;
-    if (_tapCount == 7) {
-      setState(() {
-        _beta = !_beta;
-        _tapCount = 0;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: const Text('Firmware update'),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => _onCancel(context),
-          ),
-        ),
-        body: FutureBuilder(
-          future: widget.otaRepo.readAvailableVersion(beta: _beta),
-          builder: (_, availableVersion) => StreamBuilder(
-            stream: widget.deviceClient.otaService.versionStream,
-            initialData: widget.deviceClient.otaService.version,
-            builder: (_, deviceVersion) => UpdateChooserWidget(
-              deviceVersion: deviceVersion.data,
-              availableVersion: availableVersion.data,
-              onTapDeviceVersion: _onDeviceVersionTap,
-              onStartUpdate: () => _runUpdate(context),
-            ),
-          ),
-        ),
+  static show(BuildContext context) => showDialog(
+        context: context,
+        builder: (context) => OtaDialog(),
       );
 
-  void _onCancel(context) {
-    Navigator.pop(context);
-  }
-}
+  final _deviceClient = DeviceClient();
+  final _otaRepo = OtaRepo();
+  final _dev = DeveloperService();
 
-class _OtaDialog extends StatefulWidget {
-  const _OtaDialog({
-    required this.otaService,
-    required this.otaRepo,
-    required this.beta,
-  });
-
-  final OtaService otaService;
-  final OtaRepo otaRepo;
-  final bool beta;
+  OtaService get _otaService => _deviceClient.otaService;
 
   @override
   State<StatefulWidget> createState() => _OtaDialogState();
 }
 
-class _OtaDialogState extends State<_OtaDialog> {
-  int _step = 0;
-  double? _otaProgressValue;
+class _OtaDialogState extends State<OtaDialog> {
+  _OtaDialogStep _step = _OtaDialogStep.chooser;
+
+  int _tapCount = 0;
+  bool _beta = false;
+
+  double? _downloadProgressValue;
   bool _downloadError = false;
   bool _flashError = false;
   bool _flashComplete = false;
@@ -102,21 +48,19 @@ class _OtaDialogState extends State<_OtaDialog> {
   DateTime? _flashStart;
 
   @override
-  void initState() {
-    super.initState();
-    _startDownload();
-  }
-
-  @override
   void deactivate() {
     _writer?.cleanup();
     super.deactivate();
   }
 
   void _startDownload() {
-    widget.otaRepo
+    setState(() {
+      _step = _OtaDialogStep.download;
+    });
+
+    widget._otaRepo
         .loadFirmware(
-          beta: widget.beta,
+          beta: _beta,
           onProgress: _onDownloadProgress,
         )
         .then(
@@ -127,7 +71,7 @@ class _OtaDialogState extends State<_OtaDialog> {
 
   void _onDownloadProgress(int complete, int total) {
     setState(() {
-      _otaProgressValue = complete.toDouble() / total.toDouble();
+      _downloadProgressValue = complete.toDouble() / total.toDouble();
     });
   }
 
@@ -135,8 +79,8 @@ class _OtaDialogState extends State<_OtaDialog> {
     _artifact = value;
     _startFlashing();
     setState(() {
-      _otaProgressValue = null;
-      _step = 1;
+      _downloadProgressValue = null;
+      _step = _OtaDialogStep.update;
     });
   }
 
@@ -148,14 +92,12 @@ class _OtaDialogState extends State<_OtaDialog> {
 
   void _onFlashError({String? reason}) {
     print('ota-widget::on-flash-error=$reason');
-    _writer?.cleanup();
     setState(() {
       _flashError = true;
     });
   }
 
   void _onFlashSuccess() {
-    _writer?.cleanup();
     setState(() {
       _flashComplete = true;
     });
@@ -168,7 +110,7 @@ class _OtaDialogState extends State<_OtaDialog> {
     }
 
     _flashStart = DateTime.timestamp();
-    _writer = widget.otaService.writeFirmware(_artifact!);
+    _writer = widget._otaService.writeFirmware(_artifact!);
     if (_writer == null) {
       _onFlashError();
       return;
@@ -210,15 +152,49 @@ class _OtaDialogState extends State<_OtaDialog> {
     return null;
   }
 
+  void _onDeviceVersionTap() {
+    _tapCount++;
+    if (_tapCount == 7) {
+      setState(() {
+        _beta = !_beta;
+        _tapCount = 0;
+      });
+    }
+  }
+
+  void _onBetaSelected(bool? value) {
+    setState(() {
+      _beta = value ?? false;
+    });
+  }
+
   Widget _content(BuildContext context) {
     switch (_step) {
-      case 0:
+      case _OtaDialogStep.chooser:
+        return FutureBuilder(
+          future: widget._otaRepo.readAvailableVersion(beta: _beta),
+          builder: (_, availableVersion) => StreamBuilder(
+            stream: widget._otaService.versionStream,
+            initialData: widget._otaService.version,
+            builder: (_, deviceVersion) => UpdateChooserWidget(
+              deviceVersion: deviceVersion.data,
+              availableVersion: availableVersion.data,
+              onTapDeviceVersion: _onDeviceVersionTap,
+              onStartUpdate: _startDownload,
+              canSelectBeta: widget._dev.isDeveloper,
+              betaSelected: _beta,
+              onBetaSelected: _onBetaSelected,
+            ),
+          ),
+        );
+
+      case _OtaDialogStep.download:
         return DownloadProgressWidget(
-          value: _otaProgressValue,
+          value: _downloadProgressValue,
           error: _downloadError,
         );
 
-      case 1:
+      case _OtaDialogStep.update:
         return StreamBuilder(
           stream: _writer!.resultStream,
           initialData: _writer!.resultValue,
@@ -227,9 +203,6 @@ class _OtaDialogState extends State<_OtaDialog> {
             value: writerProgress.data,
           ),
         );
-
-      default:
-        return const Text('...');
     }
   }
 

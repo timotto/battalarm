@@ -8,12 +8,18 @@ class UpdateChooserWidget extends StatelessWidget {
     this.availableVersion,
     required this.onStartUpdate,
     required this.onTapDeviceVersion,
+    required this.canSelectBeta,
+    required this.betaSelected,
+    required this.onBetaSelected,
   });
 
   final Version? deviceVersion;
   final Version? availableVersion;
+  final bool canSelectBeta;
+  final bool betaSelected;
   final void Function() onStartUpdate;
   final void Function() onTapDeviceVersion;
+  final void Function(bool?) onBetaSelected;
 
   bool _loading() => deviceVersion == null || availableVersion == null;
 
@@ -22,7 +28,7 @@ class UpdateChooserWidget extends StatelessWidget {
       availableVersion != null &&
       availableVersion!.isBetterThan(deviceVersion!);
 
-  List<Widget> _result() {
+  List<Widget> _result(BuildContext context) {
     if (_loading()) {
       return [
         const Padding(
@@ -30,6 +36,10 @@ class UpdateChooserWidget extends StatelessWidget {
           child: Text('Looking for available updates...'),
         ),
         const LinearProgressIndicator(value: null),
+        ElevatedButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
       ];
     }
 
@@ -39,9 +49,9 @@ class UpdateChooserWidget extends StatelessWidget {
           padding: EdgeInsets.all(8),
           child: Text('There is no update available.'),
         ),
-        const Padding(
-          padding: EdgeInsets.all(8),
-          child: Text('Your adapter has the latest software version.'),
+        ElevatedButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('OK'),
         ),
       ];
     }
@@ -59,16 +69,23 @@ class UpdateChooserWidget extends StatelessWidget {
     ];
   }
 
+  Widget _betaSelector(BuildContext context) => Row(
+        children: [
+          Checkbox(
+            value: betaSelected,
+            onChanged: onBetaSelected,
+          ),
+          const Text('Show beta version'),
+        ],
+      );
+
   @override
   Widget build(BuildContext context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ListTile(
-            title: const Text('Adapter software version'),
-            subtitle: Text(deviceVersion?.toString() ?? '...'),
-            onTap: onTapDeviceVersion,
-          ),
-          ..._result(),
+          if (canSelectBeta) _betaSelector(context),
+          Text('Adapter version: ${deviceVersion?.toString() ?? '-'}'),
+          ..._result(context),
         ],
       );
 }

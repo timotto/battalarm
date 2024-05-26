@@ -25,8 +25,7 @@ class _DeviceControlWidgetState extends State<DeviceControlWidget> {
     });
   }
 
-  void _onUpdate(BuildContext context) => Navigator.of(context)
-      .push(MaterialPageRoute(builder: (_) => OtaWidget()));
+  void _onUpdate(BuildContext context) => OtaDialog.show(context);
 
   @override
   Widget build(BuildContext context) => DefaultTabController(
