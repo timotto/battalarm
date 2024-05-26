@@ -7,25 +7,12 @@ import 'package:flutter/material.dart';
 class WriterProgressWidget extends StatelessWidget {
   const WriterProgressWidget({
     super.key,
-    required this.started,
+    required this.eta,
     required this.value,
   });
 
-  final DateTime? started;
+  final DateTime? eta;
   final OtaWriterProgress? value;
-
-  Duration? _eta() {
-    if (value == null || started == null) return null;
-
-    final now = DateTime.timestamp();
-    final elapsed = now.difference(started!).inSeconds.toDouble();
-
-    if (elapsed < 1) return null;
-
-    final progressPerSecond = value!.progress / elapsed;
-    final secondsRemaining = (1.0 - value!.progress) / progressPerSecond;
-    return Duration(seconds: secondsRemaining.toInt());
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +38,7 @@ class WriterProgressWidget extends StatelessWidget {
         LinearProgressIndicator(value: value?.progress),
         Padding(
           padding: const EdgeInsets.all(8),
-          child: EtaWidget(value: _eta()),
+          child: EtaWidget(eta: eta),
         ),
       ],
     );

@@ -58,8 +58,8 @@ class DeviceClient {
   }
 
   void _onConnection(String deviceId) async {
+    await otaService.onDeviceConnected(deviceId);
     await statusService.onDeviceConnected(deviceId);
     await configService.onDeviceConnected(deviceId);
-    await otaService.onDeviceConnected(deviceId);
   }
 }

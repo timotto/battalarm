@@ -8,6 +8,7 @@ import 'package:battery_alarm_app/ota/update_chooser_widget.dart';
 import 'package:battery_alarm_app/ota/writer_progress_widget.dart';
 import 'package:battery_alarm_app/ota/writer_service.dart';
 import 'package:battery_alarm_app/text.dart';
+import 'package:battery_alarm_app/util/smooth_eta.dart';
 import 'package:flutter/material.dart';
 
 enum _OtaDialogStep {
@@ -46,7 +47,8 @@ class _OtaDialogState extends State<OtaDialog> {
   bool _flashComplete = false;
   OtaArtifact? _artifact;
   OtaWriter? _writer;
-  DateTime? _flashStart;
+
+  final _flashEta = SmoothEta();
 
   @override
   void deactivate() {
@@ -110,7 +112,6 @@ class _OtaDialogState extends State<OtaDialog> {
       return;
     }
 
-    _flashStart = DateTime.timestamp();
     _writer = widget._otaService.writeFirmware(_artifact!);
     if (_writer == null) {
       _onFlashError();
@@ -122,9 +123,6 @@ class _OtaDialogState extends State<OtaDialog> {
   }
 
   void _onWriterProgress(OtaWriterProgress value) {
-    final now = DateTime.timestamp();
-    _flashStart ??= now;
-
     if (value.error != null) {
       _onFlashError(reason: value.error);
       return;
@@ -200,7 +198,7 @@ class _OtaDialogState extends State<OtaDialog> {
           stream: _writer!.resultStream,
           initialData: _writer!.resultValue,
           builder: (_, writerProgress) => WriterProgressWidget(
-            started: _flashStart,
+            eta: _flashEta.update(writerProgress.data?.progress),
             value: writerProgress.data,
           ),
         );

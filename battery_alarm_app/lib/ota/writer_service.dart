@@ -62,7 +62,7 @@ class OtaWriter {
           onError: (_) => _onD2uError(),
         );
 
-    Future.delayed(const Duration(seconds: 1)).then((_) async {
+    Future.delayed(const Duration(milliseconds: 100)).then((_) async {
       if (_writerState != _OtaWriterState.begin) return;
       print('ota-writer::d2u-explicit-read');
       await _ble.readCharacteristic(d2u);

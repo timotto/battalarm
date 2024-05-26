@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 class EtaWidget extends StatelessWidget {
   const EtaWidget({
     super.key,
-    required this.value,
+    required this.eta,
   });
 
-  final Duration? value;
+  final DateTime? eta;
 
   @override
-  Widget build(BuildContext context) =>
-      Text(formatDuration(value));
+  Widget build(BuildContext context) => Text(
+        eta == null
+            ? '-'
+            : formatDuration(eta!.difference(DateTime.timestamp())),
+      );
 }
