@@ -229,6 +229,11 @@ class Texts {
         name: 'buttonOk',
       );
 
+  static String buttonCancel() => Intl.message(
+        'Abbrechen',
+        name: 'buttonCancel',
+      );
+
   static String buttonApplyValue() => Intl.message(
         'Wert übernehmen',
         name: 'buttonApplyValue',
@@ -305,5 +310,79 @@ class Texts {
   static String beaconChangeDialogButtonNo() => Intl.message(
         'Nein',
         name: 'beaconChangeDialogButtonNo',
+      );
+
+  static String otaDialogTitle() => Intl.message(
+        'Firmware Update',
+        name: 'otaDialogTitle',
+      );
+
+  static String labelDownloadingUpdate() => Intl.message(
+        'Update wird heruntergeladen...',
+        name: 'labelDownloadingUpdate',
+      );
+
+  static String labelDownloadUpdateError() => Intl.message(
+        'Es gab ein Problem beim Herunterladen des Updates. Probiere es später bitte nochmal.',
+        name: 'labelDownloadUpdateError',
+      );
+
+  static String labelSearchingUpdates() => Intl.message(
+        'Suche nach verfügbaren updates...',
+        name: 'labelSearchingUpdates',
+      );
+
+  static String labelNoUpdateAvailable() => Intl.message(
+        'Es ist kein Update verfügbar.',
+        name: 'labelNoUpdateAvailable',
+      );
+
+  static String labelUpdateAvailable(String version) => Intl.message(
+        'Adapter Software Version $version ist verfügbar!',
+        name: 'labelUpdateAvailable',
+        args: [version],
+      );
+
+  static String buttonUpdateAdapter() => Intl.message(
+        'Adapter aktualisieren',
+        name: 'buttonUpdateAdapter',
+      );
+
+  static String labelShowBetaVersion() => Intl.message(
+        'Zeige Beta Versionen',
+        name: 'labelShowBetaVersion',
+      );
+
+  static String labelAdapterVersion(String version) => Intl.message(
+        'Adapter Version: $version',
+        name: 'labelAdapterVersion',
+        args: [version],
+      );
+
+  static String labelWritingUpdate() => Intl.message(
+        'Sende das Update an den Adapter...',
+        name: 'labelWritingUpdate',
+      );
+
+  static String labelUpdateSuccess() => Intl.message(
+        'Das Update des Adapters war erfolgreich. Er wird in kürze neu starten.',
+        name: 'labelUpdateSuccess',
+      );
+
+  static String labelErrorCode(String code) => Intl.message(
+        'Fehler Code: $code',
+        name: 'labelErrorCode',
+        args: [code],
+      );
+
+  static String labelAdapterErrorCode(String code) => Intl.message(
+        'Adapter Fehler Code: $code',
+        name: 'labelAdapterErrorCode',
+        args: [code],
+      );
+
+  static String labelUpdateFailed() => Intl.message(
+        'Es gab ein Problem beim aktualisieren des Adapters. Trenne ihn bitte vom Strom, warte einen Moment, stecke ihn dann wieder ein und probiere es noch einmal.',
+        name: 'labelUpdateFailed',
       );
 }

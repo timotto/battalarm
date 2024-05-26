@@ -1,4 +1,5 @@
 import 'package:battery_alarm_app/model/version.dart';
+import 'package:battery_alarm_app/text.dart';
 import 'package:flutter/material.dart';
 
 class UpdateChooserWidget extends StatelessWidget {
@@ -31,27 +32,27 @@ class UpdateChooserWidget extends StatelessWidget {
   List<Widget> _result(BuildContext context) {
     if (_loading()) {
       return [
-        const Padding(
-          padding: EdgeInsets.all(8),
-          child: Text('Looking for available updates...'),
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Text(Texts.labelSearchingUpdates()),
         ),
         const LinearProgressIndicator(value: null),
         ElevatedButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(Texts.buttonCancel()),
         ),
       ];
     }
 
     if (!_hasUpdate()) {
       return [
-        const Padding(
-          padding: EdgeInsets.all(8),
-          child: Text('There is no update available.'),
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Text(Texts.labelNoUpdateAvailable()),
         ),
         ElevatedButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('OK'),
+          child: Text(Texts.buttonOk()),
         ),
       ];
     }
@@ -59,12 +60,11 @@ class UpdateChooserWidget extends StatelessWidget {
     return [
       Padding(
         padding: const EdgeInsets.all(8),
-        child: Text(
-            'Adapter software version ${availableVersion!.toString()} is available!'),
+        child: Text(Texts.labelUpdateAvailable(availableVersion!.toString())),
       ),
       ElevatedButton(
         onPressed: onStartUpdate,
-        child: const Text('Update Adapter'),
+        child: Text(Texts.buttonUpdateAdapter()),
       ),
     ];
   }
@@ -75,7 +75,7 @@ class UpdateChooserWidget extends StatelessWidget {
             value: betaSelected,
             onChanged: onBetaSelected,
           ),
-          const Text('Show beta version'),
+          Text(Texts.labelShowBetaVersion()),
         ],
       );
 
@@ -84,7 +84,7 @@ class UpdateChooserWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (canSelectBeta) _betaSelector(context),
-          Text('Adapter version: ${deviceVersion?.toString() ?? '-'}'),
+          Text(Texts.labelAdapterVersion(deviceVersion?.toString() ?? '-')),
           ..._result(context),
         ],
       );

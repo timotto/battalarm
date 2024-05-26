@@ -1,6 +1,7 @@
 import 'package:battery_alarm_app/ota/eta_widget.dart';
 import 'package:battery_alarm_app/ota/protocol.dart';
 import 'package:battery_alarm_app/ota/writer_service.dart';
+import 'package:battery_alarm_app/text.dart';
 import 'package:flutter/material.dart';
 
 class WriterProgressWidget extends StatelessWidget {
@@ -43,9 +44,9 @@ class WriterProgressWidget extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Padding(
-          padding: EdgeInsets.all(8),
-          child: Text('Writing update to Adapter...'),
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Text(Texts.labelWritingUpdate()),
         ),
         LinearProgressIndicator(value: value?.progress),
         Padding(
@@ -61,10 +62,9 @@ class _SuccessWidget extends StatelessWidget {
   const _SuccessWidget();
 
   @override
-  Widget build(BuildContext context) => const Padding(
-        padding: EdgeInsets.all(8),
-        child: Text(
-            'The update has been successful. The Adapter will restart in a moment.'),
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.all(8),
+        child: Text(Texts.labelUpdateSuccess()),
       );
 }
 
@@ -80,7 +80,7 @@ class _GeneralErrorWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const _OtaErrorWidget(),
-            Text('Error code: $value'),
+            Text(Texts.labelErrorCode(value)),
           ],
         ),
       );
@@ -98,7 +98,7 @@ class _DeviceErrorWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const _OtaErrorWidget(),
-            Text('Adapter error code: $value'),
+            Text(Texts.labelAdapterErrorCode(value.name)),
           ],
         ),
       );
@@ -108,6 +108,5 @@ class _OtaErrorWidget extends StatelessWidget {
   const _OtaErrorWidget();
 
   @override
-  Widget build(BuildContext context) => const Text(
-      'There was a problem updating the Adapter. Please unplug the Adapter, wait a few seconds, plug it back in and try again.');
+  Widget build(BuildContext context) => Text(Texts.labelUpdateFailed());
 }

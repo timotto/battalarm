@@ -27,6 +27,14 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m2(min) => "Die Eingabe ist zu niedrig, mindestens ${min}.";
 
+  static m3(code) => "Adapter Fehler Code: ${code}";
+
+  static m4(version) => "Adapter Version: ${version}";
+
+  static m5(code) => "Fehler Code: ${code}";
+
+  static m6(version) => "Adapter Software Version ${version} ist verfügbar!";
+
   @override
   final Map<String, dynamic> messages = _notInlinedMessages(_notInlinedMessages);
 
@@ -40,7 +48,9 @@ class MessageLookup extends MessageLookupByLibrary {
     'beaconChangeDialogTitle': MessageLookupByLibrary.simpleMessage('Basisstation wechseln'),
     'beaconScanTitle': MessageLookupByLibrary.simpleMessage('Basisstation wählen'),
     'buttonApplyValue': MessageLookupByLibrary.simpleMessage('Wert übernehmen'),
+    'buttonCancel': MessageLookupByLibrary.simpleMessage('Abbrechen'),
     'buttonOk': MessageLookupByLibrary.simpleMessage('OK'),
+    'buttonUpdateAdapter': MessageLookupByLibrary.simpleMessage('Adapter aktualisieren'),
     'connected': MessageLookupByLibrary.simpleMessage('Verbunden'),
     'connecting': MessageLookupByLibrary.simpleMessage('Verbinde...'),
     'connectionFailed': MessageLookupByLibrary.simpleMessage('Verbindung Fehlgeschlagen'),
@@ -53,6 +63,8 @@ class MessageLookup extends MessageLookupByLibrary {
     'doubleEditDialogNotANumber': MessageLookupByLibrary.simpleMessage('Das ist keine Zahl 🤦'),
     'doubleEditDialogToHigh': m1,
     'doubleEditDialogToLow': m2,
+    'labelAdapterErrorCode': m3,
+    'labelAdapterVersion': m4,
     'labelAutoTuneRssi': MessageLookupByLibrary.simpleMessage('Signalstärke automatisch anpassen'),
     'labelBeacon': MessageLookupByLibrary.simpleMessage('Basisstation'),
     'labelBuzzerAlerts': MessageLookupByLibrary.simpleMessage('Akkustische Benachrichtigung bei:'),
@@ -67,13 +79,22 @@ class MessageLookup extends MessageLookupByLibrary {
     'labelCurrentValue': MessageLookupByLibrary.simpleMessage('Aktueller Wert'),
     'labelDelayAlert': MessageLookupByLibrary.simpleMessage('Verzögerung bis zum Alarm'),
     'labelDelayWarn': MessageLookupByLibrary.simpleMessage('Verzögerung bis zur Warnung'),
+    'labelDownloadUpdateError': MessageLookupByLibrary.simpleMessage('Es gab ein Problem beim Herunterladen des Updates. Probiere es später bitte nochmal.'),
+    'labelDownloadingUpdate': MessageLookupByLibrary.simpleMessage('Update wird heruntergeladen...'),
+    'labelErrorCode': m5,
     'labelInGarageTile': MessageLookupByLibrary.simpleMessage('Das Fahrzeug befindet sich'),
     'labelInGarageTileInGarage': MessageLookupByLibrary.simpleMessage('in der Garage'),
     'labelInGarageTileNotInGarage': MessageLookupByLibrary.simpleMessage('nicht in der Garage'),
     'labelNoSignal': MessageLookupByLibrary.simpleMessage('Kein Empfang'),
+    'labelNoUpdateAvailable': MessageLookupByLibrary.simpleMessage('Es ist kein Update verfügbar.'),
     'labelRssi': MessageLookupByLibrary.simpleMessage('Basisstation Signalstärke in Garage'),
     'labelRssiTile': MessageLookupByLibrary.simpleMessage('Signalstärke Basisstation'),
+    'labelSearchingUpdates': MessageLookupByLibrary.simpleMessage('Suche nach verfügbaren updates...'),
+    'labelShowBetaVersion': MessageLookupByLibrary.simpleMessage('Zeige Beta Versionen'),
     'labelSnoozeTime': MessageLookupByLibrary.simpleMessage('Snooze time'),
+    'labelUpdateAvailable': m6,
+    'labelUpdateFailed': MessageLookupByLibrary.simpleMessage('Es gab ein Problem beim aktualisieren des Adapters. Trenne ihn bitte vom Strom, warte einen Moment, stecke ihn dann wieder ein und probiere es noch einmal.'),
+    'labelUpdateSuccess': MessageLookupByLibrary.simpleMessage('Das Update des Adapters war erfolgreich. Er wird in kürze neu starten.'),
     'labelVbatAlternatorThreshold': MessageLookupByLibrary.simpleMessage('Batteriespannung bei laufendem Motor'),
     'labelVbatChargeThreshold': MessageLookupByLibrary.simpleMessage('Batterieladegerät Endspannung'),
     'labelVbatDeltaThreshold': MessageLookupByLibrary.simpleMessage('Batterieladegerät Geschwindigkeit'),
@@ -81,7 +102,9 @@ class MessageLookup extends MessageLookupByLibrary {
     'labelVbatLpF': MessageLookupByLibrary.simpleMessage('Batteriespannung Tiefpass Faktor'),
     'labelVbatTile': MessageLookupByLibrary.simpleMessage('Batteriespannung'),
     'labelVbatTuneFactor': MessageLookupByLibrary.simpleMessage('Batteriespannung Feinjustierung'),
+    'labelWritingUpdate': MessageLookupByLibrary.simpleMessage('Sende das Update an den Adapter...'),
     'menuItemExpertView': MessageLookupByLibrary.simpleMessage('Experten Ansicht'),
+    'otaDialogTitle': MessageLookupByLibrary.simpleMessage('Firmware Update'),
     'tabLabelHelp': MessageLookupByLibrary.simpleMessage('Hilfe'),
     'tabLabelSettings': MessageLookupByLibrary.simpleMessage('Einstellungen'),
     'tabLabelStatus': MessageLookupByLibrary.simpleMessage('Status')

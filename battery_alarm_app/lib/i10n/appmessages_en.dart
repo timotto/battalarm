@@ -27,6 +27,14 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m2(min) => "This value is too low, at least ${min}.";
 
+  static m3(code) => "Adapter error code: ${code}";
+
+  static m4(version) => "Adapter version: ${version}";
+
+  static m5(code) => "Error code: ${code}";
+
+  static m6(version) => "Adapter software version ${version} is available!";
+
   @override
   final Map<String, dynamic> messages = _notInlinedMessages(_notInlinedMessages);
 
@@ -40,7 +48,9 @@ class MessageLookup extends MessageLookupByLibrary {
     'beaconChangeDialogTitle': MessageLookupByLibrary.simpleMessage('Change base station'),
     'beaconScanTitle': MessageLookupByLibrary.simpleMessage('Choose base station'),
     'buttonApplyValue': MessageLookupByLibrary.simpleMessage('Apply value'),
+    'buttonCancel': MessageLookupByLibrary.simpleMessage('Cancel'),
     'buttonOk': MessageLookupByLibrary.simpleMessage('OK'),
+    'buttonUpdateAdapter': MessageLookupByLibrary.simpleMessage('Update Adapter'),
     'connected': MessageLookupByLibrary.simpleMessage('Connected'),
     'connecting': MessageLookupByLibrary.simpleMessage('Connecting...'),
     'connectionFailed': MessageLookupByLibrary.simpleMessage('Connection failed'),
@@ -53,6 +63,8 @@ class MessageLookup extends MessageLookupByLibrary {
     'doubleEditDialogNotANumber': MessageLookupByLibrary.simpleMessage('This is not a number'),
     'doubleEditDialogToHigh': m1,
     'doubleEditDialogToLow': m2,
+    'labelAdapterErrorCode': m3,
+    'labelAdapterVersion': m4,
     'labelAutoTuneRssi': MessageLookupByLibrary.simpleMessage('Auto tune signal strength'),
     'labelBeacon': MessageLookupByLibrary.simpleMessage('Base station'),
     'labelBuzzerAlerts': MessageLookupByLibrary.simpleMessage('Acoustic notification for:'),
@@ -67,13 +79,22 @@ class MessageLookup extends MessageLookupByLibrary {
     'labelCurrentValue': MessageLookupByLibrary.simpleMessage('Current value'),
     'labelDelayAlert': MessageLookupByLibrary.simpleMessage('Alert delay'),
     'labelDelayWarn': MessageLookupByLibrary.simpleMessage('Warning delay'),
+    'labelDownloadUpdateError': MessageLookupByLibrary.simpleMessage('There was a problem downloading the update. Please try again later.'),
+    'labelDownloadingUpdate': MessageLookupByLibrary.simpleMessage('Downloading update...'),
+    'labelErrorCode': m5,
     'labelInGarageTile': MessageLookupByLibrary.simpleMessage('The vehicle is'),
     'labelInGarageTileInGarage': MessageLookupByLibrary.simpleMessage('in the garage'),
     'labelInGarageTileNotInGarage': MessageLookupByLibrary.simpleMessage('not in the garage'),
     'labelNoSignal': MessageLookupByLibrary.simpleMessage('No signal'),
+    'labelNoUpdateAvailable': MessageLookupByLibrary.simpleMessage('There is no update available.'),
     'labelRssi': MessageLookupByLibrary.simpleMessage('Base station signal strength in garage'),
     'labelRssiTile': MessageLookupByLibrary.simpleMessage('Base station signal strength'),
+    'labelSearchingUpdates': MessageLookupByLibrary.simpleMessage('Looking for available updates...'),
+    'labelShowBetaVersion': MessageLookupByLibrary.simpleMessage('Show beta version'),
     'labelSnoozeTime': MessageLookupByLibrary.simpleMessage('Snooze time'),
+    'labelUpdateAvailable': m6,
+    'labelUpdateFailed': MessageLookupByLibrary.simpleMessage('There was a problem updating the Adapter. Please unplug the Adapter, wait a few seconds, plug it back in and try again.'),
+    'labelUpdateSuccess': MessageLookupByLibrary.simpleMessage('The update has been successful. The Adapter will restart in a moment.'),
     'labelVbatAlternatorThreshold': MessageLookupByLibrary.simpleMessage('Battery voltage with running engine'),
     'labelVbatChargeThreshold': MessageLookupByLibrary.simpleMessage('Battery charger end voltage'),
     'labelVbatDeltaThreshold': MessageLookupByLibrary.simpleMessage('Battery charger speed'),
@@ -81,7 +102,9 @@ class MessageLookup extends MessageLookupByLibrary {
     'labelVbatLpF': MessageLookupByLibrary.simpleMessage('Battery voltage low pass factor'),
     'labelVbatTile': MessageLookupByLibrary.simpleMessage('Battery voltage'),
     'labelVbatTuneFactor': MessageLookupByLibrary.simpleMessage('Battery voltage fine tuning'),
+    'labelWritingUpdate': MessageLookupByLibrary.simpleMessage('Writing update to Adapter...'),
     'menuItemExpertView': MessageLookupByLibrary.simpleMessage('Expert view'),
+    'otaDialogTitle': MessageLookupByLibrary.simpleMessage('Firmware update'),
     'tabLabelHelp': MessageLookupByLibrary.simpleMessage('Help'),
     'tabLabelSettings': MessageLookupByLibrary.simpleMessage('Settings'),
     'tabLabelStatus': MessageLookupByLibrary.simpleMessage('Status')

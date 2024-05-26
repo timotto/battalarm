@@ -7,6 +7,7 @@ import 'package:battery_alarm_app/ota/ota_repo.dart';
 import 'package:battery_alarm_app/ota/update_chooser_widget.dart';
 import 'package:battery_alarm_app/ota/writer_progress_widget.dart';
 import 'package:battery_alarm_app/ota/writer_service.dart';
+import 'package:battery_alarm_app/text.dart';
 import 'package:flutter/material.dart';
 
 enum _OtaDialogStep {
@@ -208,13 +209,13 @@ class _OtaDialogState extends State<OtaDialog> {
 
   @override
   Widget build(BuildContext context) => AlertDialog(
-        title: const Text('Firmware update'),
+        title: Text(Texts.otaDialogTitle()),
         icon: _icon(),
         actions: [
           if (_downloadError || _flashError || _flashComplete)
             TextButton(
               onPressed: () => _onCancel(context),
-              child: const Text('OK'),
+              child: Text(Texts.buttonOk()),
             ),
         ],
         content: _content(context),

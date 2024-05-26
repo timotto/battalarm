@@ -1,6 +1,6 @@
 {
   "@@locale": "de",
-  "@@last_modified": "2024-05-25T08:57:26.966545",
+  "@@last_modified": "2024-05-26T14:37:30.797232",
   "appTitle": "Batterie Alarm",
   "@appTitle": {
     "type": "text",
@@ -213,6 +213,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "buttonCancel": "Abbrechen",
+  "@buttonCancel": {
+    "type": "text",
+    "placeholders": {}
+  },
   "buttonApplyValue": "Wert übernehmen",
   "@buttonApplyValue": {
     "type": "text",
@@ -291,6 +296,84 @@
   },
   "beaconChangeDialogButtonNo": "Nein",
   "@beaconChangeDialogButtonNo": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "otaDialogTitle": "Firmware Update",
+  "@otaDialogTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelDownloadingUpdate": "Update wird heruntergeladen...",
+  "@labelDownloadingUpdate": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelDownloadUpdateError": "Es gab ein Problem beim Herunterladen des Updates. Probiere es später bitte nochmal.",
+  "@labelDownloadUpdateError": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelSearchingUpdates": "Suche nach verfügbaren updates...",
+  "@labelSearchingUpdates": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelNoUpdateAvailable": "Es ist kein Update verfügbar.",
+  "@labelNoUpdateAvailable": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelUpdateAvailable": "Adapter Software Version {version} ist verfügbar!",
+  "@labelUpdateAvailable": {
+    "type": "text",
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "buttonUpdateAdapter": "Adapter aktualisieren",
+  "@buttonUpdateAdapter": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelShowBetaVersion": "Zeige Beta Versionen",
+  "@labelShowBetaVersion": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelAdapterVersion": "Adapter Version: {version}",
+  "@labelAdapterVersion": {
+    "type": "text",
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "labelWritingUpdate": "Sende das Update an den Adapter...",
+  "@labelWritingUpdate": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelUpdateSuccess": "Das Update des Adapters war erfolgreich. Er wird in kürze neu starten.",
+  "@labelUpdateSuccess": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelErrorCode": "Fehler Code: {code}",
+  "@labelErrorCode": {
+    "type": "text",
+    "placeholders": {
+      "code": {}
+    }
+  },
+  "labelAdapterErrorCode": "Adapter Fehler Code: {code}",
+  "@labelAdapterErrorCode": {
+    "type": "text",
+    "placeholders": {
+      "code": {}
+    }
+  },
+  "labelUpdateFailed": "Es gab ein Problem beim aktualisieren des Adapters. Trenne ihn bitte vom Strom, warte einen Moment, stecke ihn dann wieder ein und probiere es noch einmal.",
+  "@labelUpdateFailed": {
     "type": "text",
     "placeholders": {}
   }

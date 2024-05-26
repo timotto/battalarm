@@ -1,3 +1,4 @@
+import 'package:battery_alarm_app/text.dart';
 import 'package:flutter/material.dart';
 
 class DownloadProgressWidget extends StatelessWidget {
@@ -13,19 +14,17 @@ class DownloadProgressWidget extends StatelessWidget {
   Widget _onProgress() => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Padding(
-            padding: EdgeInsets.all(8),
-            child: Text('Downloading update...'),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Text(Texts.labelDownloadingUpdate()),
           ),
           LinearProgressIndicator(value: value),
         ],
       );
 
-  Widget _onError() => const Padding(
-        padding: EdgeInsets.all(8),
-        child: Text(
-          'There was a problem downloading the update. Please try again later.',
-        ),
+  Widget _onError() => Padding(
+        padding: const EdgeInsets.all(8),
+        child: Text(Texts.labelDownloadUpdateError()),
       );
 
   @override
