@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -17,29 +18,48 @@ class OtaRepo {
     return Version.parse(value);
   }
 
-  Future<OtaArtifact> loadFirmware({
-    bool beta = false,
-    void Function(int, int)? onProgress,
-  }) async {
+  Future<Stream<OtaLoaderProgress>> loadFirmware({bool beta = false}) async {
     final client = HttpClient();
-
     final req = await client.getUrl(Uri.parse(_firmwareUrl(beta: beta)));
-    final res = await req.close();
-    final contentLength = res.contentLength;
 
-    final List<int> data = [];
-    await for (var block in res) {
-      data.addAll(block);
-      if (onProgress != null) onProgress(data.length, contentLength);
-    }
-
-    final hash = sha256.convert(data);
-
-    return OtaArtifact(
-      size: data.length,
-      sha256: hash.bytes,
-      data: data,
+    final controller = StreamController<OtaLoaderProgress>(
+      onCancel: () {
+        req.abort();
+      },
     );
+
+    controller.add(OtaLoaderProgress(progress: null));
+    req.close().then((res) async {
+      try {
+        final contentLength = res.contentLength;
+
+        final List<int> data = [];
+        await for (var block in res) {
+          data.addAll(block);
+          controller.add(OtaLoaderProgress(
+            progress: data.length.toDouble() / contentLength.toDouble(),
+          ));
+        }
+
+        controller.add(OtaLoaderProgress(progress: 1));
+        final hash = sha256.convert(data);
+
+        controller.add(OtaLoaderProgress(
+          progress: 1,
+          artifact: OtaArtifact(
+            size: data.length,
+            sha256: hash.bytes,
+            data: data,
+          ),
+        ));
+      } catch (e) {
+        controller.addError(e);
+      } finally {
+        await controller.close();
+      }
+    });
+
+    return controller.stream;
   }
 
   String _versionUrl({required bool beta}) =>
@@ -47,4 +67,14 @@ class OtaRepo {
 
   String _firmwareUrl({required bool beta}) =>
       '${otaRepoBaseUrl}firmware${beta ? '-beta' : ''}.bin';
+}
+
+class OtaLoaderProgress {
+  final double? progress;
+  final OtaArtifact? artifact;
+
+  OtaLoaderProgress({
+    required this.progress,
+    this.artifact,
+  });
 }

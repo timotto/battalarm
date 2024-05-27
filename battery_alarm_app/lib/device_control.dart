@@ -2,7 +2,7 @@ import 'package:battery_alarm_app/about_widget.dart';
 import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:battery_alarm_app/device_config_widget.dart';
 import 'package:battery_alarm_app/device_status_widget.dart';
-import 'package:battery_alarm_app/ota/ota_widget.dart';
+import 'package:battery_alarm_app/ota/ota_dialog.dart';
 import 'package:battery_alarm_app/text.dart';
 import 'package:battery_alarm_app/widgets/app_menu_widget.dart';
 import 'package:flutter/material.dart';

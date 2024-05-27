@@ -194,6 +194,14 @@ class OtaWriter {
   void _updateResult(OtaWriterProgress value) {
     _resultValue = value;
     _resultController.add(value);
+
+    if (value.error != null) {
+      _resultController.addError(value.error!);
+    }
+
+    if (value.deviceError != null) {
+      _resultController.addError(value.deviceError!);
+    }
   }
 
   void _cleanup() {
