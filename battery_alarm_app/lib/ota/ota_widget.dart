@@ -38,7 +38,6 @@ class OtaDialog extends StatefulWidget {
 class _OtaDialogState extends State<OtaDialog> {
   _OtaDialogStep _step = _OtaDialogStep.chooser;
 
-  int _tapCount = 0;
   bool _beta = false;
 
   double? _downloadProgressValue;
@@ -151,16 +150,6 @@ class _OtaDialogState extends State<OtaDialog> {
     return null;
   }
 
-  void _onDeviceVersionTap() {
-    _tapCount++;
-    if (_tapCount == 7) {
-      setState(() {
-        _beta = !_beta;
-        _tapCount = 0;
-      });
-    }
-  }
-
   void _onBetaSelected(bool? value) {
     setState(() {
       _beta = value ?? false;
@@ -178,7 +167,6 @@ class _OtaDialogState extends State<OtaDialog> {
             builder: (_, deviceVersion) => UpdateChooserWidget(
               deviceVersion: deviceVersion.data,
               availableVersion: availableVersion.data,
-              onTapDeviceVersion: _onDeviceVersionTap,
               onStartUpdate: _startDownload,
               canSelectBeta: widget._dev.isDeveloper,
               betaSelected: _beta,

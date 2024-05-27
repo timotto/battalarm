@@ -8,7 +8,6 @@ class UpdateChooserWidget extends StatelessWidget {
     this.deviceVersion,
     this.availableVersion,
     required this.onStartUpdate,
-    required this.onTapDeviceVersion,
     required this.canSelectBeta,
     required this.betaSelected,
     required this.onBetaSelected,
@@ -19,7 +18,6 @@ class UpdateChooserWidget extends StatelessWidget {
   final bool canSelectBeta;
   final bool betaSelected;
   final void Function() onStartUpdate;
-  final void Function() onTapDeviceVersion;
   final void Function(bool?) onBetaSelected;
 
   bool _loading() => deviceVersion == null || availableVersion == null;
