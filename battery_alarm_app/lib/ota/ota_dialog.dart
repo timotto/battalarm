@@ -100,7 +100,7 @@ class _OtaDialogState extends State<OtaDialog> {
         return const OtaWriteSuccessWidget();
 
       case OtaManagerStep.error:
-        print('ota-dialog::content::error reason=${state?.errorReason}');
+        print('ota-dialog::content::error error=${state?.error} reason=${state?.errorReason}');
         return const _ErrorWidget();
 
       case null:
