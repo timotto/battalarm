@@ -543,33 +543,18 @@ jobs:
       FASTLANE_TARGET: internal
       SERVICE_ACCOUNT_JSON: ((android.service_account_json))
 
-- name: promote-android-internal-to-closed
+- name: promote-android-internal-to-open
   serial: true
   plan:
   - in_parallel:
     - get: android-artifact
-      trigger: true
       passed: [publish-android-internal]
     - get: ci
 
   - task: publish
     file: ci/ci/tasks/publish_android.yml
     params:
-      FASTLANE_TARGET: promote_internal_to_closed
-      SERVICE_ACCOUNT_JSON: ((android.service_account_json))
-
-- name: promote-android-closed-to-open
-  serial: true
-  plan:
-  - in_parallel:
-    - get: android-artifact
-      passed: [promote-android-internal-to-closed]
-    - get: ci
-
-  - task: publish
-    file: ci/ci/tasks/publish_android.yml
-    params:
-      FASTLANE_TARGET: promote_closed_to_open
+      FASTLANE_TARGET: promote_internal_to_open
       SERVICE_ACCOUNT_JSON: ((android.service_account_json))
 
 - name: promote-android-open-to-prod
@@ -577,7 +562,7 @@ jobs:
   plan:
   - in_parallel:
     - get: android-artifact
-      passed: [promote-android-closed-to-open]
+      passed: [promote-android-internal-to-open]
     - get: ci
 
   - task: publish
@@ -748,8 +733,7 @@ groups:
   - deploy
   - app
   - publish-android-internal
-  - promote-android-internal-to-closed
-  - promote-android-closed-to-open
+  - promote-android-internal-to-open
   - promote-android-open-to-prod
   - firmware
   - release-firmware

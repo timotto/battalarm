@@ -57,6 +57,17 @@ platform :android do
     )
   end
 
+  desc "Promote Internal Testing to Open Testing"
+  lane :promote_internal_to_open do
+    upload_to_play_store(
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_changelogs: true,
+      track: "internal",
+      track_promote_to: "beta",
+    )
+  end
+
   desc "Promote Closed Testing to Open Testing"
   lane :promote_closed_to_open do
     upload_to_play_store(
