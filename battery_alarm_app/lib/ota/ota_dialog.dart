@@ -24,6 +24,7 @@ class OtaDialog extends StatefulWidget {
 
 class _OtaDialogState extends State<OtaDialog> {
   bool _beta = false;
+  final _downloadEta = SmoothEta();
   final _flashEta = SmoothEta();
 
   @override
@@ -93,6 +94,12 @@ class _OtaDialogState extends State<OtaDialog> {
               child: Text(Texts.labelDownloadingUpdate()),
             ),
             LinearProgressIndicator(value: state?.loaderProgress?.progress),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: _EtaWidget(
+                eta: _downloadEta.update(state?.loaderProgress?.progress),
+              ),
+            ),
           ],
         );
 
