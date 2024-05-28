@@ -208,6 +208,16 @@
             "code": {}
         }
     },
+    "labelUpdateCheckFailed": "There was a problem while searching for updates. Check your internet connection and try again.",
+    "@labelUpdateCheckFailed": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "labelUpdateDownloadFailed": "There was a problem while downloading the update. Check your internet connection and try again.",
+    "@labelUpdateDownloadFailed": {
+        "type": "text",
+        "placeholders": {}
+    },
     "labelUpdateFailed": "There was a problem updating the Adapter. Please unplug the Adapter, wait a few seconds, plug it back in and try again.",
     "@labelUpdateFailed": {
         "type": "text",

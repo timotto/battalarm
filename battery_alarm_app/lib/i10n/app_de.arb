@@ -1,6 +1,6 @@
 {
   "@@locale": "de",
-  "@@last_modified": "2024-05-26T18:45:08.435997",
+  "@@last_modified": "2024-05-28T07:32:56.781089",
   "appTitle": "Batterie Alarm",
   "@appTitle": {
     "type": "text",
@@ -371,6 +371,16 @@
     "placeholders": {
       "code": {}
     }
+  },
+  "labelUpdateCheckFailed": "Es gab ein Problem prüfen auf verfügbare Updates. Überprüfe deine Internetverbindung und probiere es noch einmal.",
+  "@labelUpdateCheckFailed": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelUpdateDownloadFailed": "Es gab ein Problem herunterladen des Updates. Überprüfe deine Internetverbindung und probiere es noch einmal.",
+  "@labelUpdateDownloadFailed": {
+    "type": "text",
+    "placeholders": {}
   },
   "labelUpdateFailed": "Es gab ein Problem beim aktualisieren des Adapters. Trenne ihn bitte vom Strom, warte einen Moment, stecke ihn dann wieder ein und probiere es noch einmal.",
   "@labelUpdateFailed": {

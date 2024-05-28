@@ -93,6 +93,8 @@ class MessageLookup extends MessageLookupByLibrary {
     'labelShowBetaVersion': MessageLookupByLibrary.simpleMessage('Show beta version'),
     'labelSnoozeTime': MessageLookupByLibrary.simpleMessage('Snooze time'),
     'labelUpdateAvailable': m6,
+    'labelUpdateCheckFailed': MessageLookupByLibrary.simpleMessage('There was a problem while searching for updates. Check your internet connection and try again.'),
+    'labelUpdateDownloadFailed': MessageLookupByLibrary.simpleMessage('There was a problem while downloading the update. Check your internet connection and try again.'),
     'labelUpdateFailed': MessageLookupByLibrary.simpleMessage('There was a problem updating the Adapter. Please unplug the Adapter, wait a few seconds, plug it back in and try again.'),
     'labelUpdateSuccess': MessageLookupByLibrary.simpleMessage('The update has been successful. The Adapter will restart in a moment.'),
     'labelVbatAlternatorThreshold': MessageLookupByLibrary.simpleMessage('Battery voltage with running engine'),

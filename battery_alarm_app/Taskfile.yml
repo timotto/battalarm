@@ -14,7 +14,12 @@ tasks:
       - flutter build appbundle --build-number {{.BUILD_NUMBER}}
       - cp build/app/outputs/bundle/release/app-release.aab ~/tmp/
 
-  # translate arb files
+  i10n:
+    cmds:
+    - task: gen-arb
+    - task: translate
+    - task: gen-i10n
+
   translate:
     cmds:
       - flutter pub run lyrebird
