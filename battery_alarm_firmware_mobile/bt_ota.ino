@@ -1,7 +1,7 @@
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
-#include <Update.h>
+#include <flashz.hpp>
 #include "mbedtls/md.h"
 #include "version.h"
 
@@ -115,6 +115,8 @@ bool _bt_ota_abort = false;
 mbedtls_md_context_t _bt_ota_abort_sha_ctx;
  bool _bt_ota_sha_started = false;
 bool _bt_ota_update_started = false;
+
+FlashZ& flashz = FlashZ::getInstance();
 
 bool bt_ota_active() {
   return _bt_ota_state == BT_OTA_STATUS_EXPECT;
@@ -255,12 +257,14 @@ void _bt_ota_set_d2u() {
 }
 
 void _bt_ota_on_data(uint8_t *data, size_t len) {
-  size_t written = Update.write(data, len);
+  const bool finalWrite = _bt_ota_receive_size + len >= _bt_ota_receive_size;
+
+  size_t written = flashz.writez(data, len, finalWrite);
   _bt_ota_receive_size += written;
 
   mbedtls_md_update(&_bt_ota_abort_sha_ctx, (const unsigned char *) data, len);
 
-  if (_bt_ota_receive_size < _bt_ota_expected_size) {
+  if (!finalWrite) {
     _bt_ota_set_state(BT_OTA_STATUS_EXPECT);
     return;
   }
@@ -281,7 +285,7 @@ void _bt_ota_on_data(uint8_t *data, size_t len) {
     return;
   }
 
-  if (!Update.end()) {
+  if (!flashz.endz()) {
     _bt_ota_set_error(BT_OTA_ERROR_UPDATE_END);
     return;
   }
@@ -292,7 +296,7 @@ void _bt_ota_on_data(uint8_t *data, size_t len) {
 }
 
 void _bt_ota_begin_update() {
-  if (!Update.begin(_bt_ota_expected_size)) {
+  if (!flashz.beginz()) {
     _bt_ota_set_error(BT_OTA_ERROR_BEGIN_UPDATE);
     return;
   }
@@ -320,7 +324,7 @@ void _bt_ota_abort_update() {
 void _bt_ota_cleanup() {
   if (_bt_ota_update_started) {
     _bt_ota_update_started = false;
-    Update.abort();
+    flashz.abortz();
   }
 
   if (_bt_ota_sha_started) {
