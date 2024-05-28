@@ -533,7 +533,7 @@ jobs:
   plan:
   - in_parallel:
     - get: app-version
-      passed: [publish-android-internal]
+      passed: [app]
     - get: ci
 
   - task: publish
@@ -561,7 +561,7 @@ jobs:
   serial: true
   plan:
   - in_parallel:
-    - get: android-artifact
+    - get: app-version
       passed: [promote-android-open-to-prod]
       trigger: true
     - put: app-version
@@ -737,7 +737,6 @@ groups:
   - chart
   - deploy
   - app
-  - publish-android-internal
   - promote-android-internal-to-open
   - promote-android-open-to-prod
   - firmware
