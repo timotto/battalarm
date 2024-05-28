@@ -36,16 +36,6 @@ temp:
       secret_access_key: ((s3.secret_access_key))
       initial_version: 0.0.1
 
-    ci_artifact: &ci_artifact
-      type: s3
-      icon: floppy
-    ci_artifact_source: &ci_artifact_source
-      access_key_id: ((s3.access_key_id))
-      endpoint: ((s3.endpoint))
-      bucket: ((s3.artifacts_bucket))
-      region_name: ((s3.region_name))
-      secret_access_key: ((minio.secret_access_key))
-
     pub_artifact: &pub_artifact
       type: s3
       icon: floppy
@@ -198,12 +188,6 @@ resources:
     - battery_alarm_app/android/fastlane
     - battery_alarm_app/android/Gemfile
     - battery_alarm_app/android/Gemfile.lock
-
-- name: android-artifact
-  <<: *ci_artifact
-  source:
-    <<: *ci_artifact_source
-    regexp: battalarm/app/app-(.*).aab
 
 - name: app-version
   <<: *semver
@@ -573,7 +557,6 @@ jobs:
   serial: true
   plan:
   - in_parallel:
-    - get: android-artifact
     - put: app-version
       params:
         bump: minor
@@ -583,7 +566,6 @@ jobs:
   serial: true
   plan:
   - in_parallel:
-    - get: android-artifact
     - put: app-version
       params:
         bump: major
