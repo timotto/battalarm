@@ -241,13 +241,6 @@ resources:
     initial_version: 0.0.0
     versioned_file: battalarm/firmware-beta.bin
 
-- name: firmware-z-beta-artifact
-  <<: *pub_artifact
-  source:
-    <<: *pub_artifact_source
-    initial_version: 0.0.0
-    versioned_file: battalarm/firmware-beta.bin.z
-
 - name: firmware-beta-artifact-version
   <<: *pub_artifact
   source:
@@ -261,13 +254,6 @@ resources:
     <<: *pub_artifact_source
     initial_version: 0.0.0
     versioned_file: battalarm/firmware.bin
-
-- name: firmware-z-artifact
-  <<: *pub_artifact
-  source:
-    <<: *pub_artifact_source
-    initial_version: 0.0.0
-    versioned_file: battalarm/firmware.bin.z
 
 - name: firmware-artifact-version
   <<: *pub_artifact
@@ -691,10 +677,6 @@ jobs:
     - in_parallel:
       - put: firmware-beta-artifact
         params:
-          file: artifact/battery_alarm_firmware_mobile.ino.bin
-
-      - put: firmware-z-beta-artifact
-        params:
           file: artifact/battery_alarm_firmware_mobile.ino.bin.z
 
       - put: firmware-beta-artifact-version
@@ -708,8 +690,6 @@ jobs:
     - in_parallel:
       - get: firmware-beta-artifact
         passed: [firmware]
-      - get: firmware-z-beta-artifact
-        passed: [firmware]
       - get: firmware-version
         passed: [firmware]
 
@@ -717,9 +697,6 @@ jobs:
       - put: firmware-artifact
         params:
           file: firmware-beta-artifact/firmware-beta.bin
-      - put: firmware-z-artifact
-        params:
-          file: firmware-z-beta-artifact/firmware-beta.bin.z
       - put: firmware-artifact-version
         params:
           file: firmware-version/version
