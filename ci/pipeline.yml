@@ -506,8 +506,6 @@ jobs:
         bump: major
     - get: ci
 
-  - load_var: version
-    file: app-version/version
   - task: build
     file: ci/ci/tasks/build_app.yml
     params:
@@ -517,10 +515,12 @@ jobs:
       RELEASE_KEYSTORE_KEY_PASSWORD: ((android.release_keystore_key_password))
 
   - in_parallel:
-    - put: android-artifact
+    - task: publish
+      file: ci/ci/tasks/publish_android.yml
       params:
-        content_type: application/vnd.android.package-archive
-        file: artifacts/app-*.aab
+        FASTLANE_TARGET: internal
+        SERVICE_ACCOUNT_JSON: ((android.service_account_json))
+
     - put: app-source
       params:
         repository: app-source
@@ -528,31 +528,16 @@ jobs:
         tag_prefix: app-v
         only_tag: true
 
-- name: publish-android-internal
-  serial: true
-  plan:
-  - in_parallel:
-    - get: android-artifact
-      trigger: true
-      passed: [app]
-    - get: ci
-
-  - task: publish
-    file: ci/ci/tasks/publish_android.yml
-    params:
-      FASTLANE_TARGET: internal
-      SERVICE_ACCOUNT_JSON: ((android.service_account_json))
-
 - name: promote-android-internal-to-open
   serial: true
   plan:
   - in_parallel:
-    - get: android-artifact
+    - get: app-version
       passed: [publish-android-internal]
     - get: ci
 
   - task: publish
-    file: ci/ci/tasks/publish_android.yml
+    file: ci/ci/tasks/bump_android.yml
     params:
       FASTLANE_TARGET: promote_internal_to_open
       SERVICE_ACCOUNT_JSON: ((android.service_account_json))
@@ -561,12 +546,12 @@ jobs:
   serial: true
   plan:
   - in_parallel:
-    - get: android-artifact
+    - get: app-version
       passed: [promote-android-internal-to-open]
     - get: ci
 
   - task: publish
-    file: ci/ci/tasks/publish_android.yml
+    file: ci/ci/tasks/bump_android.yml
     params:
       FASTLANE_TARGET: promote_open_to_prod
       SERVICE_ACCOUNT_JSON: ((android.service_account_json))
@@ -682,6 +667,13 @@ jobs:
       - put: firmware-beta-artifact-version
         params:
           file: firmware-version/version
+
+      - put: firmware-source
+        params:
+          repository: firmware-source
+          tag: firmware-version/version
+          tag_prefix: firmware-v
+          only_tag: true
 
 - name: release-firmware
   plan:

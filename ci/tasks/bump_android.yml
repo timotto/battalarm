@@ -1,0 +1,38 @@
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: ghcr.io/cirruslabs/flutter
+    semver_constraint: ~3.22.x
+inputs:
+- name: ci
+  path: app
+caches:
+- path: cache/ruby-cache
+params:
+  FASTLANE_TARGET: internal
+  SERVICE_ACCOUNT_JSON: ((android.service_account_json))
+run:
+  path: bash
+  user: root
+  args:
+  - -ec
+  - |
+    cachedir() {
+      rm -rf "${1}"
+      mkdir -p "`dirname "${1}"`"
+      ln -s "$PWD/cache/${2}" "${1}"
+    }
+    debase64() {
+      echo -n "$1" \
+      | base64 --decode \
+      > $2
+    }
+    
+    cachedir /root/.bundle ruby-cache
+    
+    cd app/battery_alarm_app/android
+    debase64 "$SERVICE_ACCOUNT_JSON" service-account.json
+    
+    bundle install
+    bundle exec fastlane "$FASTLANE_TARGET"

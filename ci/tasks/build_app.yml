@@ -10,8 +10,7 @@ inputs:
 - name: app-version
 - name: app-number-version
 outputs:
-- name: artifacts
-- name: docker
+- name: android-artifact
 caches:
 - path: cache/pub-cache
 - path: cache/gradle
@@ -27,7 +26,7 @@ run:
   args:
   - -ec
   - |
-    target=$PWD/artifacts
+    target=$PWD/android-artifact
     version=$(cat app-version/version)
     version_number=$(cat app-number-version/version | cut -d. -f1)
     
