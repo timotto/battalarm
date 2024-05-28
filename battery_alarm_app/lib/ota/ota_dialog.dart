@@ -1,8 +1,7 @@
 import 'package:battery_alarm_app/dev.dart';
-import 'package:battery_alarm_app/ota/download_progress_widget.dart';
 import 'package:battery_alarm_app/ota/ota_manager.dart';
-import 'package:battery_alarm_app/ota/writer_progress_widget.dart';
 import 'package:battery_alarm_app/text.dart';
+import 'package:battery_alarm_app/util/duration.dart';
 import 'package:battery_alarm_app/util/smooth_eta.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +16,8 @@ class OtaDialog extends StatefulWidget {
 
   static show(BuildContext context) async {
     final ota = OtaManager();
-    await showDialog(context: context, builder: ((context) => OtaDialog(ota: ota)));
+    await showDialog(
+        context: context, builder: ((context) => OtaDialog(ota: ota)));
     ota.onDispose();
   }
 }
@@ -85,27 +85,54 @@ class _OtaDialogState extends State<OtaDialog> {
         ]);
 
       case OtaManagerStep.download:
-        return DownloadProgressWidget(
-          value: state?.loaderProgress?.progress,
-          error: false,
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(Texts.labelDownloadingUpdate()),
+            ),
+            LinearProgressIndicator(value: state?.loaderProgress?.progress),
+          ],
         );
 
       case OtaManagerStep.writing:
-        return WriterProgressWidget(
-          eta: _flashEta.update(state?.writerProgress?.progress),
-          value: state?.writerProgress,
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(Texts.labelWritingUpdate()),
+            ),
+            LinearProgressIndicator(
+              value: state?.writerProgress?.progress,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: _EtaWidget(
+                eta: _flashEta.update(state?.writerProgress?.progress),
+              ),
+            ),
+          ],
         );
 
       case OtaManagerStep.success:
-        return const OtaWriteSuccessWidget();
+        return Padding(
+          padding: const EdgeInsets.all(8),
+          child: Text(Texts.labelUpdateSuccess()),
+        );
 
       case OtaManagerStep.error:
-        print('ota-dialog::content::error error=${state?.error} reason=${state?.errorReason}');
-        return const _ErrorWidget();
+        return _ErrorWidget(
+          error: state?.error,
+          reason: state?.errorReason,
+        );
 
       case null:
         return null;
     }
+
+    return null;
   }
 
   Widget _contentWithBetaChooser(List<Widget> widgets) => Column(
@@ -171,16 +198,50 @@ class _OtaDialogState extends State<OtaDialog> {
 }
 
 class _ErrorWidget extends StatelessWidget {
-  const _ErrorWidget();
+  const _ErrorWidget({
+    required this.error,
+    this.reason,
+  });
+
+  final OtaManagerError? error;
+  final dynamic reason;
+
+  String _errorText() {
+    switch (error) {
+      case OtaManagerError.availableVersionCheckFailed:
+        return Texts.labelUpdateCheckFailed();
+      case OtaManagerError.loadFirmwareFailed:
+        return Texts.labelUpdateDownloadFailed();
+      case OtaManagerError.writeFirmwareFailed:
+        return Texts.labelUpdateFailed();
+      case null:
+        return '';
+    }
+  }
 
   @override
-  Widget build(BuildContext context) => const Padding(
-        padding: EdgeInsets.all(8),
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.all(8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            OtaWriteErrorWidget(),
+            Text(_errorText()),
           ],
         ),
+      );
+}
+
+class _EtaWidget extends StatelessWidget {
+  const _EtaWidget({
+    required this.eta,
+  });
+
+  final DateTime? eta;
+
+  @override
+  Widget build(BuildContext context) => Text(
+        eta == null
+            ? '-'
+            : formatDuration(eta!.difference(DateTime.timestamp())),
       );
 }

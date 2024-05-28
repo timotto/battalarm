@@ -1,27 +1,4 @@
-enum OtaDeviceState {
-  idle,
-  error,
-  expect,
-  complete,
-}
-
-enum OtaUpdaterCommand {
-  begin,
-  abort,
-  send,
-}
-
-enum OtaDeviceError {
-  none,
-  badState,
-  badArguments,
-  badCommand,
-  beginUpdate,
-  size,
-  checksum,
-  updateEnd,
-  sendTimeout,
-}
+import 'package:battery_alarm_app/ota/model.dart';
 
 class OtaDeviceStateP {
   OtaDeviceStateP._();

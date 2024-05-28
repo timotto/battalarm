@@ -381,6 +381,16 @@ class Texts {
         args: [code],
       );
 
+  static String labelUpdateCheckFailed() => Intl.message(
+        'Es gab ein Problem prüfen auf verfügbare Updates. Überprüfe deine Internetverbindung und probiere es noch einmal.',
+        name: 'labelUpdateCheckFailed',
+      );
+
+  static String labelUpdateDownloadFailed() => Intl.message(
+        'Es gab ein Problem herunterladen des Updates. Überprüfe deine Internetverbindung und probiere es noch einmal.',
+        name: 'labelUpdateDownloadFailed',
+      );
+
   static String labelUpdateFailed() => Intl.message(
         'Es gab ein Problem beim aktualisieren des Adapters. Trenne ihn bitte vom Strom, warte einen Moment, stecke ihn dann wieder ein und probiere es noch einmal.',
         name: 'labelUpdateFailed',
