@@ -10,8 +10,7 @@ class OtaManager {
   final _deviceClient = DeviceClient();
   final _otaRepo = OtaRepo();
 
-  OtaManagerState _state = OtaManagerState.chooser(
-    availableVersion: null,
+  OtaManagerState _state = OtaManagerState.checking(
     deviceVersion: null,
   );
 

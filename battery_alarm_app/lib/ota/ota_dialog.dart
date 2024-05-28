@@ -130,16 +130,19 @@ class _OtaDialogState extends State<OtaDialog> {
         );
 
       case OtaManagerStep.error:
+        print('ota-dialog::error error=${state?.error} reason=${state?.errorReason}');
         return _ErrorWidget(
           error: state?.error,
           reason: state?.errorReason,
         );
 
       case null:
-        return null;
+        return const LinearProgressIndicator(value: null);
     }
 
-    return null;
+    print('ota-dialog: unexpected step=${state?.step}');
+
+    return const LinearProgressIndicator(value: null);
   }
 
   Widget _contentWithBetaChooser(List<Widget> widgets) => Column(
