@@ -104,7 +104,7 @@ class _OtaDialogState extends State<OtaDialog> {
         );
 
       case OtaManagerStep.writing:
-        Column(
+        return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
