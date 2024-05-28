@@ -257,7 +257,7 @@ void _bt_ota_set_d2u() {
 }
 
 void _bt_ota_on_data(uint8_t *data, size_t len) {
-  const bool finalWrite = _bt_ota_receive_size + len >= _bt_ota_receive_size;
+  const bool finalWrite = (_bt_ota_receive_size + len) >= _bt_ota_expected_size;
 
   size_t written = flashz.writez(data, len, finalWrite);
   _bt_ota_receive_size += written;
