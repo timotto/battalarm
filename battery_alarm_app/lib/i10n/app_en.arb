@@ -227,5 +227,12 @@
     "@menuItemUpdateAdapterFirmware": {
         "type": "text",
         "placeholders": {}
+    },
+    "labelCurrentAdapterVersion": "Adapter version: {version}",
+    "@labelCurrentAdapterVersion": {
+        "type": "text",
+        "placeholders": {
+            "version": {}
+        }
     }
 }

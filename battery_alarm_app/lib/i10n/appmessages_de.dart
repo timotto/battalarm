@@ -31,9 +31,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m4(version) => "Adapter Version: ${version}";
 
-  static m5(code) => "Fehler Code: ${code}";
+  static m5(version) => "Adapter Version: ${version}";
 
-  static m6(version) => "Adapter Software Version ${version} ist verfügbar!";
+  static m6(code) => "Fehler Code: ${code}";
+
+  static m7(version) => "Adapter Software Version ${version} ist verfügbar!";
 
   @override
   final Map<String, dynamic> messages = _notInlinedMessages(_notInlinedMessages);
@@ -76,12 +78,13 @@ class MessageLookup extends MessageLookupByLibrary {
     'labelChargingIsCharging': MessageLookupByLibrary.simpleMessage('wird geladen'),
     'labelChargingIsNotCharging': MessageLookupByLibrary.simpleMessage('wird nicht geladen'),
     'labelChargingTitle': MessageLookupByLibrary.simpleMessage('Die Batterie'),
+    'labelCurrentAdapterVersion': m5,
     'labelCurrentValue': MessageLookupByLibrary.simpleMessage('Aktueller Wert'),
     'labelDelayAlert': MessageLookupByLibrary.simpleMessage('Verzögerung bis zum Alarm'),
     'labelDelayWarn': MessageLookupByLibrary.simpleMessage('Verzögerung bis zur Warnung'),
     'labelDownloadUpdateError': MessageLookupByLibrary.simpleMessage('Es gab ein Problem beim Herunterladen des Updates. Probiere es später bitte nochmal.'),
     'labelDownloadingUpdate': MessageLookupByLibrary.simpleMessage('Update wird heruntergeladen...'),
-    'labelErrorCode': m5,
+    'labelErrorCode': m6,
     'labelInGarageTile': MessageLookupByLibrary.simpleMessage('Das Fahrzeug befindet sich'),
     'labelInGarageTileInGarage': MessageLookupByLibrary.simpleMessage('in der Garage'),
     'labelInGarageTileNotInGarage': MessageLookupByLibrary.simpleMessage('nicht in der Garage'),
@@ -92,7 +95,7 @@ class MessageLookup extends MessageLookupByLibrary {
     'labelSearchingUpdates': MessageLookupByLibrary.simpleMessage('Suche nach verfügbaren updates...'),
     'labelShowBetaVersion': MessageLookupByLibrary.simpleMessage('Zeige Beta Versionen'),
     'labelSnoozeTime': MessageLookupByLibrary.simpleMessage('Snooze time'),
-    'labelUpdateAvailable': m6,
+    'labelUpdateAvailable': m7,
     'labelUpdateCheckFailed': MessageLookupByLibrary.simpleMessage('Es gab ein Problem prüfen auf verfügbare Updates. Überprüfe deine Internetverbindung und probiere es noch einmal.'),
     'labelUpdateDownloadFailed': MessageLookupByLibrary.simpleMessage('Es gab ein Problem herunterladen des Updates. Überprüfe deine Internetverbindung und probiere es noch einmal.'),
     'labelUpdateFailed': MessageLookupByLibrary.simpleMessage('Es gab ein Problem beim aktualisieren des Adapters. Trenne ihn bitte vom Strom, warte einen Moment, stecke ihn dann wieder ein und probiere es noch einmal.'),

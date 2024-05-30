@@ -1,4 +1,5 @@
 import 'package:battery_alarm_app/dev.dart';
+import 'package:battery_alarm_app/model/version.dart';
 import 'package:battery_alarm_app/ota/ota_manager.dart';
 import 'package:battery_alarm_app/text.dart';
 import 'package:battery_alarm_app/util/duration.dart';
@@ -72,12 +73,24 @@ class _OtaDialogState extends State<OtaDialog> {
         return _contentWithBetaChooser([
           Padding(
             padding: const EdgeInsets.all(8),
+            child: _DeviceVersionWidget(
+              value: state?.deviceVersion,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8),
             child: Text(Texts.labelNoUpdateAvailable()),
-          )
+          ),
         ]);
 
       case OtaManagerStep.chooser:
         return _contentWithBetaChooser([
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: _DeviceVersionWidget(
+              value: state?.deviceVersion,
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(8),
             child: Text(Texts.labelUpdateAvailable(
@@ -130,7 +143,8 @@ class _OtaDialogState extends State<OtaDialog> {
         );
 
       case OtaManagerStep.error:
-        print('ota-dialog::error error=${state?.error} reason=${state?.errorReason}');
+        print(
+            'ota-dialog::error error=${state?.error} reason=${state?.errorReason}');
         return _ErrorWidget(
           error: state?.error,
           reason: state?.errorReason,
@@ -254,4 +268,14 @@ class _EtaWidget extends StatelessWidget {
             ? '-'
             : formatDuration(eta!.difference(DateTime.timestamp())),
       );
+}
+
+class _DeviceVersionWidget extends StatelessWidget {
+  const _DeviceVersionWidget({this.value});
+
+  final Version? value;
+
+  @override
+  Widget build(BuildContext context) =>
+      Text(Texts.labelCurrentAdapterVersion(value?.toString() ?? '-'));
 }

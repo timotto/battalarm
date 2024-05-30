@@ -31,9 +31,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m4(version) => "Adapter version: ${version}";
 
-  static m5(code) => "Error code: ${code}";
+  static m5(version) => "Adapter version: ${version}";
 
-  static m6(version) => "Adapter software version ${version} is available!";
+  static m6(code) => "Error code: ${code}";
+
+  static m7(version) => "Adapter software version ${version} is available!";
 
   @override
   final Map<String, dynamic> messages = _notInlinedMessages(_notInlinedMessages);
@@ -76,12 +78,13 @@ class MessageLookup extends MessageLookupByLibrary {
     'labelChargingIsCharging': MessageLookupByLibrary.simpleMessage('is being charged'),
     'labelChargingIsNotCharging': MessageLookupByLibrary.simpleMessage('is not being charged'),
     'labelChargingTitle': MessageLookupByLibrary.simpleMessage('The battery'),
+    'labelCurrentAdapterVersion': m5,
     'labelCurrentValue': MessageLookupByLibrary.simpleMessage('Current value'),
     'labelDelayAlert': MessageLookupByLibrary.simpleMessage('Alert delay'),
     'labelDelayWarn': MessageLookupByLibrary.simpleMessage('Warning delay'),
     'labelDownloadUpdateError': MessageLookupByLibrary.simpleMessage('There was a problem downloading the update. Please try again later.'),
     'labelDownloadingUpdate': MessageLookupByLibrary.simpleMessage('Downloading update...'),
-    'labelErrorCode': m5,
+    'labelErrorCode': m6,
     'labelInGarageTile': MessageLookupByLibrary.simpleMessage('The vehicle is'),
     'labelInGarageTileInGarage': MessageLookupByLibrary.simpleMessage('in the garage'),
     'labelInGarageTileNotInGarage': MessageLookupByLibrary.simpleMessage('not in the garage'),
@@ -92,7 +95,7 @@ class MessageLookup extends MessageLookupByLibrary {
     'labelSearchingUpdates': MessageLookupByLibrary.simpleMessage('Looking for available updates...'),
     'labelShowBetaVersion': MessageLookupByLibrary.simpleMessage('Show beta version'),
     'labelSnoozeTime': MessageLookupByLibrary.simpleMessage('Snooze time'),
-    'labelUpdateAvailable': m6,
+    'labelUpdateAvailable': m7,
     'labelUpdateCheckFailed': MessageLookupByLibrary.simpleMessage('There was a problem while searching for updates. Check your internet connection and try again.'),
     'labelUpdateDownloadFailed': MessageLookupByLibrary.simpleMessage('There was a problem while downloading the update. Check your internet connection and try again.'),
     'labelUpdateFailed': MessageLookupByLibrary.simpleMessage('There was a problem updating the Adapter. Please unplug the Adapter, wait a few seconds, plug it back in and try again.'),

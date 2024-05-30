@@ -400,4 +400,10 @@ class Texts {
         'Adapter Update',
         name: 'menuItemUpdateAdapterFirmware',
       );
+
+  static String labelCurrentAdapterVersion(String version) => Intl.message(
+        'Adapter Version: $version',
+        name: 'labelCurrentAdapterVersion',
+        args: [version],
+      );
 }
