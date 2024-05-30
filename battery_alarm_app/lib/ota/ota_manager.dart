@@ -102,6 +102,10 @@ class OtaManager {
   void _onWriteProgress(OtaWriterProgress event) {
     if (event.done) {
       _updateState(OtaManagerState.onSuccess());
+    } else if (event.error != null) {
+      _onError(OtaManagerError.writeFirmwareFailed, reason: event.error);
+    } else if (event.deviceError != null) {
+      _onError(OtaManagerError.writeFirmwareFailed, reason: event.deviceError);
     } else {
       _updateState(OtaManagerState.writing(event));
     }
