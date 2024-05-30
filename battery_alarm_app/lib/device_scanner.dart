@@ -5,6 +5,7 @@ import 'package:battery_alarm_app/text.dart';
 import 'package:battery_alarm_app/widgets/app_menu_widget.dart';
 import 'package:battery_alarm_app/widgets/scan_fab_widget.dart';
 import 'package:battery_alarm_app/widgets/scan_result_widget.dart';
+import 'package:battery_alarm_app/widgets/scanning_indicator_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
@@ -72,6 +73,9 @@ class _DeviceScannerWidgetState extends State<DeviceScannerWidget> {
             onRefresh: _startScan,
             child: Column(
               children: [
+                ScanningIndicatorWidget(
+                  value: scannerState.data?.scanIsInProgress,
+                ),
                 _paddedText(Texts.deviceScannerHint()),
                 Expanded(
                   child: ScanResultWidget(

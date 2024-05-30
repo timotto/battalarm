@@ -3,6 +3,7 @@ import 'package:battery_alarm_app/model/bt_uuid.dart';
 import 'package:battery_alarm_app/text.dart';
 import 'package:battery_alarm_app/widgets/scan_fab_widget.dart';
 import 'package:battery_alarm_app/widgets/scan_result_widget.dart';
+import 'package:battery_alarm_app/widgets/scanning_indicator_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
@@ -90,12 +91,21 @@ class _BeaconScanWidgetState extends State<BeaconScanWidget> {
             onStartScan: _startScan,
             onStopScan: _stopScan,
           ),
-          body: ScanResultWidget(
-            state: scannerStateSnapshot.data,
-            showRssi: true,
-            currentDeviceId: widget.currentBeaconId,
-            filter: _notABattalarmDevice,
-            onSelect: (device) => _onSelect(context, device),
+          body: Column(
+            children: [
+              ScanningIndicatorWidget(
+                value: scannerStateSnapshot.data?.scanIsInProgress,
+              ),
+              Expanded(
+                child: ScanResultWidget(
+                  state: scannerStateSnapshot.data,
+                  showRssi: true,
+                  currentDeviceId: widget.currentBeaconId,
+                  filter: _notABattalarmDevice,
+                  onSelect: (device) => _onSelect(context, device),
+                ),
+              ),
+            ],
           ),
         ),
       );
