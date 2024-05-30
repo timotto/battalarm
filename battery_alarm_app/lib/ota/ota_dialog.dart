@@ -100,7 +100,7 @@ class _OtaDialogState extends State<OtaDialog> {
         ]);
 
       case OtaManagerStep.download:
-        Column(
+        return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
@@ -154,10 +154,6 @@ class _OtaDialogState extends State<OtaDialog> {
       case null:
         return const LinearProgressIndicator(value: null);
     }
-
-    print('ota-dialog: unexpected step=${state?.step}');
-
-    return const LinearProgressIndicator(value: null);
   }
 
   Widget _contentWithBetaChooser(List<Widget> widgets) => Column(
