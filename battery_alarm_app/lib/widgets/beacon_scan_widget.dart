@@ -100,7 +100,7 @@ class _BeaconScanWidgetState extends State<BeaconScanWidget> {
                 child: ScanResultWidget(
                   state: scannerStateSnapshot.data,
                   showRssi: true,
-                  currentDeviceId: widget.currentBeaconId,
+                  currentDeviceId: widget.currentBeaconId?.toUpperCase(),
                   filter: _notABattalarmDevice,
                   onSelect: (device) => _onSelect(context, device),
                 ),
