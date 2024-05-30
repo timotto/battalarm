@@ -8,6 +8,7 @@ import 'package:battery_alarm_app/widgets/scan_result_widget.dart';
 import 'package:battery_alarm_app/widgets/scanning_indicator_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class DeviceScannerWidget extends StatefulWidget {
   DeviceScannerWidget({
@@ -45,9 +46,18 @@ class _DeviceScannerWidgetState extends State<DeviceScannerWidget> {
   Future<void> _stopScan() async => widget.bleScanner.stopScan();
 
   Widget _onEmpty(bool scanning) => Center(
-        child: Text(scanning
-            ? Texts.deviceScannerSearching()
-            : Texts.deviceScannerNoResults()),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            LoadingAnimationWidget.stretchedDots(
+              color: Colors.red,
+              size: 96,
+            ),
+            Text(scanning
+                ? Texts.deviceScannerSearching()
+                : Texts.deviceScannerNoResults()),
+          ],
+        ),
       );
 
   void _onError() {
