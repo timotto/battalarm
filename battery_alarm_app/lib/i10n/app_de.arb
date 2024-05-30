@@ -1,6 +1,6 @@
 {
   "@@locale": "de",
-  "@@last_modified": "2024-05-30T06:08:24.653438",
+  "@@last_modified": "2024-05-30T17:03:28.725184",
   "appTitle": "Batterie Alarm",
   "@appTitle": {
     "type": "text",
@@ -398,5 +398,20 @@
     "placeholders": {
       "version": {}
     }
+  },
+  "labelEngineRunningTitle": "Der Motor",
+  "@labelEngineRunningTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelEngineRunningOn": "läuft",
+  "@labelEngineRunningOn": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelEngineRunningOff": "ist aus",
+  "@labelEngineRunningOff": {
+    "type": "text",
+    "placeholders": {}
   }
 }

@@ -10,6 +10,8 @@ final Uuid _uuidChrInGarage =
     Uuid.parse('106145DE-E2DA-435D-A093-C8C5CA870101');
 final Uuid _uuidChrCharging =
     Uuid.parse('106145DE-E2DA-435D-A093-C8C5CA870102');
+final Uuid _uuidChrEngineRunning =
+    Uuid.parse('106145DE-E2DA-435D-A093-C8C5CA870103');
 final Uuid _uuidChrVbatVolt =
     Uuid.parse('106145DE-E2DA-435D-A093-C8C5CA870111');
 final Uuid _uuidChrVbatDelta =
@@ -33,6 +35,7 @@ class StatusService {
 
   BoolCharacteristic? _chrInGarage;
   BoolCharacteristic? _chrCharging;
+  BoolCharacteristic? _chrEngineRunning;
   DoubleCharacteristic? _chrVbatVolt;
   DoubleCharacteristic? _chrVbatDelta;
   DoubleCharacteristic? _chrBeaconRssi;
@@ -47,6 +50,11 @@ class StatusService {
       deviceId: deviceId,
       serviceId: uuidStatusService,
       characteristicId: _uuidChrCharging,
+    );
+    _chrEngineRunning = BoolCharacteristic(
+      deviceId: deviceId,
+      serviceId: uuidStatusService,
+      characteristicId: _uuidChrEngineRunning,
     );
     _chrVbatVolt = DoubleCharacteristic(
       deviceId: deviceId,
@@ -77,6 +85,10 @@ class StatusService {
         (value) => _updateStateValue((update) => update.charging = value),
       );
       await _subscribeAndRead(
+        _chrEngineRunning,
+        (value) => _updateStateValue((update) => update.engineRunning = value),
+      );
+      await _subscribeAndRead(
         _chrVbatVolt,
         (value) => _updateStateValue((update) => update.vbat = value),
       );
@@ -86,7 +98,8 @@ class StatusService {
       );
       await _subscribeAndRead(
         _chrBeaconRssi,
-        (value) => _updateStateValue((update) => update.rssi = _beaconRssiValueGuard(value)),
+        (value) => _updateStateValue(
+            (update) => update.rssi = _beaconRssiValueGuard(value)),
       );
     });
   }
@@ -94,6 +107,7 @@ class StatusService {
   void onDeviceDisconnected() {
     _chrInGarage = null;
     _chrCharging = null;
+    _chrEngineRunning = null;
     _chrVbatVolt = null;
     _chrVbatDelta = null;
     _chrBeaconRssi = null;

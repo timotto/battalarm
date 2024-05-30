@@ -406,4 +406,20 @@ class Texts {
         name: 'labelCurrentAdapterVersion',
         args: [version],
       );
+
+  static String labelEngineRunningTitle() => Intl.message(
+    'Der Motor',
+    name: 'labelEngineRunningTitle',
+  );
+
+  static String labelEngineRunningOn() => Intl.message(
+    'läuft',
+    name: 'labelEngineRunningOn',
+  );
+
+  static String labelEngineRunningOff() => Intl.message(
+    'ist aus',
+    name: 'labelEngineRunningOff',
+  );
+
 }

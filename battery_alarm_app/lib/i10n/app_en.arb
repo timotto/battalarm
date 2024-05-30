@@ -234,5 +234,20 @@
         "placeholders": {
             "version": {}
         }
+    },
+    "labelEngineRunningTitle": "The engine",
+    "@labelEngineRunningTitle": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "labelEngineRunningOn": "is running",
+    "@labelEngineRunningOn": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "labelEngineRunningOff": "is off",
+    "@labelEngineRunningOff": {
+        "type": "text",
+        "placeholders": {}
     }
 }

@@ -5,6 +5,7 @@ float _vbat_voltLp = 0;
 float _vbat_voltDelta = 0;
 bool _vbat_voltFirst = true;
 bool _vbat_charging = false;
+bool _vbat_engineRunning = false;
 
 bool _vbat_debug = false;
 float _vbat_fakeVoltageValue = 1;
@@ -23,6 +24,10 @@ void vbat_status() {
 
 bool vbat_isCharging() {
   return _vbat_charging;
+}
+
+bool vbat_isEngineRunning() {
+  return _vbat_engineRunning;
 }
 
 void vbat_fake_voltage(float value) {
@@ -107,21 +112,40 @@ void _vbat_loop_delta(const uint32_t now) {
 }
 
 void _vbat_loop_compute(const uint32_t now) {
-  static bool last_state = false;
-  static uint32_t last_state_change = 0;
+  // charging
+  static bool last_chargingState = false;
+  static uint32_t last_chargingState_change = 0;
 
-  const bool state = _vbat_compute_charging_state();
+  const bool chargingState = _vbat_compute_charging_state();
 
-  if (state != last_state) {
-    last_state = state;
-    last_state_change = now;
+  if (chargingState != last_chargingState) {
+    last_chargingState = chargingState;
+    last_chargingState_change = now;
   }
 
-  if (_vbat_charging == state) return;
+  if (_vbat_charging != chargingState) {
+    const uint32_t dt = now - last_chargingState_change;
+    if (dt > 1000) {
+      _vbat_charging = chargingState;
+    }
+  }
 
-  const uint32_t dt = now - last_state_change;
-  if (dt > 1000) {
-    _vbat_charging = state;
+  // engine running
+  static bool last_engineRunningState = false;
+  static uint32_t last_engineRunningState_change = 0;
+
+  const bool engineRunningState = _vbat_compute_engineRunning_state();
+
+  if (engineRunningState != last_engineRunningState) {
+    last_engineRunningState = engineRunningState;
+    last_engineRunningState_change = now;
+  }
+
+  if (_vbat_engineRunning != engineRunningState) {
+    const uint32_t dt = now - last_engineRunningState_change;
+    if (dt > 1000) {
+      _vbat_engineRunning = engineRunningState;
+    }
   }
 }
 
@@ -163,5 +187,13 @@ bool _vbat_compute_charging_state() {
         ||
         (_vbat_voltDelta >= configVbatChargeDeltaThreshold)
       );
+  }
+}
+
+bool _vbat_compute_engineRunning_state() {
+  if (configVbatAlternatorVoltage > configVbatChargeDeltaThreshold) {
+    return _vbat_voltLp >= configVbatAlternatorVoltage;
+  } else {
+    return _vbat_voltLp >= configVbatAlternatorVoltage && _vbat_voltLp < configVbatChargeVoltage;
   }
 }

@@ -2,6 +2,7 @@ class DeviceStatus {
   DeviceStatus({
     this.inGarage,
     this.charging,
+    this.engineRunning,
     this.vbat,
     this.vbatDelta,
     this.rssi,
@@ -10,6 +11,7 @@ class DeviceStatus {
   DeviceStatus clone() => DeviceStatus(
     inGarage: inGarage,
     charging: charging,
+    engineRunning: engineRunning,
     vbat: vbat,
     vbatDelta: vbatDelta,
     rssi: rssi,
@@ -17,6 +19,7 @@ class DeviceStatus {
 
   bool? inGarage;
   bool? charging;
+  bool? engineRunning;
   double? vbat;
   double? vbatDelta;
   double? rssi;

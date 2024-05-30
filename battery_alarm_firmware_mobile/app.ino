@@ -5,6 +5,8 @@ bool _app_inGarage = false;
 uint32_t _app_inGarageChangeTime = 0;
 bool _app_charging = false;
 uint32_t _app_chargingChangeTime = 0;
+bool _app_engineRunning = false;
+uint32_t _app_engineRunningChangeTime = 0;
 bool _app_snoozed = false;
 uint32_t _app_snoozedChangeTime = 0;
 bool _app_buttonPressed = false;
@@ -14,6 +16,7 @@ bool _app_buttonPressedUltraLong = false;
 
 bool _app_wasInGarage = false;
 bool _app_wasCharging = false;
+bool _app_wasEngineRunning = false;
 bool _app_wasNotInGarage = true;
 
 void app_status() {
@@ -23,11 +26,15 @@ void app_status() {
     "  In garage changed since: %lu\n"
     "  Charging: %s\n"
     "  Charging changed since: %lu\n"
+    "  Engine running: %s\n"
+    "  Engine running changed since: %lu\n"
     ,
     _app_inGarage ? "true" : "false",
     millis() - _app_inGarageChangeTime,
     _app_charging ? "true" : "false",
-    millis() - _app_chargingChangeTime
+    millis() - _app_chargingChangeTime,
+    _app_engineRunning ? "true" : "false",
+    millis() - _app_engineRunningChangeTime
     );
 }
 
@@ -88,47 +95,67 @@ void _app_loop_inGarage(const uint32_t now) {
       buzzer_setCharging();
       led_charging();
     }
-  } else {
-    if (_app_wasCharging) {
-      Serial.println("app: state change: not charging");
-      _app_wasCharging = false;
+    return;
+  }
+
+  if (_app_wasCharging) {
+    Serial.println("app: state change: not charging");
+    _app_wasCharging = false;
+    led_off();
+  }
+
+  if (_app_engineRunning) {
+    if (!_app_wasEngineRunning) {
+      Serial.println("app: state change: engine running");
+      _app_wasEngineRunning = true;
+      was_warn = false;
+      was_alarm = false;
+      buzzer_setOff();
       led_off();
     }
+    return;
+  }
 
-    if (_app_isSnooze(now)) {
-      if (was_warn || was_alarm) {
-        was_warn = false;
-        was_alarm = false;
-      }
-    } else {
-      uint32_t eventDt = 0xffffffff;
-      _app_bestDt(now, _app_inGarageChangeTime, &eventDt);
-      _app_bestDt(now, _app_chargingChangeTime, &eventDt);
+  if (_app_wasEngineRunning) {
+    Serial.println("app: state change: engine not running");
+    _app_wasEngineRunning = false;
+  }
 
-      if (eventDt >= configDelayWarn && !was_warn) {
-        Serial.println("app: state change: warn");
-        was_warn = true;
-        buzzer_setWarn();
-        led_warn();
-      }
-
-      if (eventDt >= (configDelayWarn + configDelayAlarm) && !was_alarm) {
-        Serial.println("app: state change: alarm");
-        was_alarm = true;
-        buzzer_setAlarm();
-        led_alarm();
-      }
-
-      if ((was_warn || was_alarm) && _app_buttonPressedLong) {
-        Serial.println("app: state change: snooze");
-        _app_setSnooze(now);
-        buzzer_setSnooze();
-        led_snooze();
-
-        // "consume" button press, to hide from other logic
-        _app_buttonPressedLong = false;
-      }
+  if (_app_isSnooze(now)) {
+    if (was_warn || was_alarm) {
+      was_warn = false;
+      was_alarm = false;
     }
+    return;
+  }
+
+  uint32_t eventDt = 0xffffffff;
+  _app_bestDt(now, _app_inGarageChangeTime, &eventDt);
+  _app_bestDt(now, _app_chargingChangeTime, &eventDt);
+  _app_bestDt(now, _app_engineRunningChangeTime, &eventDt);
+
+  if (eventDt >= configDelayWarn && !was_warn) {
+    Serial.println("app: state change: warn");
+    was_warn = true;
+    buzzer_setWarn();
+    led_warn();
+  }
+
+  if (eventDt >= (configDelayWarn + configDelayAlarm) && !was_alarm) {
+    Serial.println("app: state change: alarm");
+    was_alarm = true;
+    buzzer_setAlarm();
+    led_alarm();
+  }
+
+  if ((was_warn || was_alarm) && _app_buttonPressedLong) {
+    Serial.println("app: state change: snooze");
+    _app_setSnooze(now);
+    buzzer_setSnooze();
+    led_snooze();
+
+    // "consume" button press, to hide from other logic
+    _app_buttonPressedLong = false;
   }
 }
 
@@ -188,6 +215,12 @@ void _app_readValues(const uint32_t now) {
   if (value != _app_charging) {
     _app_charging = value;
     _app_chargingChangeTime = now;
+  }
+
+  value = vbat_isEngineRunning();
+  if (value != _app_engineRunning) {
+    _app_engineRunning = value;
+    _app_engineRunningChangeTime = now;
   }
 
   int pressed, released, pressedLong, pressedUltraLong;
