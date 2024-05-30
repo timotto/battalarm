@@ -2,6 +2,7 @@ import 'package:battery_alarm_app/device_client/device_client.dart';
 import 'package:battery_alarm_app/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ConnectWidget extends StatelessWidget {
   ConnectWidget({super.key});
@@ -43,7 +44,7 @@ class _ConnectionStatusWidget extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const _ProgressSpinnerWidget(),
+        LoadingAnimationWidget.staggeredDotsWave(color: Colors.red, size: 192),
         Text(_connectionStateAsText(state)),
       ],
     );
@@ -65,44 +66,4 @@ String _connectionStateAsText(DeviceConnectionState? state) {
     case DeviceConnectionState.disconnected:
       return Texts.disconnected();
   }
-}
-
-class _ProgressSpinnerWidget extends StatefulWidget {
-  const _ProgressSpinnerWidget();
-
-  @override
-  State<StatefulWidget> createState() => _ProgressSpinnerState();
-}
-
-class _ProgressSpinnerState extends State<_ProgressSpinnerWidget>
-    with TickerProviderStateMixin {
-  late AnimationController controller;
-
-  @override
-  void initState() {
-    controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 1),
-    )
-      ..addListener(() => setState(() {}))
-      ..repeat();
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => SizedBox(
-    width: 192,
-    height: 192,
-    child: CircularProgressIndicator(
-      value: controller.value,
-      semanticsLabel: 'Animation indicating activity',
-    ),
-  );
 }
