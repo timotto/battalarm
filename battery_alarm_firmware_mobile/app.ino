@@ -185,7 +185,7 @@ void _app_loop_bt(const uint32_t now) {
   if (_app_buttonPressedUltraLong) ultraLongPress = true;
 
   if (_app_buttonReleased) {
-    if (longPress) {
+    if (ultraLongPress) {
       btVisible = bt_toggleVisibility();
       buzzer_setBtVisible(btVisible);
       led_setBtVisible(btVisible);
