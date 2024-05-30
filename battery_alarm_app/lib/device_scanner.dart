@@ -46,18 +46,18 @@ class _DeviceScannerWidgetState extends State<DeviceScannerWidget> {
   Future<void> _stopScan() async => widget.bleScanner.stopScan();
 
   Widget _onEmpty(bool scanning) => Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            LoadingAnimationWidget.stretchedDots(
-              color: Colors.red,
-              size: 96,
-            ),
-            Text(scanning
-                ? Texts.deviceScannerSearching()
-                : Texts.deviceScannerNoResults()),
-          ],
-        ),
+        child: scanning
+            ? Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  LoadingAnimationWidget.stretchedDots(
+                    color: Colors.red,
+                    size: 96,
+                  ),
+                  Text(Texts.deviceScannerSearching()),
+                ],
+              )
+            : Text(Texts.deviceScannerNoResults()),
       );
 
   void _onError() {
