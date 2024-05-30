@@ -94,7 +94,8 @@ class _OtaDialogState extends State<OtaDialog> {
           Padding(
             padding: const EdgeInsets.all(8),
             child: Text(Texts.labelUpdateAvailable(
-                state?.availableVersion?.toString() ?? '-')),
+                DeveloperService.formatVersionString(
+                    state?.availableVersion?.toString() ?? '-'))),
           ),
         ]);
 
@@ -276,6 +277,6 @@ class _DeviceVersionWidget extends StatelessWidget {
   final Version? value;
 
   @override
-  Widget build(BuildContext context) =>
-      Text(Texts.labelCurrentAdapterVersion(value?.toString() ?? '-'));
+  Widget build(BuildContext context) => Text(Texts.labelCurrentAdapterVersion(
+      DeveloperService.formatVersionString(value?.toString() ?? '-')));
 }

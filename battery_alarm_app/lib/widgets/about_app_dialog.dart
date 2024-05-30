@@ -9,7 +9,7 @@ void showAboutAppDialog(BuildContext context) {
     context: context,
     builder: (context) => AboutDialog(
       applicationName: Texts.appTitle(),
-      applicationVersion: appVersion,
+      applicationVersion: DeveloperService.formatVersionString(appVersion),
       applicationLegalese: Texts.aboutAppLegalese(),
       applicationIcon: _DeveloperAppIconWidget(),
     ),
@@ -62,6 +62,6 @@ class _DeveloperAppIconState extends State<_DeveloperAppIconWidget> {
   @override
   Widget build(BuildContext context) => InkWell(
         onTap: () => _onTap(context),
-        child: const AppIcon(),
+        child: const AppIcon(size: 48),
       );
 }
