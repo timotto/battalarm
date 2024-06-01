@@ -27,7 +27,6 @@ class DurationEditDialog extends StatefulWidget {
 class _DurationEditDialogState extends State<DurationEditDialog> {
   Duration? _currentValue;
 
-
   @override
   void initState() {
     super.initState();
@@ -45,24 +44,29 @@ class _DurationEditDialogState extends State<DurationEditDialog> {
   }
 
   @override
-  Widget build(BuildContext context) => SimpleDialog(
-    title: Text(widget.title),
-    children: [
-      DurationSlider(
-        title: widget.title,
-        min: widget.min,
-        max: widget.max,
-        value: _currentValue,
-        onChanged: _onChange,
-      ),
-      Center(child: Text(_valueString())),
-      SimpleDialogOption(
-        child: Text(Texts.buttonOk()),
-        onPressed: () {
-          widget.onChange(_currentValue);
-          Navigator.pop(context);
-        },
-      ),
-    ],
-  );
+  Widget build(BuildContext context) => AlertDialog(
+        title: Text(widget.title),
+        actions: [
+          TextButton(
+            onPressed: () {
+              widget.onChange(_currentValue);
+              Navigator.pop(context);
+            },
+            child: Text(Texts.buttonOk()),
+          ),
+        ],
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DurationSlider(
+              title: widget.title,
+              min: widget.min,
+              max: widget.max,
+              value: _currentValue,
+              onChanged: _onChange,
+            ),
+            Center(child: Text(_valueString())),
+          ],
+        ),
+      );
 }
