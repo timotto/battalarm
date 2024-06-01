@@ -16,7 +16,7 @@ class DeviceConfig {
 
   DeviceConfig clone() => DeviceConfig(
         delayWarn: delayWarn,
-        delayAlarm: delayWarn,
+        delayAlarm: delayAlarm,
         snoozeTime: snoozeTime,
         vbatLpF: vbatLpF,
         vbatChargeThreshold: vbatChargeThreshold,
