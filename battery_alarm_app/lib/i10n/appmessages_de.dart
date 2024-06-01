@@ -57,7 +57,7 @@ class MessageLookup extends MessageLookupByLibrary {
     'connecting': MessageLookupByLibrary.simpleMessage('Verbinde...'),
     'connectionFailed': MessageLookupByLibrary.simpleMessage('Verbindung Fehlgeschlagen'),
     'deviceScannerError': MessageLookupByLibrary.simpleMessage('Die Verbindung wurde unterbrochen.'),
-    'deviceScannerHint': MessageLookupByLibrary.simpleMessage('Wenn der Adapter nicht gefunden wird, dann halte den Knopf am Adapter für ca. 5 Sekunden lang gedrückt, bis ein tiefer Piepton kommt.'),
+    'deviceScannerHint': MessageLookupByLibrary.simpleMessage('Wenn der Adapter nicht gefunden wird, dann halte den Knopf am Adapter für ca. 10 Sekunden lang gedrückt, bis ein tiefer Piepton kommt.'),
     'deviceScannerNoResults': MessageLookupByLibrary.simpleMessage('Keine Adapter gefunden'),
     'deviceScannerSearching': MessageLookupByLibrary.simpleMessage('Suche nach Battalarm Adaptern...'),
     'disconnected': MessageLookupByLibrary.simpleMessage('Getrennt'),

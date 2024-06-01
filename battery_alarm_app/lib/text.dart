@@ -185,7 +185,7 @@ class Texts {
       );
 
   static String deviceScannerHint() => Intl.message(
-        'Wenn der Adapter nicht gefunden wird, dann halte den Knopf am Adapter für ca. 5 Sekunden lang gedrückt, bis ein tiefer Piepton kommt.',
+        'Wenn der Adapter nicht gefunden wird, dann halte den Knopf am Adapter für ca. 10 Sekunden lang gedrückt, bis ein tiefer Piepton kommt.',
         name: 'deviceScannerHint',
       );
 

@@ -77,7 +77,7 @@
     "tabLabelStatus": "Status",
     "tabLabelSettings": "Settings",
     "tabLabelHelp": "Help",
-    "deviceScannerHint": "If the adapter is not found press the button on the adapter for about 5 seconds until there is a low pitched beep.",
+    "deviceScannerHint": "If the adapter is not found press the button on the adapter for about 10 seconds until there is a low pitched beep.",
     "deviceScannerSearching": "Searching for Battalarm adapters...",
     "deviceScannerNoResults": "No adapter found",
     "deviceScannerError": "The connection was terminated",

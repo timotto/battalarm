@@ -168,7 +168,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "deviceScannerHint": "Wenn der Adapter nicht gefunden wird, dann halte den Knopf am Adapter für ca. 5 Sekunden lang gedrückt, bis ein tiefer Piepton kommt.",
+  "deviceScannerHint": "Wenn der Adapter nicht gefunden wird, dann halte den Knopf am Adapter für ca. 10 Sekunden lang gedrückt, bis ein tiefer Piepton kommt.",
   "@deviceScannerHint": {
     "type": "text",
     "placeholders": {}
