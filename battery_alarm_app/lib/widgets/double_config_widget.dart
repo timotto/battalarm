@@ -10,6 +10,7 @@ class DoubleConfigWidget extends StatelessWidget {
     required this.min,
     required this.max,
     required this.digits,
+    this.stepSize,
     required this.value,
     required this.unit,
     required this.onChange,
@@ -20,6 +21,7 @@ class DoubleConfigWidget extends StatelessWidget {
   final String title;
   final IconData icon;
   final double min, max;
+  final double? stepSize;
   final double? value;
   final int digits;
   final String unit;
@@ -43,6 +45,7 @@ class DoubleConfigWidget extends StatelessWidget {
               max: max,
               unit: unit,
               digits: digits,
+              stepSize: stepSize,
               onChange: onChange,
               value: value,
               currentReading: currentReading,

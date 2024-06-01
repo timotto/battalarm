@@ -1,5 +1,6 @@
 import 'package:battery_alarm_app/text.dart';
 import 'package:battery_alarm_app/util/stream_and_value.dart';
+import 'package:battery_alarm_app/widgets/double_slider.dart';
 import 'package:flutter/material.dart';
 
 class DoubleEditDialog extends StatefulWidget {
@@ -11,6 +12,7 @@ class DoubleEditDialog extends StatefulWidget {
     required this.max,
     required this.unit,
     required this.digits,
+    this.stepSize,
     this.value,
     required this.onChange,
     this.currentReading,
@@ -23,6 +25,7 @@ class DoubleEditDialog extends StatefulWidget {
   final int digits;
   final String unit;
   final double? value;
+  final double? stepSize;
   final void Function(double?) onChange;
 
   final StreamAndValue<double?>? currentReading;
@@ -42,9 +45,12 @@ class _DoubleEditDialogState extends State<DoubleEditDialog> {
     super.initState();
     _currentValue = widget.value;
     _controller = TextEditingController(
-      text: widget.value?.toStringAsFixed(widget.digits) ?? '',
+      text: _valueString(widget.value),
     );
   }
+
+  String _valueString(double? value) =>
+      value?.toStringAsFixed(widget.digits) ?? '';
 
   bool _signed() {
     return widget.min < 0;
@@ -83,6 +89,14 @@ class _DoubleEditDialogState extends State<DoubleEditDialog> {
     });
   }
 
+  void _sliderChanged(double value) {
+    setState(() {
+      _errorText = null;
+      _controller?.text = _valueString(value);
+      _currentValue = value;
+    });
+  }
+
   void _onApply(double value) {
     final text = value.toStringAsFixed(widget.digits);
     _controller?.text = text;
@@ -95,6 +109,14 @@ class _DoubleEditDialogState extends State<DoubleEditDialog> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            DoubleSlider(
+              title: widget.title,
+              min: widget.min,
+              max: widget.max,
+              stepSize: widget.stepSize,
+              onChanged: _sliderChanged,
+              value: _currentValue,
+            ),
             TextField(
               controller: _controller,
               decoration: InputDecoration(
