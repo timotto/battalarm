@@ -25,8 +25,23 @@ class Version {
     return 0;
   }
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Version &&
+          runtimeType == other.runtimeType &&
+          major == other.major &&
+          minor == other.minor &&
+          patch == other.patch &&
+          build == other.build;
+
+  @override
+  int get hashCode =>
+      major.hashCode | minor.hashCode | patch.hashCode | build.hashCode;
+
+  @override
   String toString() {
-    final parts = [major,minor,patch].map((val) => val.toString());
+    final parts = [major, minor, patch].map((val) => val.toString());
     if (build == 0) return parts.join('.');
     return '${parts.join('.')}-build.${build.toString()}';
   }

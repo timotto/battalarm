@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:battery_alarm_app/device_client/value_characteristic.dart';
-import 'package:battery_alarm_app/util/busy.dart';
+import 'package:battery_alarm_app/device_client/object_characteristic.dart';
 import 'package:battery_alarm_app/model/bt_uuid.dart';
 import 'package:battery_alarm_app/model/status.dart';
+import 'package:battery_alarm_app/util/busy.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
 final Uuid _uuidChrInGarage =
@@ -33,84 +33,57 @@ class StatusService {
 
   final BusyRunner busy;
 
-  BoolCharacteristic? _chrInGarage;
-  BoolCharacteristic? _chrCharging;
-  BoolCharacteristic? _chrEngineRunning;
-  DoubleCharacteristic? _chrVbatVolt;
-  DoubleCharacteristic? _chrVbatDelta;
-  DoubleCharacteristic? _chrBeaconRssi;
+  ObjectCharacteristicFactory<DeviceStatus>? _ocf;
 
   Future<void> onDeviceConnected(String deviceId) async {
-    _chrInGarage = BoolCharacteristic(
+    _ocf = ObjectCharacteristicFactory(
       deviceId: deviceId,
-      serviceId: uuidStatusService,
-      characteristicId: _uuidChrInGarage,
-    );
-    _chrCharging = BoolCharacteristic(
-      deviceId: deviceId,
-      serviceId: uuidStatusService,
-      characteristicId: _uuidChrCharging,
-    );
-    _chrEngineRunning = BoolCharacteristic(
-      deviceId: deviceId,
-      serviceId: uuidStatusService,
-      characteristicId: _uuidChrEngineRunning,
-    );
-    _chrVbatVolt = DoubleCharacteristic(
-      deviceId: deviceId,
-      serviceId: uuidStatusService,
-      characteristicId: _uuidChrVbatVolt,
-      digits: 1,
-    );
-    _chrVbatDelta = DoubleCharacteristic(
-      deviceId: deviceId,
-      serviceId: uuidStatusService,
-      characteristicId: _uuidChrVbatDelta,
-      digits: 2,
-    );
-    _chrBeaconRssi = DoubleCharacteristic(
-      deviceId: deviceId,
-      serviceId: uuidStatusService,
-      characteristicId: _uuidChrBeaconRssi,
-      digits: 0,
-    );
+      serviceUuid: uuidStatusService,
+      listenFn: _updateStateValue,
+      subscribeAll: true,
+    )..forBool(
+        chrId: _uuidChrInGarage,
+        readFn: (v) => v.inGarage,
+        writeFn: (v, t) => v.inGarage = t,
+      )
+          .forBool(
+            chrId: _uuidChrCharging,
+            readFn: (v) => v.charging,
+            writeFn: (v, t) => v.charging = t,
+          )
+          .forBool(
+            chrId: _uuidChrEngineRunning,
+            readFn: (v) => v.engineRunning,
+            writeFn: (v, t) => v.engineRunning = t,
+          )
+          .forDouble(
+            chrId: _uuidChrVbatVolt,
+            readFn: (v) => v.vbat,
+            writeFn: (v, t) => v.vbat = t,
+            digits: 1,
+          )
+          .forDouble(
+            chrId: _uuidChrVbatDelta,
+            readFn: (v) => v.vbatDelta,
+            writeFn: (v, t) => v.vbatDelta = t,
+            digits: 2,
+          )
+          .forDouble(
+            chrId: _uuidChrBeaconRssi,
+            readFn: (v) => v.rssi,
+            writeFn: (v, t) => v.rssi = _beaconRssiValueGuard(t),
+            digits: 0,
+          );
 
     await busy.run(() async {
-      await _subscribeAndRead(
-        _chrInGarage,
-        (value) => _updateStateValue((update) => update.inGarage = value),
-      );
-      await _subscribeAndRead(
-        _chrCharging,
-        (value) => _updateStateValue((update) => update.charging = value),
-      );
-      await _subscribeAndRead(
-        _chrEngineRunning,
-        (value) => _updateStateValue((update) => update.engineRunning = value),
-      );
-      await _subscribeAndRead(
-        _chrVbatVolt,
-        (value) => _updateStateValue((update) => update.vbat = value),
-      );
-      await _subscribeAndRead(
-        _chrVbatDelta,
-        (value) => _updateStateValue((update) => update.vbatDelta = value),
-      );
-      await _subscribeAndRead(
-        _chrBeaconRssi,
-        (value) => _updateStateValue(
-            (update) => update.rssi = _beaconRssiValueGuard(value)),
-      );
+      _ocf?.subscribe();
+      await _ocf?.read();
     });
   }
 
   void onDeviceDisconnected() {
-    _chrInGarage = null;
-    _chrCharging = null;
-    _chrEngineRunning = null;
-    _chrVbatVolt = null;
-    _chrVbatDelta = null;
-    _chrBeaconRssi = null;
+    _ocf?.clear();
+    _ocf = null;
 
     _updateState(DeviceStatus());
   }
@@ -120,17 +93,11 @@ class StatusService {
     _stateController.add(state);
   }
 
-  void _updateStateValue(void Function(DeviceStatus update) fn) {
+  Future<void> _updateStateValue(
+      Future<void> Function(DeviceStatus update) fn) async {
     final cpy = _state.clone();
-    fn(cpy);
+    await fn(cpy);
     _updateState(cpy);
-  }
-
-  Future<void> _subscribeAndRead<T>(
-      ValueCharacteristic<T>? chr, void Function(T?) onData) async {
-    if (chr == null) return;
-    chr.subscribe(onData);
-    onData(await chr.read());
   }
 }
 

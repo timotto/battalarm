@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:battery_alarm_app/device_client/value_characteristic.dart';
-import 'package:battery_alarm_app/util/busy.dart';
+import 'package:battery_alarm_app/device_client/object_characteristic.dart';
 import 'package:battery_alarm_app/model/bt_uuid.dart';
 import 'package:battery_alarm_app/model/config.dart';
+import 'package:battery_alarm_app/util/busy.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
 final Uuid _uuidChrDelayWarn =
@@ -43,174 +43,95 @@ class ConfigService {
 
   final BusyRunner busy;
 
-  DurationCharacteristic? _chrDelayWarn;
-  DurationCharacteristic? _chrDelayAlert;
-  DurationCharacteristic? _chrSnoozeTime;
-
-  DoubleCharacteristic? _chrVbatLpF;
-  DoubleCharacteristic? _chrVbatChargeT;
-  DoubleCharacteristic? _chrVbatAlternatorT;
-  DoubleCharacteristic? _chrVbatDeltaT;
-  DoubleCharacteristic? _chrVbatTuneF;
-
-  StringCharacteristic? _chrBtBeaconAddr;
-  DoubleCharacteristic? _chrBtBeaconRssiT;
-  BoolCharacteristic? _chrBtBeaconRssiAutoTune;
-
-  IntCharacteristic? _chrBuzzerAlerts;
+  ObjectCharacteristicFactory<DeviceConfig>? _ocf;
 
   Future<void> onDeviceConnected(String deviceId) async {
-    _chrDelayWarn = DurationCharacteristic(
-      characteristicId: _uuidChrDelayWarn,
-      serviceId: uuidConfigService,
+    _ocf = ObjectCharacteristicFactory<DeviceConfig>(
       deviceId: deviceId,
-    );
-
-    _chrDelayAlert = DurationCharacteristic(
-      characteristicId: _uuidChrDelayAlert,
-      serviceId: uuidConfigService,
-      deviceId: deviceId,
-    );
-
-    _chrSnoozeTime = DurationCharacteristic(
-      characteristicId: _uuidChrSnoozeTime,
-      serviceId: uuidConfigService,
-      deviceId: deviceId,
-    );
-
-    _chrVbatLpF = DoubleCharacteristic(
-      characteristicId: _uuidChrVbatLpF,
-      serviceId: uuidConfigService,
-      deviceId: deviceId,
-      digits: 4,
-    );
-
-    _chrVbatChargeT = DoubleCharacteristic(
-      characteristicId: _uuidChrVbatChargeT,
-      serviceId: uuidConfigService,
-      deviceId: deviceId,
-      digits: 1,
-    );
-
-    _chrVbatAlternatorT = DoubleCharacteristic(
-      characteristicId: _uuidChrVbatAlternatorT,
-      serviceId: uuidConfigService,
-      deviceId: deviceId,
-      digits: 1,
-    );
-
-    _chrVbatDeltaT = DoubleCharacteristic(
-      characteristicId: _uuidChrVbatDeltaT,
-      serviceId: uuidConfigService,
-      deviceId: deviceId,
-      digits: 2,
-    );
-
-    _chrVbatTuneF = DoubleCharacteristic(
-      characteristicId: _uuidChrVbatTuneF,
-      serviceId: uuidConfigService,
-      deviceId: deviceId,
-      digits: 2,
-    );
-
-    _chrBtBeaconAddr = StringCharacteristic(
-      characteristicId: _uuidChrBtBeaconAddr,
-      serviceId: uuidConfigService,
-      deviceId: deviceId,
-    );
-
-    _chrBtBeaconRssiT = DoubleCharacteristic(
-      characteristicId: _uuidChrBtRssiT,
-      serviceId: uuidConfigService,
-      deviceId: deviceId,
-      digits: 0,
-    );
-
-    _chrBtBeaconRssiAutoTune = BoolCharacteristic(
-      characteristicId: _uuidChrBtRssiAutoTune,
-      serviceId: uuidConfigService,
-      deviceId: deviceId,
-    );
-
-    _chrBuzzerAlerts = IntCharacteristic(
-      characteristicId: _uuidChrBuzzerAlerts,
-      serviceId: uuidConfigService,
-      deviceId: deviceId,
-    );
+      serviceUuid: uuidConfigService,
+      listenFn: _updateConfigValue,
+    )..forDuration(
+        chrId: _uuidChrDelayWarn,
+        readFn: (c) => c.delayWarn,
+        writeFn: (c, v) => c.delayWarn = v,
+      )
+          .forDuration(
+            chrId: _uuidChrDelayAlert,
+            readFn: (c) => c.delayAlarm,
+            writeFn: (c, v) => c.delayAlarm = v,
+          )
+          .forDuration(
+            chrId: _uuidChrSnoozeTime,
+            readFn: (c) => c.snoozeTime,
+            writeFn: (c, v) => c.snoozeTime = v,
+          )
+          .forDouble(
+            chrId: _uuidChrVbatLpF,
+            readFn: (c) => c.vbatLpF,
+            writeFn: (c, v) => c.vbatLpF = v,
+            digits: 4,
+          )
+          .forDouble(
+            chrId: _uuidChrVbatChargeT,
+            readFn: (c) => c.vbatChargeThreshold,
+            writeFn: (c, v) => c.vbatChargeThreshold = v,
+            digits: 1,
+          )
+          .forDouble(
+            chrId: _uuidChrVbatAlternatorT,
+            readFn: (c) => c.vbatAlternatorThreshold,
+            writeFn: (c, v) => c.vbatAlternatorThreshold = v,
+            digits: 1,
+          )
+          .forDouble(
+            chrId: _uuidChrVbatDeltaT,
+            readFn: (c) => c.vbatDeltaThreshold,
+            writeFn: (c, v) => c.vbatDeltaThreshold = v,
+            digits: 2,
+          )
+          .forDouble(
+            chrId: _uuidChrVbatTuneF,
+            readFn: (c) => c.vbatTuneFactor,
+            writeFn: (c, v) => c.vbatTuneFactor = v,
+            digits: 2,
+          )
+          .forString(
+            chrId: _uuidChrBtBeaconAddr,
+            readFn: (c) => c.btBeaconAddress,
+            writeFn: (c, v) => c.btBeaconAddress = v,
+          )
+          .forDouble(
+            chrId: _uuidChrBtRssiT,
+            readFn: (c) => c.btRssiThreshold,
+            writeFn: (c, v) => c.btRssiThreshold = v,
+            digits: 0,
+            subscribe: true,
+          )
+          .forBool(
+            chrId: _uuidChrBtRssiAutoTune,
+            readFn: (c) => c.btRssiAutoTune,
+            writeFn: (c, v) => c.btRssiAutoTune = v,
+          )
+          .forInt(
+            chrId: _uuidChrBuzzerAlerts,
+            readFn: (c) => BuzzerAlerts.format(c.buzzerAlerts),
+            writeFn: (c, v) => c.buzzerAlerts = BuzzerAlerts.parse(v),
+          );
 
     await readAll();
-    _chrBtBeaconRssiT?.subscribe((value) => _onRssiThreshold(value));
+    _ocf?.subscribe();
   }
 
   void onDeviceDisconnected() {
     _state = DeviceConfig();
     _stateController.add(_state);
+    _ocf?.clear();
+    _ocf = null;
   }
 
   Future<void> update(DeviceConfig update) async {
     await busy.run(() async {
-      await _writeIfChanged(
-        _chrDelayWarn,
-        _state.delayWarn,
-        update.delayWarn,
-      );
-      await _writeIfChanged(
-        _chrDelayAlert,
-        _state.delayAlarm,
-        update.delayAlarm,
-      );
-      await _writeIfChanged(
-        _chrSnoozeTime,
-        _state.snoozeTime,
-        update.snoozeTime,
-      );
-
-      await _writeIfChanged(
-        _chrVbatLpF,
-        _state.vbatLpF,
-        update.vbatLpF,
-      );
-      await _writeIfChanged(
-        _chrVbatChargeT,
-        _state.vbatChargeThreshold,
-        update.vbatChargeThreshold,
-      );
-      await _writeIfChanged(
-        _chrVbatAlternatorT,
-        _state.vbatAlternatorThreshold,
-        update.vbatAlternatorThreshold,
-      );
-      await _writeIfChanged(
-        _chrVbatDeltaT,
-        _state.vbatDeltaThreshold,
-        update.vbatDeltaThreshold,
-      );
-      await _writeIfChanged(
-        _chrVbatTuneF,
-        _state.vbatTuneFactor,
-        update.vbatTuneFactor,
-      );
-
-      await _writeIfChanged(
-        _chrBtBeaconAddr,
-        _state.btBeaconAddress,
-        update.btBeaconAddress,
-      );
-      await _writeIfChanged(
-        _chrBtBeaconRssiT,
-        _state.btRssiThreshold,
-        update.btRssiThreshold,
-      );
-      await _writeIfChanged(
-        _chrBtBeaconRssiAutoTune,
-        _state.btRssiAutoTune,
-        update.btRssiAutoTune,
-      );
-
-      await _writeIfChanged(
-          _chrBuzzerAlerts,
-          _formatBuzzerAlerts(_state.buzzerAlerts),
-          _formatBuzzerAlerts(update.buzzerAlerts));
+      await _ocf?.writeIfChanged(_state, update);
     });
 
     _state = update;
@@ -218,58 +139,14 @@ class ConfigService {
   }
 
   Future<void> readAll() async {
-    await busy.run(() async {
-      _state = DeviceConfig(
-        delayWarn: await _chrDelayWarn?.read(),
-        delayAlarm: await _chrDelayAlert?.read(),
-        snoozeTime: await _chrSnoozeTime?.read(),
-        vbatLpF: await _chrVbatLpF?.read(),
-        vbatChargeThreshold: await _chrVbatChargeT?.read(),
-        vbatAlternatorThreshold: await _chrVbatAlternatorT?.read(),
-        vbatDeltaThreshold: await _chrVbatDeltaT?.read(),
-        vbatTuneFactor: await _chrVbatTuneF?.read(),
-        btBeaconAddress: await _chrBtBeaconAddr?.read(),
-        btRssiThreshold: await _chrBtBeaconRssiT?.read(),
-        btRssiAutoTune: await _chrBtBeaconRssiAutoTune?.read(),
-        buzzerAlerts: _parseBuzzerAlerts(await _chrBuzzerAlerts?.read()),
-      );
-    });
-
-    _stateController.add(_state);
+    await busy.run(() async => await _ocf?.read());
   }
 
-  void _onRssiThreshold(double? value) {
-    final clone = _state.clone();
-    clone.btRssiThreshold = value;
-    _state = clone;
+  Future<void> _updateConfigValue(
+      Future<void> Function(DeviceConfig update) fn) async {
+    final cpy = _state.clone();
+    await fn(cpy);
+    _state = cpy;
     _stateController.add(_state);
-  }
-
-  Future<void> _writeIfChanged<T>(
-      ValueCharacteristic<T>? chr, T? ref, T? update) async {
-    if (chr == null) return;
-    if (update == null) return;
-    if (update == ref) return;
-
-    await chr.write(update);
   }
 }
-
-Map<BuzzerAlerts, bool>? _parseBuzzerAlerts(int? value) => value == null
-    ? null
-    : <BuzzerAlerts, bool>{
-        BuzzerAlerts.garage: (value & 1) != 0,
-        BuzzerAlerts.charging: (value & 2) != 0,
-        BuzzerAlerts.hello: (value & 4) != 0,
-        BuzzerAlerts.button: (value & 8) != 0,
-        BuzzerAlerts.bluetooth: (value & 16) != 0,
-      };
-
-int _formatBuzzerAlerts(Map<BuzzerAlerts, bool>? values) =>
-    _boolToBitValue(values?[BuzzerAlerts.garage], 0) |
-    _boolToBitValue(values?[BuzzerAlerts.charging], 1) |
-    _boolToBitValue(values?[BuzzerAlerts.hello], 2) |
-    _boolToBitValue(values?[BuzzerAlerts.button], 3) |
-    _boolToBitValue(values?[BuzzerAlerts.bluetooth], 4);
-
-int _boolToBitValue(bool? value, int bit) => ((value ?? false) ? 1 : 0) << bit;
