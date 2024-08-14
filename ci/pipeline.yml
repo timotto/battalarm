@@ -293,6 +293,7 @@ jobs:
     - set_pipeline: self
       file: pipeline-source/ci/pipeline.yml
       vars:
+        ota-repo-base-url: ((ota-repo-base-url))
         docs-image-repo: ((docs-image-repo))
 
 # endregion

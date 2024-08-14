@@ -20,6 +20,7 @@ params:
   RELEASE_KEYSTORE_PASSWORD: ((android.release_keystore_password))
   RELEASE_KEYSTORE_KEY_ALIAS: ((android.release_keystore_key_alias))
   RELEASE_KEYSTORE_KEY_PASSWORD: ((android.release_keystore_key_password))
+  OTA_REPO_BASE_URL: ((ota-repo-base-url))
 run:
   path: bash
   user: root
@@ -61,6 +62,10 @@ run:
     
     cat > lib/version.dart <<EOT
     const appVersion = '$version';
+    EOT
+    
+    cat > lib/backend.dart <<EOT
+    const otaRepoBaseUrl = '$OTA_REPO_BASE_URL';
     EOT
     
     flutter doctor
